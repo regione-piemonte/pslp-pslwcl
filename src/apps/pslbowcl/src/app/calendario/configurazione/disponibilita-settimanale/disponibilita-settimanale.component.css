@@ -1,0 +1,17 @@
+/*  -------------------------
+    foglio di stile 
+    configurazione calendario
+    disponibilità settimanale
+    -------------------------
+ */
+.border-green {
+  border-color: green;
+}
+
+.btn-green.btn-minus::before {
+  content: "\f056";
+}
+
+input[type="checkbox"]:disabled, input[type="checkbox"][disabled] {
+  cursor: not-allowed;
+}

@@ -1,0 +1,41 @@
+<!--
+  pagina per consentire la scelta
+  della modalità di accesso dell'operatore
+  in base ai ruoli previsti
+-->
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h3>Autenticazione</h3>
+      <h4 class="border-n">Scelta ruolo</h4>
+
+      <div class="container">
+        <div class="row mt-2 ml-2 mr-2">
+          <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+            <div class="md-radio" *ngFor="let r of ruoli">
+              <input
+                type="radio"
+                name="sceltaRuolo"
+                [id]="r.valore"
+                [value]="r.valore"
+                [checked]="ruolo && r.valore === ruolo.valore"
+                (change)="sceltaRuolo(r)"
+                ngModel>
+              <label [for]="r.valore">{{ r.descrizione }}</label>
+            </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+            <p><button class="btn btn-outline-primary" [disabled]="!ruolo" (click)="onOK()">OK</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

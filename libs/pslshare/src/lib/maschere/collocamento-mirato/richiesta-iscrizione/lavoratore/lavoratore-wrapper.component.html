@@ -1,0 +1,40 @@
+<pslshare-wizard-cm [validLink]="isValidData()"  (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+<h4 class="border-n">Cittadino</h4>
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+<pslshare-dati-anagrafici-fascicolo
+  [forceReadOnlyResidenza]='true'
+  [forceReadOnlyDomicilio]='true'
+  [forceReadOnlyRecapiti]='true'
+  (sapChange)='onSapChange($event)'
+  (dataChange)='onDataChange($event)'
+  (flagChanging)='onFlagChanging($event)'
+  [cpiVisible]="true"
+  [descCpiRes]="descCpiRes"
+  [descCpiDom]="descCpiDom"
+  [showDatiAnagraficiHelp]="false"
+></pslshare-dati-anagrafici-fascicolo>
+
+<div class="grey1">
+  <pslshare-dati-did
+    [idUtente]="idUtente">
+  </pslshare-dati-did>
+</div>
+
+<div class="grey1">
+  <h4 class="border-n mt-5">Le tue ultime iscrizioni in Piemonte al Collocamento Mirato</h4>
+  <hr>
+  <pslshare-dati-iscrizioni>
+  </pslshare-dati-iscrizioni>
+</div>
+<br>
+
+<pslshare-navigation-button-cm
+  [nextButtonHide]="false"
+  [prevButtonHide]="false"
+  [nextButtonDisabled]="false"
+  [prevButtonName]="prevButtonName"
+  [forcePrevButtonName]="true"
+  (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData()" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

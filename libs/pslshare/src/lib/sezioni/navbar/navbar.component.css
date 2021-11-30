@@ -1,0 +1,15 @@
+/**
+ *  foglio di stile per menu laterale
+ *  di navigazione 
+ */
+
+#sidebar {
+  min-width: 250px;
+  max-width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* top layer */
+  z-index: 9999;
+}

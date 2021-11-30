@@ -1,0 +1,93 @@
+<!--
+    sezione a pie di pagina
+    con link istituzionali
+-->
+<footer role="contentinfo">
+  <div class="pre-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-4 sm-center">
+          <ng-template [ngIf]="urlRegPiemonte" [ngIfElse]="elseBlock">
+            <a href="{{urlRegPiemonte}}" target="_blank">
+              <img src="assets/im/loghi/logo-regione.png" alt="Regione Piemonte">
+            </a>
+          </ng-template>
+          <ng-template #elseBlock>
+            <img src="assets/im/loghi/logo-regione.png" alt="Regione Piemonte">
+          </ng-template>
+        </div>
+        <div class="col-sm-12 col-md-8 col-lg-8 col-right">
+          <ng-template [ngIf]="urlRegPiemonte" [ngIfElse]="elseBlock">
+            <a href={{urlApl}} target="_blank">
+              <img src="assets/im/loghi/centri_impiego.png" alt="Agenzia Piemonte Lavoro Centri per l'impiego" class="mr-img">
+            </a>
+          </ng-template>
+          <ng-template #elseBlock>
+            <img src="assets/im/loghi/centri_impiego.png" alt="Agenzia Piemonte Lavoro Centri per l'impiego" class="mr-img">
+          </ng-template>
+            <!-- LOGO UNIONE EUROPEA INIZIATIVA FES -->
+            <ng-template [ngIf]="urlRegPiemonte" [ngIfElse]="elseBlock2">
+              <a href={{urlFesr}} target="_blank">
+                <img src="assets/im/loghi/logo-fes.jpg" alt="Fondo Sociale Europeo">
+              </a>
+            </ng-template>
+            <ng-template #elseBlock2>
+              <img src="assets/im/loghi/logo-fes.jpg" alt="Fondo Sociale Europeo">
+            </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <a href="/pslphome/assistenza">
+            <p class="h5">HAI BISOGNO DI ALTRE INFORMAZIONI?</p>
+            <p class="pt-2">Consulta la pagina di aiuto</p>
+          </a>
+          <p class="border-w mt-40"></p>
+        </div>
+      </div>
+      <div class="row pad">
+        <div class="col-6  logo-piemonte-tu">
+          <ng-template [ngIf]="urlTuPiemonte" [ngIfElse]="elseBlock">
+            <a href="{{urlTuPiemonte}}" target="_blank">
+              <p class="small">Questo servizio è parte di</p>
+              <img alt="Piemonte tu" src="assets/im/loghi/logo-piemontetu.svg">
+            </a></ng-template>
+          <ng-template #elseBlock>
+            <p class="small">Questo servizio è parte di</p>
+            <img alt="Piemonte tu" src="assets/im/loghi/logo-piemontetu.svg">
+          </ng-template>
+        </div>
+        <div class="col-6 logo-csi">
+          <a href={{urlCsi}} target="_blank">
+            <img alt="csi piemonte" src="assets/im/loghi/logo-csi.svg">
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p class="border-w"></p>
+        </div>
+      </div>
+
+      <div class="row mt-3 justify-space-between">
+        <div class="col-12 col-md-auto pt-3">
+          <a href="http://www.sistemapiemonte.it/cms/privati/accessibilita" title="Accessibilità"
+            target="_blank" rel="noopener noreferrer">Accessibilit&agrave;</a> -
+          <a href="http://www.sistemapiemonte.it/cms/privati/privacy" title="Privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
+          -&nbsp;
+          <a href="http://www.sistemapiemonte.it/cms/privati/cookies-policy" title="Cookie policy"
+            target="_blank" rel="noopener noreferrer">Cookie policy</a>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</footer>

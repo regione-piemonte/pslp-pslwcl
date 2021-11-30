@@ -1,0 +1,135 @@
+<!-- 
+    -------------------------
+    configurazione calendario
+    disponibilità settimanale
+    -------------------------
+-->
+<div class="border_b">
+  <h5 id="myDesc">Configurazione disponibilit&agrave; settimanale</h5>
+  <div class="row" *ngIf="!periodo.flag_slot_generati">
+    <div class="col-sm-12 offset-md-6 col-md-6  offset-lg-6 col-lg-6 offset-xml-6 col-xl-6 text-right">
+      <div class="dropdown mt-4 mb-2">
+        <a class="dropdown-toggle btn-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&nbsp;</a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <button class="btn dropdown-item" [disabled]="modificaDisabled" (click)="onModificaFascia()"><span class="fas fa-edit fa-sm"></span> modifica</button>
+          <button class="btn dropdown-item" [disabled]="modificaDisabled" (click)="onEliminaFascia()"><span class="far fa-trash-alt fa-sm"></span> elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-5 scrollbar-table scrollbar-primary">
+    <table aria-describedby="mydesc" class="table table-bordered table-striped table-hover" id="infoTable">
+      <thead>
+        <tr>
+          <th scope="col"style="width:20%">Giorno</th>
+          <th scope="col">Ora d'inizio</th>
+          <th scope="col">Ora di fine</th>
+          <th scope="col">Numero<br/>appuntamenti</th>
+          <th scope="col">Durata</th>
+          <th scope="col">Incontri<br/>generati</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="fasce.length > 0; else noData">
+        <tr *ngFor="let fascia of fasce">
+          <td>
+            <input id="fascia_{{fascia.id_fascia}}" type="checkbox" name="id_fascia"
+             [checked]="isChecked(fascia)"
+             (change)="onChangeFascia(fascia)"
+             [disabled]="apertoAltro || periodo.flag_slot_generati || readOnly || disableConfermaIncontri" class="mr-2">
+            <label for="fascia_{{fascia.id_fascia}}">
+              {{ decodeGiornoSettimana(fascia.id_giorno_settimana) }}
+            </label>
+          </td>
+          <td>{{ toHourMinute(fascia.ora_inizio) }}</td>
+          <td>{{ toHourMinute(fascia.ora_fine) }}</td>
+          <td>{{ fascia.num_max_prenotazioni }}</td>
+          <td>{{ fascia.durata_slot }} min.</td>
+          <td>{{ periodo.flag_slot_generati | siNo }}</td>
+      </tbody>
+      <ng-template #noData>
+        <tbody>
+          <tr>
+            <td colspan="6">Non ci sono dati.</td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+  <p class="mt-5 text-right" *ngIf="!elaborazioni[0] && !periodo.flag_slot_generati && !periodoScaduto">
+    <button type="button" class="btn btn-outline-primary"
+    [disabled]="readOnly || disableConfermaIncontri || apertoNuovaFascia"
+    (click)="onNuovaFascia()">AGGIUNGI FASCIA</button>
+  </p>
+  <form #fasciaForm="ngForm" *ngIf="elaborazioni[0] && !periodo.flag_slot_generati">
+    <h5 class="mt-5 mb-3">
+      <label for="">Definisci una o due fasce orarie</label>
+    </h5>
+    <ng-template ngFor let-fp [ngForOf]="fascePossibili">
+      <div class="border_b border-green" *ngIf="fp === 0 || elaborazioni[0].fascia.id_fascia === undefined">
+        <p *ngIf="fp > 0">
+          <button type="button" class="btn btn-green col-sm-12 col-md-12 col-lg-12 col-xl-12"
+            [disabled]="elaborazioni[0].fascia.ora_fine >= 1900"
+            [class.btn-minus]="elaborazioni[fp]" (click)="toggleFascia(fp)">
+            <span>{{ nomenclaturaProgressivo[fp] }} fascia oraria</span>
+          </button>
+        </p>
+        <pslbowcl-configurazione-finestra [index]="fp" [fascia]="elaborazioni[fp].fascia" [sliderConfigFascia]="elaborazioni[fp].sliderConfig"
+          [linkedFascia]="elaborazioni[fp - 1]?.fascia" *ngIf="elaborazioni[fp]"></pslbowcl-configurazione-finestra>
+      </div>
+    </ng-template>
+    <h5 class="mt-8 mb-5">Giorni di validit&agrave; delle fasce orarie</h5>
+    <div class="md-checkbox" *ngIf="elaborazioni[0].fascia.id_fascia === undefined">
+      <input id="tutti" type="checkbox" name="tutti" [checked]="allSelectedGiorniDisponibilita" (change)="onSelezioneTuttoGiornoDisponibilita()">
+      <label for="tutti">Tutti i giorni</label>
+    </div>
+    <hr />
+    <div class="md-checkbox md-checkbox-inline" *ngFor="let gd of elencoGiorniDisponibilita; let i = index">
+      <input id="giornoDisponibilita_{{ gd.value }}" type="checkbox" name="giornoDisponibilita" value="{{ gd.value }}" (change)="onChangeGiornoDisponibilita(i)" [checked]="isCheckedGiornoDisponibilita(i)">
+      <label for="giornoDisponibilita_{{ gd.value }}">{{ gd.label }}</label>
+    </div>
+    <div class="row mt-5">
+
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-primary" [disabled]="readOnly"
+          (click)="onChiudiFascia()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="button" class="btn btn-primary" href="#"
+          [disabled]="!fasciaForm.valid || giorniDisponibilitaSelezionati.length < 1" (click)="onSalva()">SALVA</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal 
+  conferma eliminazione fascia
+-->
+<div class="modal fade" id="modal_elimina_fascia" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione fascia selezionata</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <strong>Si desidera eliminare la fascia selezionata ?</strong><br>
+        <span *ngIf="fasciaDaEliminare">
+         Giorno {{ decodeGiornoSettimana(fasciaDaEliminare.id_giorno_settimana) }}
+         ora d' inizio {{ toHourMinute(fasciaDaEliminare.ora_inizio) }}
+         ora di fine {{ toHourMinute(fasciaDaEliminare.ora_fine) }}
+      </span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doEliminaFascia(fasciaDaEliminare)" data-dismiss="modal">CONFERMA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal 
+  conferma 
+  eliminazione fascia
+-->

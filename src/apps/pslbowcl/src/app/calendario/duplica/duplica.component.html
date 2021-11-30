@@ -1,0 +1,13 @@
+<!-- 
+  configurazione calendario
+    form duplica
+    -------------------------
+-->
+<h4 class="border-n">Duplicazione calendario</h4>
+<p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+<pslbowcl-dati-duplicazione-calendario *ngIf="loaded" [title]="'Calendario originale'"
+  [disabledForm]="true" [id]="'old'" [confCalendario]="confCalendario" [enti]="entiOld"
+  [ambitoList]="ambitoList"></pslbowcl-dati-duplicazione-calendario>
+<pslbowcl-dati-duplicazione-calendario *ngIf="loaded" [title]="'Calendario duplicato'"
+  [disabledForm]="false" [id]="'new'" [confCalendario]="confCalendarioDuplicato" [enti]="entiNew"
+  [ambitoList]="ambitoList"></pslbowcl-dati-duplicazione-calendario>

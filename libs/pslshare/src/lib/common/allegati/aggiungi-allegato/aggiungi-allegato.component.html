@@ -1,0 +1,35 @@
+<form #allegatoForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <p><label>Documento</label></p>
+      <div class="file-upload btn btn-outline-primary">
+        <span>Sfoglia</span>
+        <input #inputFile type="file" id="fileToUpload" name="fileToUpload" class="upload"
+          (change)="handleFileInput($event.target.files)"
+          [accept]="getAllMimeType()"
+          />
+      </div>
+      &nbsp;<label #labelfileToUpload for="fileToUpload">Scegli un file</label>
+    </div>
+  </div>
+
+  <div class="form-group mt-5">
+    <label for="note">Note</label>
+    <textarea id="note" name="note" rows="3" maxlength="2000" ngModel
+    onkeyup="
+    var start = this.selectionStart;
+    var end = this.selectionEnd;
+    this.value = this.value.toUpperCase();
+    this.setSelectionRange(start, end);"
+    maxlength="250"
+    style="resize: none;"></textarea>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary" (click)="onAnnulla()">ANNULLA</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="submit" class="btn btn-primary" [disabled]="allegatoForm.invalid || !fileToUpload">CARICA</button>
+    </div>
+  </div>
+</form>

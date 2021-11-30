@@ -1,0 +1,18 @@
+<!--
+    barra menu laterale di navigazione
+-->
+
+<nav id="sidebar">
+  <div id="dismiss">
+      <span class="fas fa-arrow-left"></span>
+  </div>
+  <div class="sidebar-header">
+      <h6>Servizi al cittadino</h6>
+  </div>
+  <ul class="list-unstyled components">
+      <li class="active">
+      <li *ngFor="let el of elencoCard">
+          <a href="onLink(el)"><span class="{{ el.icon }}"></span>{{ el.titolo }}</a>
+      </li>
+  </ul>
+</nav>

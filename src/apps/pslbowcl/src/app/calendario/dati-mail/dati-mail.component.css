@@ -1,0 +1,29 @@
+/*
+    -------------------------
+    foglio di stile
+    configurazione calendario
+    dati mail
+    -------------------------
+*/
+.ng-valid[required], .ng-valid.required  {
+    border-left: 5px solid #42A948;
+  }
+  
+  .ng-invalid:not(form)  {
+    border-left: 5px solid #a94442;
+  }
+  
+  
+  
+  .group {
+    margin-top: 0px;
+  }
+  
+  p.ente {
+      margin-top: 10px;
+      margin-bottom: 10px;
+  }
+  
+  button[disabled].fas.fa-chevron-left, button:disabled.fas.fa-chevron-left {
+    color: #6c757d !important;
+  }

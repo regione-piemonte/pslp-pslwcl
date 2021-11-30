@@ -1,0 +1,8 @@
+{
+  "resolveJsonModule": true,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "jest"]
+  },
+  "include": ["**/*.ts", "../../libs/pslservice/src/lib/factory/app-user.app-initializer.factory.ts"]
+}

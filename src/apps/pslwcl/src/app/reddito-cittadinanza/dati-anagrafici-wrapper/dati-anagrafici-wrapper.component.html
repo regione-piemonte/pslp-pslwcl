@@ -1,0 +1,18 @@
+<app-wizard></app-wizard>
+
+<pslshare-dati-anagrafici-cittadino
+  [forceReadOnlyResidenza]='true'
+  (sapChange)='onSapChange($event)'
+  (dataChange)='onDataChange($event)'
+  (flagChanging)='onFlagChanging($event)'
+></pslshare-dati-anagrafici-cittadino>
+<app-navigation-button
+    [nextButtonHide]="readOnly"
+    [nextButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</app-navigation-button>
+<div class="text-danger" *ngIf="!isValidData()" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

@@ -1,0 +1,43 @@
+<!--
+   navigazione wizard
+
+-->
+<ng-template [ngIf]="!loading">
+  <ul class="nav nav-tabs wizard">
+    <li [class]="w.li" *ngFor="let w of wizard; let i = index">
+      <span [class]="w.span">{{ plus(i) }}</span>
+      <span class="text" [innerHTML]="w.text | escapeHtml"></span>
+    </li>
+    <li class="last" *ngIf="flgTornaARicerca">
+      <a (click)="onExit()"> <span class="fas fa-search fa-2x" ngbTooltip="torna alla ricerca"></span> </a>
+    </li>
+  </ul>
+  <h4 class="border-n">{{ titolo }}</h4>
+</ng-template>
+
+<!-- Modal logout -->
+<div class="modal fade" id="modal_ricerca" tabindex="-1" role="dialog" aria-labelledby="modal_ricerca"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Torna alla ricerca calendari</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5"> <strong>Sei sicuro di voler uscire?</strong>
+          <p>Eventuali modifiche non saranno salvate </p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary float-right" data-dismiss="modal" (click)="doExit()">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal logout -->

@@ -1,0 +1,52 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioBenvenuto" [innerHTML]="messaggioBenvenuto | escapeHtml"></div>
+  <div *ngIf="loading <= 1"> 
+  <div class="row mt-3 mb-2">
+     
+    <div class="col-sm-8 col-md-8 col-lg-4 col-xl-4">
+      <button class="btn btn-primary btn-lg "  (click)="onGestionePrivacyEMinori()">GESTIONE PRIVACY e MINORI</button>
+    </div>
+    <div class="col-sm-8 col-md-8 col-lg-4 col-xl-4">
+      <button class="btn btn-primary btn-lg "  (click)="onGestioneFascicolo()"     >GESTIONE FASCICOLO</button>
+    </div>
+    <div class="col-sm-8 col-md-8 col-lg-4 col-xl-4" >
+      <button class="btn btn-primary btn-lg "  (click)="onGestioneAppuntamento()"  >NUOVO APPUNTAMENTO</button>
+    </div>
+    
+  </div>
+
+  </div>
+    <h4 class="border-n mt-5">La tua adesione</h4>
+    <div *ngIf="hasUtente">    
+    <app-iscrizione-garanzia-scheda 
+    [idUtente]="idUtente" 
+    [utenteRiepIscr]="riepilogo.utente_tutore" 
+    [idSilLav]="idSilLav" 
+    [codFiscOperatore]="codFiscOperatore" 
+    [idTutore]="" 
+    [isTutelato]="false"
+    [msgEtaNonCoerente]="msgEtaNonCoerente"
+    (loadedData)="decreaseLoading()"></app-iscrizione-garanzia-scheda>
+  </div>
+  <ng-template [ngIf]="hasMinori" ngbPanelTitle>
+    <h4 class="font-weight-bold mt-40 mb-5">Adesione per conto di </h4>
+  </ng-template>
+  <ngb-accordion [closeOthers]="true" activeIds="{{ idactive }}" *ngIf="hasMinori" [destroyOnHide]="false" #accordionMinori>
+    <ngb-panel id="minore-{{ idx }}" *ngFor="let minore of riepilogo.tutelati; let idx = index">
+      <ng-template ngbPanelTitle>
+        <h5 class="font-weight-bold">{{ minore.utente.nome }} {{ minore.utente.cognome }}</h5>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="grey1">
+          <app-iscrizione-garanzia-scheda 
+          [idUtente]="minore.utente.id_utente" 
+          [utenteRiepIscr]="minore" 
+          [idTutore]="idUtente" 
+          [isTutelato]="true" 
+          [codFiscOperatore]="codFiscOperatore"
+          [msgEtaNonCoerente]="msgEtaNonCoerente"
+          (loadedData)="decreaseLoading()"
+            ></app-iscrizione-garanzia-scheda>
+        </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>

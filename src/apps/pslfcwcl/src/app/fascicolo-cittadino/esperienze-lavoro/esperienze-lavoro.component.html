@@ -1,0 +1,71 @@
+<pslfcwcl-wizard
+[validLink]="isValidData()"
+(exitPage)="onExitPage($event)"></pslfcwcl-wizard>
+
+<h4 class="mtb-40">{{ titoloPagina }}</h4>
+
+<div class="row mb-5" *ngIf="sap else noSap">
+
+    <div class="grey1 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-4">
+<pslshare-paginated-table [columnNumber]="6" [pagedResponse]="sap.esperienze_di_lavoro" [limit]="10">
+    <ng-template pslbasepagePaginationHead>
+      <tr>
+        <th scope="col">Data Assunzione</th>
+        <th scope="col">Data Cessazione</th>
+        <th scope="col">Tipo Contratto</th>
+        <th scope="col">Qualifica</th>
+        <th scope="col">Datore di lavoro</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pslbasepagePaginationBody let-el>
+      <tr>
+        <td>{{ el.data_inizio_rapporto | date:'dd/MM/yyyy' }}</td>
+        <td>{{ el.data_fine_rapporto | date:'dd/MM/yyyy' }}</td>
+        <td>{{ el.tipo_contratto.codice_ministeriale }} - {{ el.tipo_contratto.descrizione }}</td>
+        <td>{{ el.qualifica.descrizione }}</td>
+        <td>{{ el.datore_lavoro.denominazione }}</td>
+        <td class="text-nowrap">
+          <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isValidData()"  (click)="onVisualizza(el)">
+            <span class="fas fa-2x fa-eye"></span>
+          </button>
+        </td>
+
+      </tr>
+    </ng-template>
+  </pslshare-paginated-table>
+  </div>
+</div>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !esperienzaSelezionata" (click)="onNuovo()">AGGIUNGI ESPERIENZA</button>
+</p>
+
+<pslfcwcl-dettaglio-lavoro
+   *ngIf="esperienzaSelezionata"
+   [sap]="sap"
+   [esperienzaSelezionata]="esperienzaSelezionata"
+   [tipoContrattoSelezionato]="tipoContrattoSelezionato"
+   [statoMaschera]="statoMaschera"
+   [elenchiDecodifiche]="elenchiDecodifiche"
+   [listaQualifiche]="listaQualifiche"
+   [indiceSelezionato]="indiceSelezionato"
+   [readOnly]="readOnly"
+   (sezioneChange)="onSezioneChange($event)"
+   (flagChanging)="onFlagChanging($event)"
+   (annullaDettaglio)="onAnnullaDettaglio($event)">
+</pslfcwcl-dettaglio-lavoro>
+  <ng-template #noSap>
+
+  </ng-template>
+
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="readOnly && !readOnlyDomicilio"
+    [nextButtonDisabled]="!isValidData()"
+    [prevButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

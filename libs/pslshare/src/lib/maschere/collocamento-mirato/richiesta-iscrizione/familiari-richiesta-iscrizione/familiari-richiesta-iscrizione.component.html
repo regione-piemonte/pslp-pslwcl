@@ -1,0 +1,18 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+
+  <h4 class="border-n" >  Familiari a carico&nbsp;  </h4>
+  <div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+<pslshare-famigliari-a-carico *ngIf="loaded"
+[isRichiestaIscrizione]="isRichiestaIscrizione"
+[dichiarazioneFamiliariCOMI]="dichiarazioneSelezionata"
+[readOnly]="readOnly"
+[statoMaschera]="statoMaschera"
+(formNuovo)="onFormNuovoFamChanged($event)"
+(formChanged)="onFormFamiliariChanged($event)"
+(formValid)="onFormFamiliariValid($event)"
+></pslshare-famigliari-a-carico>
+
+<pslshare-navigation-button-cm [nextButtonHide]="false" [prevButtonHide]="false" [nextButtonDisabled]="flgNuovoFamOpen" [prevButtonDisabled]="flgNuovoFamOpen"
+  [prevButtonName]="prevButtonName" [forcePrevButtonName]="true" (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData() && messaggioErroreDati" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

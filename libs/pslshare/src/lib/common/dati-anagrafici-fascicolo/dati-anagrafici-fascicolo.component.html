@@ -1,0 +1,148 @@
+<h4 class="border-n">Dati anagrafici
+  <div *ngIf="showDatiAnagraficiHelp" class="popup" onclick="myFunction()">
+    <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+    <div class="popuptext" [class.down]="popdown" id="myPopup" [innerHTML]="helpMessage | escapeHtml"></div>
+  </div>
+</h4>
+
+<div *ngIf="!sap; else pagina">
+  <p>Load data...</p>
+</div>
+<ng-template #pagina>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <ul class="dett">
+    <li>Cognome<br>
+      <strong>{{sap.cognome}}&nbsp;</strong></li>
+    <li>Nome<br>
+      <strong>{{sap.nome}}&nbsp;</strong></li>
+    <li>Codice fiscale<br>
+      <strong>{{sap.codice_fiscale}}&nbsp;</strong></li>
+    <li>Sesso<br>
+      <strong>{{sap.sesso}}&nbsp;</strong></li>
+    <li>Data di nascita<br>
+      <strong>{{sap.dataDiNascita | date:'dd/MM/yyyy'}}&nbsp;</strong></li>
+    <li>Comune di nascita<br>
+      <strong>{{sap.luogoDiNascita?.comune?.descrizione}}&nbsp;</strong></li>
+    <li>Stato di nascita<br>
+      <strong>{{sap.luogoDiNascita?.stato?.descrizione}}&nbsp;</strong></li>
+    <li>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="cittadinanza" name="cittadinanza" [(ngModel)]="sap.codice_ministeriale_cittadinanza"
+            #cittadinanzaModel="ngModel" [disabled]="readOnly" (change)="onChangeCittadinanza(cittadinanzaModel)"
+            required>
+            <option value=""> </option>
+            <option *ngFor="let option of liste.cittadinanze" [value]="option.codice_ministeriale"
+              [attr.data-codice-ministeriale-nazione]>{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nazione">Cittadinanza</label>
+        </div>
+        <div class="text-danger" [hidden]="!cittadinanzaModel.errors">obbligatorio</div>
+      </div>
+    </li>
+  </ul>
+  <pslshare-showdata [oggettoDati]="sap.cittadinanza"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="sap.codice_ministeriale_cittadinanza"></pslshare-showdata>
+
+  <h4 class="border-n" *ngIf="!flagCittadinanzaUE">Permesso di soggiorno</h4>
+  <div class="row mb-4" *ngIf="!flagCittadinanzaUE">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <select
+          id="titolo"
+          name="titolo"
+          [(ngModel)]="sap.permessoDiSoggiorno.codice_ministeriale_status_extra_ue"
+          #cittadinanzaModel="ngModel"
+          #titolo='ngModel'
+          [disabled]="readOnly"
+          (change)="onChangePermesso(sap.permessoDiSoggiorno)">
+          <option value=""> </option>
+          <option *ngFor="let option of liste.statusExtraUe" [value]="option.codice_ministeriale">{{option.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="titolo">Titolo</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input type="text" id="numero" name="numero" [(ngModel)]="sap.permessoDiSoggiorno.numero" #numeroModel="ngModel"
+          [disabled]="readOnly" maxlength="15" (change)="onChangePermesso(sap.permessoDiSoggiorno)">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="numero">Numero</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <select id="motivoRilascio" name="motivoRilascio"
+          [(ngModel)]="sap.permessoDiSoggiorno.codice_ministeriale_motivo_rilascio" #cittadinanzaModel="ngModel"
+          [disabled]="readOnly" (change)="onChangePermesso(sap.permessoDiSoggiorno)">
+          <option value=""> </option>
+          <option *ngFor="let option of liste.motiviRilascio" [value]="option.id">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nazione">Motivo rilascio</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataScadenza" id="dataScadenza"
+          [(ngModel)]="sap.permessoDiSoggiorno.data_scadenza" #dataScadenzaModel="ngModel" ngbDatepicker
+          #dataScadenzaDatepicker="ngbDatepicker" pslwcllibDateFormatValidator pslwcllibDateValueValidator maxlength="10"
+          [disabled]="readOnly" (change)="onChangePermesso(sap.permessoDiSoggiorno)">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="dataScadenzaDatepicker.toggle()" type="button"
+            [disabled]="readOnly" (change)="onChangePermesso(sap.permessoDiSoggiorno)"></button>
+        </div>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="dataScadenza">Data scadenza</label>
+      </div>
+      <div class="text-danger" *ngIf="dataScadenzaModel?.errors">
+        <ng-container *ngFor="let err of dataScadenzaModel?.errors | keyvalue">
+          <div *ngIf="err.key !== 'ngbDate'">{{ err.value }}</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+ <pslshare-showdata [oggettoDati]="sap.permessoDiSoggiorno"></pslshare-showdata>
+
+
+  <pslshare-indirizzo
+    [name]="'Residenza'"
+    [indirizzo]="sap.residenza"
+    [mayUpdate]="!forceReadOnlyResidenza && !readOnly"
+    (indirizzoEditState)="residenzaEditState($event)"
+    (indirizzoChanged)="residenzaChanged($event)"
+    [cpiVisible]="cpiVisible"
+    [descCpi]="descCpiRes">
+  </pslshare-indirizzo>
+  <pslshare-showdata [oggettoDati]="sap.residenza"></pslshare-showdata>
+
+  <pslshare-indirizzo
+    [name]="'Domicilio'"
+    [indirizzo]="sap.domicilio"
+    [mayUpdate]="!forceReadOnlyDomicilio && !readOnly"
+    (indirizzoEditState)="domicilioEditState($event)"
+    (indirizzoChanged)="domicilioChanged($event)"
+    [cpiVisible]="cpiVisible"
+    [descCpi]="descCpiDom">
+  </pslshare-indirizzo>
+  <pslshare-showdata [oggettoDati]="sap.domicilio"></pslshare-showdata>
+
+  <pslshare-recapiti
+    [name]="'Recapiti'"
+    [recapiti]="sap.recapito"
+    [mayUpdate]="!forceReadOnlyRecapiti && !readOnly"
+    (recapitiEditState)="recapitiEditState($event)"
+    (recapitiChanged)="recapitiChanged($event)">
+  </pslshare-recapiti>
+  <pslshare-showdata [oggettoDati]="sap.recapito"></pslshare-showdata>
+
+
+</ng-template>

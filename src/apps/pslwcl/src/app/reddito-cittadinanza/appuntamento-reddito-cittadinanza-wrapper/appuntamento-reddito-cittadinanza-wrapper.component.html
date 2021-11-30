@@ -1,0 +1,19 @@
+<app-wizard></app-wizard>
+
+<pslshare-appuntamento
+  [idSilLavRiferimentoAdesioneDomanda]="idSilLavDomandaRDC"
+  (confermato)="onConfermato()"
+  [isOperatore]="false"
+  [appuntamentoOld]="appuntamentoOld"
+  [idUtente]="idUtente"
+  [codAmbito]="codAmbito"
+  [msgSposta]="msgSposta">
+</pslshare-appuntamento>
+
+<app-navigation-button
+  [prevButtonHide]="confermato"
+  [nextButtonHide]="!confermato"
+  [nextButtonName]="'TORNA ALLA HOME'"
+  [forceNextButtonName] ="true"
+  (exitPage)="onExitPage($event)">
+</app-navigation-button>

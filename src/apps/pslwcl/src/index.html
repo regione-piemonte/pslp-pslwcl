@@ -1,0 +1,129 @@
+<!doctype html>
+<!-- ##################################################### -->
+<!-- # Copyright Regione Piemonte - 2021                 # -->
+<!-- # SPDX-License-Identifier: EUPL-1.2-or-later        # -->
+<!-- ##################################################### -->
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Piattaforma Servizi Lavoro Piemonte</title>
+  <base href="/">
+
+  <link rel="stylesheet" href="assets/css/bootstrap-datepicker.standalone.min.css" />
+  <link rel="stylesheet" href="assets/css/bootstrap-sortable.css" media="screen" />
+  <link rel="stylesheet" href="assets/css/style.css" media="screen" />
+  <link rel="stylesheet" href="assets/css/print.css" media="print" />
+  <link rel="stylesheet" href="assets/css/open-sans.css"/>
+  <link rel="stylesheet" href="assets/css/toastr.css"/>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="70">
+
+  <app-root></app-root>
+
+  <script src="assets/js/popper.min.js"></script>
+  <script src="assets/js/jquery-3.3.1.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/bootstrap-datepicker.min.js"></script>
+  <script src="assets/js/generic.js"></script>
+  <script src="assets/js/jquery.validate.min.js"></script>
+  <script src="assets/js/affix.js"></script>
+  <script src="assets/js/bootstrap-sortable.js"></script>
+  <script src="assets/js/ion.rangeSlider.min.js"></script>
+
+  <script>
+    function openNav() {
+      document.getElementById("myNav").style.width = "100%";
+    }
+    function closeNav() {
+      document.getElementById("myNav").style.width = "0%";
+    }
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#datada').datepicker({
+        format: "dd/mm/yyyy"
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#dataa').datepicker({
+        format: "dd/mm/yyyy"
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#dataseduta').datepicker({
+        format: "dd/mm/yyyy"
+      });
+    });
+  </script>
+  <script>(
+      function () {
+        $(".notifica").hide();
+        $("#notification").on("click", function () {
+          $(".notifica").fadeToggle("fast");
+        });
+      })();
+  </script>
+  <script>
+    function closeInfo() {
+      $(".information").hide();
+    }
+    function closeNotification() {
+      $(".notifica").hide();
+    }
+    function closeUser() {
+      $(".user").hide();
+    }
+  </script>
+  <script>
+    $('#infoTable').on('click', 'tbody tr', function (event) {
+      $(this).addClass('highlight').siblings().removeClass('highlight');
+    });
+    $('#infoTable2').on('click', 'tbody tr', function (event) {
+      $(this).addClass('highlight').siblings().removeClass('highlight');
+    });
+  </script>
+  <script>
+    function myFunction(name) {
+      var popup = document.getElementById(name || "myPopup");
+      popup.classList.toggle("show");
+    }
+  </script>
+  <script type="text/javascript">
+    $(function () {
+      $("#demo_1").ionRangeSlider({
+        type: "double",
+        min: 8,
+        max: 19,
+        from: 2,
+        to: 8,
+        grid: true,
+        grid_snap: true,
+        from_fixed: false,  // fix position of FROM handle
+        to_fixed: false     // fix position of TO handle
+      });
+
+      $("#demo_2").ionRangeSlider({
+        type: "double",
+        min: 8,
+        max: 19,
+        from: 2,
+        to: 8,
+        grid: true,
+        grid_snap: true,
+        from_fixed: false,  // fix position of FROM handle
+        to_fixed: false     // fix position of TO handle
+      });
+
+    });
+  </script>
+</body>
+
+</html>

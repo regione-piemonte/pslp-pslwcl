@@ -1,0 +1,66 @@
+<div class="card no-border">
+
+  <form #mailForm="ngForm">
+    <div class="card-header" id="headingOne_mail">
+      <h4 class="mb-0">
+        <button class="btn btn-link collapsed"  type="button" data-toggle="collapse" [attr.data-target]="'#collapseOne_mail'" aria-expanded="false" aria-controls="collapseOne_mail">
+          Configurazione mail
+        </button>
+      </h4>
+    </div>
+
+    <div id="collapseOne_mail" class="collapse" attr.aria-labelledby="headingOne_mail" data-parent="#accordionDati">
+      <div class="grey1">
+
+        <div class="row mb-4">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <div class="group mt-0">
+              <label for="mailComponent_ambito">Ambito</label>
+              <select id="mailComponent_ambito" name="ambito" required [(ngModel)]="configurazioneMail.cod_ambito" #ambitoModel="ngModel" (ngModelChange)="onAmbitoChange($event)">
+                <option value="" selected>Selezionare un'opzione</option>
+                <option *ngFor="let option of ambitoList" [value]="option.codice">{{option.descrizione}}</option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4">
+          &nbsp;
+        </div> 
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="form-group">
+              <div for="mailComponent_messaggioIscrizione">Messaggio aggiuntivo all'e-mail di notifica apertura politica</div>
+              <textarea id="mailComponent_messaggioIscrizione" name="messaggioIscrizione" 
+              (ngModelChange)="mailChanged=true"
+              [(ngModel)]="configurazioneMail.messaggio_aggiuntivo_mail_notifica_inizio_domanda" rows="3" [disabled]="!configurazioneMail.cod_ambito"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="form-group ">
+              <div for="mailComponent_messaggioTermine">Messaggio aggiuntivo all'e-mail di notifica chiusura politica</div>
+              <textarea id="mailComponent_messaggioTermine" name="messaggioTermine" 
+              (ngModelChange)="mailChanged=true"
+              [(ngModel)]="configurazioneMail.messaggio_aggiuntivo_mail_notifica_termine_domanda" rows="3" [disabled]="!configurazioneMail.cod_ambito"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-right">
+              <div>
+                <button type="button"  class="btn btn-primary btn-lg" [disabled]="configurazioneMail.cod_ambito==='' || !mailChanged " type="button" (click)="onSalva()">
+                  SALVA
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </form>
+
+</div>

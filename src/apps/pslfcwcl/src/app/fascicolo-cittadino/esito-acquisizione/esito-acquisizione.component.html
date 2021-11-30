@@ -1,0 +1,35 @@
+<pslfcwcl-wizard
+  (exitPage)="onExitPage($event)">
+</pslfcwcl-wizard>
+
+<h4 id="descTab" class="mtb-40">{{ titoloPagina }} </h4>
+
+<div class="grey1 mb-5">
+    <div class="row mb-5 ml-10">
+        <table aria-describedby="descTab" >
+            <thead>
+                <tr><th scope="col" colspan=4>Sono state modificate le seguenti parti del fascicolo:</th></tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of elencoSezioni; let i = index">
+                    <ng-template *ngIf="item.livello"><td>livello</td></ng-template>
+
+
+                        <td><span *ngIf="item.modificato; else noCheck"><span class="far fa-check-square fa-2x"></span></span> <ng-template #noCheck><span class="far fa-square fa-2x"></span></ng-template></td>
+                        <td colspan=2>{{ item.titolo }}</td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="readOnly"
+    [nextButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

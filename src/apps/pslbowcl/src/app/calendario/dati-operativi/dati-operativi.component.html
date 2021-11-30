@@ -1,0 +1,179 @@
+<!--
+    -------------------------
+    configurazione calendario
+    impostazione
+    form dati operativi
+    -------------------------
+-->
+<pslbowcl-wizard
+   [titolo]="titolo"
+   show="true"
+   ></pslbowcl-wizard>
+
+<p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+<form #datiOperativiForm="ngForm">
+
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="mr-3 pt-4">
+        Visibilit&agrave; in base al CpI di <span class="ob">*</span>
+      </div>
+      <select id="visibilita" name="visibilita"
+      [disabled]="readOnly"
+      [(ngModel)]="confCalendarioDatiOperativi.flag_visibilita_cpi" #visibilitaModel="ngModel" required>
+        <option [ngValue]="null"></option>
+        <option *ngFor="let item of visibilitaCpiMap | keyvalue" [value]="item.key">{{ item.value }}</option>
+      </select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <span  *ngIf="enableApplica && !readOnly">
+      <a class="text-reset text-primary font-italic " (click)="onApplicaVisibilita()"><span class="fas fa-share-square fa-sm"></span> applica ad altri calendari</a>
+      </span>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div>
+      <div class="mr-3 pt-4">
+        Possibilit&agrave; di spostare un appuntamento <span class="ob">*</span>
+      </div>
+      <div class="  float-left">
+        <div class="md-radio md-radio-inline pt-4">
+          <input type="radio" name="flagSpostamento" id="flagSpostamentoSi"
+
+          value="SI" [(ngModel)]="flagSpostamento" (ngModelChange)="mostraOreSpostamento()" />
+          <label for="flagSpostamentoSi" class="pt-1">S&igrave;</label>
+        </div>
+        <div class="md-radio md-radio-inline pt-4 float-left">
+          <input type="radio" name="flagSpostamento" id="flagSpostamentoNo"
+          [disabled]="readOnly"
+          value="NO" [(ngModel)]="flagSpostamento" (ngModelChange)="azzeraOreSpostamento()" />
+          <label for="flagSpostamentoNo" class="pt-1">No</label>
+        </div>
+        <div class="col-lg-6 float-right" *ngIf="mostraOre">
+          <div class="float-right">entro&nbsp;ore&nbsp;
+            <input type="text" id="oreLimiteSpostamento" name="oreLimiteSpostamento"
+            [disabled]="readOnly"
+            [(ngModel)]="confCalendarioDatiOperativi.ore_limite_spostamento" maxlength="2">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <span  *ngIf="enableApplica && !readOnly">
+      <a class="text-reset text-primary font-italic " (click)="onApplicaSposta()"><span class="fas fa-share-square fa-sm"></span> applica ad altri calendari</a>
+      </span>
+    </div>
+  </div>
+
+  <div class="grey1">
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msgSpostamento">Messaggio visualizzato quando si sposta un appuntamento</div>
+          <textarea id="msgSpostamento" name="msgSpostamento" rows="3"
+          [disabled]="readOnly"
+          [(ngModel)]="confCalendarioDatiOperativi.messaggio_spostamento"></textarea>
+        </div>
+        <span  *ngIf="enableApplica && !readOnly">
+          <a class="text-reset text-primary font-italic " (click)="onApplicaMsgSpostamento()"><span class="fas fa-share-square fa-sm"></span> applica ad altri calendari</a>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" *ngIf="mostraDisdettaGG">
+        <div class="mr-3 pt-4">
+          Possibilit&agrave; di specificare che in caso di disdetta di un appuntamento, si annulla l'adesione a Garanzia Giovani <span class="ob">*</span>
+        </div>
+        <fieldset >  <!-- //NOSONAR -->
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="annullaAdesione" id="annullaAdesioneSi"
+            [disabled]="readOnly"
+            value="SI" [(ngModel)]="flagAnnullamento" (ngModelChange)="onAnnullamentoSi()">
+            <label for="annullaAdesioneSi" class="pt-1">S&igrave;</label>
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="annullaAdesione" id="annullaAdesioneNo"
+            [disabled]="readOnly"
+            value="NO" [(ngModel)]="flagAnnullamento" (ngModelChange)="onAnnullamentoNo()">
+            <label for="annullaAdesioneNo" class="pt-1">No</label>
+          </div>
+
+        </fieldset>
+        <span  *ngIf="enableApplica && !readOnly">
+          <a class="text-reset text-primary font-italic " (click)="onApplicaFlagAnnullamento()"><span class="fas fa-share-square fa-sm"></span> applica ad altri calendari</a>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msgAnnullamento">Messaggio visualizzato quando si annulla un appuntamento</div>
+          <textarea id="msgAnnullamento" name="msgAnnullamento" rows="3"
+          [disabled]="readOnly"
+          [(ngModel)]="confCalendarioDatiOperativi.messaggio_annullamento"></textarea>
+        </div>
+      <span *ngIf="enableApplica && !readOnly">
+        <a class="text-reset text-primary font-italic " (click)="onApplicaMsgAnnullamento()"><span class="fas fa-share-square fa-sm"></span> applica ad altri calendari</a>
+      </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="row mt-5 mb-5">
+    &nbsp;
+  </div>
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">INDIETRO</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-primary btn-lg" [disabled]="datiOperativiForm.invalid"
+       (click)="onSalva()"><span *ngIf="readOnly || (!flgToBeSaved && !datiOperativiForm.dirty && !modified); else salvaEProsegui">PROSEGUI</span>
+       <ng-template #salvaEProsegui>
+         <span>SALVA & PROSEGUI</span>
+       </ng-template></button>
+    </div>
+  </div>
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onTorna()">Torna alla Ricerca</button>
+    </div>
+  </div>
+</form>
+
+<!-- Modal indietro-->
+<div class="modal fade" id="modal_indietro" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma uscita Dati Operativi Calendario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+          <strong><span *ngIf="ritornoRicerca; else  msgIndietro">Sei sicuro di voler uscire?</span><ng-template #msgIndietro>Si desidera tornare indietro?</ng-template></strong><br>
+           <p>I dati modificati dall'ultimo salvataggio andranno perduti.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary float-right" (click)="doIndietro()" data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal indietro-->
+
+<!-- finestra modale per applica ad altri calendari -->
+<pslbowcl-applica-ad-altri></pslbowcl-applica-ad-altri>
+<!-- finestra modale per applica ad altri calendari -->

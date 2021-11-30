@@ -1,0 +1,15 @@
+/** 
+  foglio di stile per sezione intestazione di pagina
+
+  con navigazione  accedi / logout
+  dedicata dell'operatore
+
+*/
+
+header .navbar {
+  background: #006CB4;
+}
+
+header .navbar.blue {
+  background: #006cb4;
+}

@@ -1,0 +1,79 @@
+<div class="grey1 mt-5">
+  <h4 class="border-n">{{name | titlecase}}</h4>
+  <div class="row" *ngIf="!edit; else editForm">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <ul class="dett">
+        <li>Telefono<br>
+          <strong>{{recapiti.telefono}}&nbsp;</strong></li>
+        <li>Cellulare<br>
+          <strong>{{recapiti.cellulare}}&nbsp;</strong></li>
+        <li>Fax<br>
+          <strong>{{recapiti.fax}}&nbsp;</strong></li>
+        <li>E-mail di contatto <span class="ob">*</span><br>
+          <strong>{{recapiti.email}}&nbsp;</strong></li>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-right" *ngIf="mayUpdate">
+      <p><a class="btn btn-outline-primary" (click)="onToggle()">MODIFICA DATI</a></p>
+    </div>
+  </div>
+
+  <ng-template #editForm>
+    <form #recapitiForm="ngForm">
+      <div class="row mb-4 mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="text" id="telefono" name="telefono" [(ngModel)]="recapitoModel.telefono"
+             pattern="[0-9\/\.\- ]+" maxlength="15">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="telefono">Telefono</label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="text" id="cellulare" name="cellulare" [(ngModel)]="recapitoModel.cellulare"
+             pattern="[0-9\/\.\- ]+" maxlength="15">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cellulare">Cellulare</label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="text" id="fax" name="fax" [(ngModel)]="recapitoModel.fax" pattern="[0-9\/\.\- ]+"
+             maxlength="15">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="fax">Fax</label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="email" id="email" name="email" [(ngModel)]="recapitoModel.email" required
+             #emailRecapitoModel="ngModel" email>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="email">E-mail di contatto <span class="ob">*</span></label>
+          </div>
+          <div class="text-danger"
+           [hidden]="!emailRecapitoModel.dirty || !emailRecapitoModel.errors || !emailRecapitoModel.errors.required">
+           obbligatorio</div>
+          <div class="text-danger"
+           [hidden]="!emailRecapitoModel.dirty || !emailRecapitoModel.errors || !emailRecapitoModel.errors.email">
+            formato non valido</div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-left">
+          <p><button type="button" class="btn btn-outline-primary" (click)="onToggle()">ANNULLA</button></p>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-right">
+          <p><button type="button"  (click)="onSubmit()" class="btn btn-outline-primary"
+             [disabled]="recapitiForm.pristine || recapitiForm.invalid">CONFERMA MODIFICHE</button></p>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</div>

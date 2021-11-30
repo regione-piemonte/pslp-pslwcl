@@ -1,0 +1,238 @@
+<app-wizard></app-wizard>
+
+<h4 class="border-n">Dati anagrafici responsabile richiedente
+  <div class="popup" onclick="myFunction()">
+    <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+    <div class="popuptext" [class.down]="popdown" id="myPopup" [innerHTML]="helpMessage | escapeHtml"></div>
+  </div>
+</h4>
+
+<div *ngIf="!sap; else pagina">
+    <p>Load data...</p>
+</div>
+<ng-template #pagina>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+
+  <form #anagraficaForm="ngForm">
+
+    <div class="row mb-4">
+
+      <div class="col-sm-12  mb-40">
+        <div class="group">
+          <select id="tipoResponsabilita" name="tipoResponsabilita" [(ngModel)]="tipoResponsabilita" #tipoResponsabilitaModel="ngModel" required [disabled]="readOnly">
+            <option *ngFor="let option of liste.tipiResponsabilita" [value]="option.codice">{{ option.descrizione }}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="tipoResponsabilita"><strong>Tipo di responsabilit&agrave; verso il minore</strong><span class="ob">*</span></label>
+        </div>
+        <div class="text-danger" [hidden]="!tipoResponsabilitaModel.errors">obbligatorio</div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="cognome" name="cognome" [(ngModel)]="sap.cognome" #cognomeModel="ngModel" disabled required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nome">Cognome</label>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="nome" name="nome" [(ngModel)]="sap.nome" #nomeModel="ngModel" disabled required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nome">Nome</label>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="codiceFiscale" name="codiceFiscale" [(ngModel)]="sap.codice_fiscale" #codiceFiscaleModel="ngModel" disabled required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="codiceFiscale">Codice Fiscale</label>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="sesso" name="sesso" [(ngModel)]="sap.sesso" #sessoModel="ngModel" [disabled]="sap.identificativo_sap || readOnly" required>
+            <option value=""> </option>
+            <option *ngFor="let option of liste.sessi" [value]="option.codice">{{option.codice}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="sesso">Sesso <span class="ob">*</span></label>
+        </div>
+        <div class="text-danger" [hidden]="!sessoModel.errors">obbligatorio</div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataNascita" id="dataNascita" [(ngModel)]="sap.dataDiNascita"
+            #dataNascitaModel="ngModel" ngbDatepicker #dataNascitaDatepicker="ngbDatepicker"
+            pslbowclMaggiorenneValidator pslwcllibDateValueValidator maxlength="10" required [disabled]="sap.identificativo_sap || readOnly">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataNascitaDatepicker.toggle()" type="button" [disabled]="sap.identificativo_sap || readOnly"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataNascita">Data di nascita <span class="ob">*</span></label>
+        </div>
+        <div class="text-danger" *ngIf="dataNascitaModel?.errors">
+          <ng-container *ngFor="let err of dataNascitaModel?.errors | keyvalue">
+            <div *ngIf="err.key !== 'ngbDate'">{{ err.key === 'required' ? 'obbligatorio' : err.value }}</div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input
+                id="comuneNascita"
+                name="comuneNascita"
+                type="text"
+                class="dropdown-input"
+                #comuneNascita="ngModel"
+                [(ngModel)]="sap.luogoDiNascita.comune"
+                [ngbTypeahead]="searchComune"
+                [inputFormatter]="formatMatches"
+                [resultFormatter]="formatMatches"
+                [class.is-invalid]="searchFailed"
+                pslwcllibFnValidate
+                [validateFunction]="noNazioneAndComuneNascita"
+                [disabled]="sap.identificativo_sap || readOnly"/>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="comuneNascita">Comune di nascita <span class="ob">*</span></label>
+        </div>
+        <div *ngIf="nazioneComuneError" class="text-danger">{{ nazioneComuneError }}</div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="nazione" name="nazione"
+              [ngModel]="sap.luogoDiNascita?.stato?.codice_ministeriale" (ngModelChange)="sap.luogoDiNascita.stato.codice_ministeriale = $event"
+              #nazioneModel="ngModel" [disabled]="sap.identificativo_sap || readOnly" pslwcllibFnValidate [validateFunction]="noNazioneAndComuneNascita">
+            <option value=""> </option>
+            <option *ngFor="let option of liste.nazioni" [value]="option.codice_ministeriale" [attr.data-ue]="option.flag_ue">{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nazione">Stato di nascita <span class="ob">*</span></label>
+        </div>
+        <div *ngIf="nazioneComuneError" class="text-danger">{{ nazioneComuneError }}</div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="cittadinanza" name="cittadinanza" [(ngModel)]="sap.codice_ministeriale_cittadinanza" #cittadinanzaModel="ngModel"
+              [disabled]="sap.identificativo_sap || readOnly" (change)="onChangeCittadinanza(cittadinanzaModel)">
+            <option value=""> </option>
+            <option *ngFor="let option of liste.cittadinanze" [value]="option.codice_ministeriale" [attr.data-codice-ministeriale-nazione]>{{option.descrizione}}</option>
+          </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nazione">Cittadinanza</label>
+      </div>
+    </div>
+
+    </div>
+
+    <h4 class="border-n" *ngIf="!flagCittadinanzaUE">Permesso di soggiorno</h4>
+
+    <div class="row mb-4" *ngIf="!flagCittadinanzaUE">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="titolo" name="titolo" [(ngModel)]="sap.permessoDiSoggiorno.codice_ministeriale_status_extra_ue" #cittadinanzaModel="ngModel" #titolo='ngModel' [disabled]="sap.identificativo_sap || readOnly">
+            <option value=""> </option>
+            <option *ngFor="let option of liste.statusExtraUe" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="titolo">Titolo</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="numero" name="numero"
+            [(ngModel)]="sap.permessoDiSoggiorno.numero"
+            #numeroModel="ngModel"
+            [disabled]="sap.identificativo_sap || readOnly"
+            maxlength="15">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="numero">Numero</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <select id="motivoRilascio" name="motivoRilascio" [(ngModel)]="sap.permessoDiSoggiorno.codice_ministeriale_motivo_rilascio" #cittadinanzaModel="ngModel" [disabled]="sap.identificativo_sap || readOnly">
+            <option value=""> </option>
+            <option *ngFor="let option of liste.motiviRilascio" [value]="option.id">{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nazione">Motivo rilascio</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataScadenza" id="dataScadenza" [(ngModel)]="sap.permessoDiSoggiorno.data_scadenza"
+            #dataScadenzaModel="ngModel" ngbDatepicker #dataScadenzaDatepicker="ngbDatepicker"
+            pslwcllibDateFormatValidator pslwcllibDateValueValidator maxlength="10" [disabled]="sap.identificativo_sap || readOnly">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataScadenzaDatepicker.toggle()" type="button" [disabled]="sap.identificativo_sap || readOnly"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataScadenza">Data scadenza</label>
+        </div>
+        <div class="text-danger" *ngIf="dataScadenzaModel?.errors">
+          <ng-container *ngFor="let err of dataScadenzaModel?.errors | keyvalue">
+            <div *ngIf="err.key !== 'ngbDate'">{{ err.value }}</div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <pslshare-indirizzo [capVisible]="true" [indirizzoRequired] = "true"
+      [name]="'residenza'"
+      [indirizzo]="sap.residenza"
+      [mayUpdate]="!readOnly && mayUpdateResidenza"
+      (indirizzoEditState)="residenzaEditState($event)"
+      (indirizzoChanged)="residenzaChanged($event)">
+  </pslshare-indirizzo>
+
+  <pslshare-indirizzo [capVisible]="true" [indirizzoRequired] = "true"
+      [name]="'domicilio'"
+      [indirizzo]="sap.domicilio"
+      [mayUpdate]="!readOnly"
+      [copiaDa]="copiaDa"
+      [copiaMsg]="'Copia da residenza'"
+      (indirizzoEditState)="domicilioEditState($event)"
+      (indirizzoChanged)="domicilioChanged($event)">
+  </pslshare-indirizzo>
+
+  <pslshare-recapiti
+      [name]="'recapiti'"
+      [recapiti]="sap.recapito"
+      [mayUpdate]="!readOnly"
+      (recapitiEditState)="recapitiEditState($event)"
+      (recapitiChanged)="recapitiChanged($event)">
+  </pslshare-recapiti>
+</ng-template>
+
+<app-navigation-button
+    [nextButtonHide]="readOnly"
+    [nextButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</app-navigation-button>
+<div class="text-danger" *ngIf="!isValidData()" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

@@ -1,0 +1,5 @@
+<div *ngIf="model && model.errors && model.invalid && (model.dirty || model.touched)">
+  <ng-container *ngFor="let error of errors | keyvalue">
+    <p *ngIf="model.errors[error.key]" class="text-danger mb-0">{{ extractErrorMessage(error) }}</p>
+  </ng-container>
+</div>

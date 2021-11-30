@@ -1,0 +1,67 @@
+<div class="row vertical-center" *ngIf="loaded">
+
+  <div class="col-12 col-lg-6">
+
+    <div class="paragrafo">
+      <strong>{{ sap?.nome }} {{ sap?.cognome }}</strong><br />
+      CODICE FISCALE: <strong>{{ sap?.codice_fiscale }}</strong><br />
+      NUM. IDENTIFICATIVO LAVORATORE: <strong>{{ sap?.id_sil_lav_anagrafica }}</strong>&nbsp;&nbsp;
+      <div class="popup" onclick="myFunction('msgIdentificativoLavoratore')">
+        <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+        <div class="popuptext" [class.down]="popdown" id="msgIdentificativoLavoratore"
+          [innerHTML]="msgIdentificativoLavoratore | escapeHtml"></div>
+      </div>
+      <br><br>
+      <pslshare-dati-iscrizioni>
+      </pslshare-dati-iscrizioni>
+
+    </div>
+  </div>
+
+  <div class="col-sm-4 col-lg-3 action-container float-right" *ngIf="isVisualizzabileSAP()">
+    <ng-template [ngIf]="puoModificare()">
+      <button class="btn btn-primary btn-lg btn-block d-flex justify-content-center" (click)="onVisualizzaModifica()">
+         VISUALIZZA / MODIFICA <br>DATI GRADUATORIA
+      </button>
+     <br></ng-template>
+
+    <ng-template [ngIf]="puoSoloVisualizzare()">
+      <button class="btn btn-primary btn-lg btn-block d-flex justify-content-center" (click)="onVisualizza()">
+         VISUALIZZA DATI GRADUATORIA
+      </button>
+      <br></ng-template>
+    <ng-template [ngIf]="puoInserire() && isCoMiRichiestaEnabled">
+      <button class="btn btn-primary btn-lg btn-block d-flex justify-content-center" (click)="onRichiestaIscrizione()">
+        RICHIESTA ISCRIZIONE
+      </button>
+      <br></ng-template>
+    <ng-template [ngIf]="puoRichiedereTrasferimento() && isCoMiRichiestaEnabled">
+      <button class="btn btn-primary btn-lg btn-block d-flex justify-content-center" (click)="onRichiestaIscrizione()">
+        RICHIESTA TRASFERIMENTO
+      </button>
+      <br></ng-template>
+    <ng-template [ngIf]="hasIscrizioneAttivaStatoIscritto() && isCoMiRichiestaEnabled">
+      <button class="btn btn-primary btn-lg btn-block d-flex justify-content-center" (click)="onPrintIscrizioneL68()">
+        STAMPA ISCRIZIONE
+      </button>
+    </ng-template>
+  </div>
+  <ng-template ngbPanelTitle>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <h4>Elenco Richieste&nbsp;</h4>
+    </div>
+  </ng-template>
+</div>
+<br>
+
+<pslshare-elenco-richieste-cm *ngIf="loaded && isCoMiRichiestaEnabled"
+[sap]="sap"
+[riepilogoCOMI]="riepilogoCOMI"
+[isIscritto]="isIscritto"
+[elencoRichieste]='riepilogoCOMI.elencoRichieste'>
+</pslshare-elenco-richieste-cm>
+
+<div *ngIf="msgInfoRichieste?.length > 0 && isCoMiRichiestaEnabled" [innerHTML]="msgInfoRichieste | escapeHtml"></div>
+
+<pslshare-showdata [oggettoDati]="riepilogoCOMI"></pslshare-showdata>
+<pslshare-showdata [oggettoDati]="isCoMiRichiestaEnabled"></pslshare-showdata>

@@ -1,0 +1,36 @@
+<!--
+  configurazione finestra
+  disponibilità settimanale
+-->
+<div class="row mb-4">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-5 hhmm">
+    <pslshare-slider [from]="fascia.ora_inizio" [to]="fascia.ora_fine" (sliderEnd)="onChangeFascia($event)" [sliderConfig]="sliderConfigFascia" [min]="min">
+      <input type="text" class="js-range-slider" id="configurazioneFinestra_{{index}}" />
+    </pslshare-slider>
+  </div>
+</div>
+<p>Fascia oraria: <strong class="blue1">{{ toHourMinute(fascia.ora_inizio) }} - {{ toHourMinute(fascia.ora_fine) }} </strong></p>
+<div class="row mb-4">
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+    <div class="group">
+      <select id="durataFinestra_{{index}}" required [(ngModel)]="fascia.durata_slot" name="durataFinestra_{{index}}">
+        <option value=""></option>
+        <option *ngFor="let da of durateAppuntamento" [value]="da">{{ da }} minuti</option>
+      </select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label for="durataFinestra_{{index}}">Durata finestra disponibilit&agrave; </label>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+    <div class="group">
+      <input type="number" id="appuntamentiFinestra_{{index}}" required [(ngModel)]="fascia.num_max_prenotazioni"
+      name="appuntamentiFinestra_{{index}}" maxlength="2"
+      ngMin="1"
+      min="1">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label for="appuntamentiFinestra_{{index}}">Appuntamenti per finestra</label>
+    </div>
+  </div>
+</div>

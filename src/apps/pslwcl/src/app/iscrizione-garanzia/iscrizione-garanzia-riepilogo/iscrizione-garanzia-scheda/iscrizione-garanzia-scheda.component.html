@@ -1,0 +1,97 @@
+<hr>
+     <div class="row" *ngIf="(adesioneGG && adesioneGG?.id_sil_lav_adesione)">
+      <div class="col-sm-24 col-md-24 col-lg-12 col-xl-12 mb-3  ml-4">
+        <span *ngIf="!adesioneCompletamenteRespinta">
+        <p class="paragrafo">Stato Adesione: <span [ngClass]="{'tex': true,
+                  'lati': true,
+                  'text-white': true,
+                  'bg-success': adesioneIn('A'),
+                  'bg-danger': adesioneIn('C','R','X','U'),
+                  'bg-warning': adesioneIn('P'),
+                  'bg-info': adesioneIn('F','T','N','D','I')}">
+          <strong>{{ adesioneGG.descrizione }}</strong>
+        </span>&nbsp; - <strong>{{adesioneStatoInvio}}</strong></p>
+        </span>
+        <span *ngIf="adesioneCompletamenteRespinta">
+          <p class="paragrafo">Stato Adesione: <span class='bg-danger tex lati text-white'><strong>RESPINTO</strong></span>
+           </p>
+          </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6  mb-3  ml-4">
+
+        <p class="paragrafo">
+        <strong>{{  utenteRiepIscr?.utente?.nome }} {{  utenteRiepIscr?.utente?.cognome }}</strong><br>
+        CODICE FISCALE: <strong>{{  utenteRiepIscr?.utente?.codice_fiscale }}</strong>
+        <span *ngIf="idTutore">
+          <br>TIPO RESPONSABILIT&Agrave;: <strong>{{ utenteRiepIscr?.tipo_responsabilita?.descrizione | uppercase }}</strong>
+        </span>
+        <br>ET&Agrave;: <strong>{{ (eta !== null && eta !== undefined) ? eta : 'n.a.'}}</strong>
+        <br><br>
+        <span *ngIf="(adesioneGG && adesioneGG?.id_sil_lav_adesione && !adesioneGG?.presenzaPiuAdesioniAperte)">
+          <span *ngIf="!adesioneCompletamenteRespinta">
+         Adesione Garanzia Giovani n. <strong>{{adesioneGG?.id_sil_lav_adesione}}</strong> del <strong>{{ adesioneGG?.data_adesione | date : 'd/MM/yyyy' }}</strong>
+         in <strong>{{ adesioneGG?.regione }}</strong> <span *ngIf="adesionePostfisso"> - <strong>{{adesionePostfisso}}</strong></span>
+         <span *ngIf="adesioneUltimaVariazione"><br>Ultima variazione Stato del <strong>{{ adesioneGG?.data_stato_corrente | date : 'd/MM/yyyy' }}</strong> </span>
+         </span>
+         <span *ngIf="adesioneCompletamenteRespinta">
+          Adesione Garanzia Giovani n. <strong>{{adesioneGG?.id_sil_lav_adesione}}</strong> del <strong>{{ adesioneGG?.data_adesione | date : 'd/MM/yyyy' }}</strong>
+          in <strong>{{ adesioneGG?.regione }}</strong> - <strong>Terminata</strong>
+          <br>{{adesioneMsgRespinta}}
+         </span>
+        </span>
+
+         <span *ngIf="!(adesioneGG && adesioneGG?.id_sil_lav_adesione)"><ul><li>Non &egrave; presente l'adesione a Garanzia Giovani</li></ul></span>
+         <span *ngIf="(appuntamento)"><br><br>
+          <p>Stato Incontro: <span [ngClass]="{'lati': true,
+            'text-white': true,
+            'bg-success': appuntamentoIn('ER'),
+            'bg-danger': appuntamentoIn('DI','NP'),
+            'bg-warning': appuntamentoIn('DE'),
+            'bg-info': appuntamentoIn('DC','SP')}">
+           <strong>{{ appuntamentoDescrizione }}</strong>
+           </span> <br>
+           Incontro del <strong>{{ appuntamento.slot?.giorno }}</strong> alle ore <strong>{{ appuntamento.slot?.da_ora }}</strong> presso <strong>{{ appuntamento.sportello?.descrizione }}</strong> - <strong>{{ appuntamento.sportello?.descrizione_indirizzo }}</strong></p>
+         </span>
+        </p>
+
+      </div>
+
+      <div *ngIf="isPossibileIscrizione()" class="col-sm-4 col-md-4 col-lg-2 col-xl-2 h-100 ml-4">
+          <button class="btn btn-outline-primary btn-lg btn-block" (click)="onIscrivitiGG()">ISCRIVITI A<br/>GARANZIA GIOVANI</button>
+      </div>
+      <div *ngIf="isPossibileAnnullamento()" class="col-sm-4 col-md-4 col-lg-2 col-xl-2 h-100 ml-4">
+          <button class="btn btn-outline-primary btn-lg btn-block" (click)="onAnnullaAdesione()">ANNULLA<br>ADESIONE</button>
+      </div>
+      <div *ngIf="isPossibileStampa()" class="col-sm-4 col-md-4 col-lg-2 col-xl-2 h-100 ml-4">
+          <button class="btn btn-outline-primary btn-lg btn-block" (click)="onStampaAdesione()">STAMPA<br/>ADESIONE</button>
+      </div>
+
+    </div>
+    <div class="row"  *ngIf="msgErroreBloccante" >
+     <div class="col-sm-24 col-md-24 col-lg-12 col-xl-12 mt-2 ml-4">
+      <div [ngClass]="{ 'grey1': !isTutelato}">
+       <p class="paragrafo" >
+         <span [innerHTML]="msgErroreBloccante | escapeHtml"></span>
+       </p>
+      </div></div>
+
+  </div>
+    <div class="row" *ngIf="visualizzaBloccoMsg && utenteRiepIscr && utenteRiepIscr?.dati
+      && utenteRiepIscr?.dati?.messaggi
+       && utenteRiepIscr.dati.messaggi.length > 0" >
+       <div class="col-sm-24 col-md-24 col-lg-12 col-xl-12 mt-2 ml-4">
+        <div [ngClass]="{ 'grey1': !isTutelato}">
+          <ul class="list-unstyled">
+            <li *ngFor="let msg of utenteRiepIscr.dati.messaggi">
+             <span [innerHTML]="msg | escapeHtml"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+<hr>

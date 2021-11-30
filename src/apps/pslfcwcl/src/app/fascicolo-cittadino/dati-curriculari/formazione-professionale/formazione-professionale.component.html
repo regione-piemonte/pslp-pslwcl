@@ -1,0 +1,238 @@
+<pslshare-paginated-table [columnNumber]="3" [pagedResponse]="sap.formazione_professionale_corsi" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Titolo Corso di formazione</th>
+      <th scope="col">Denominazione Ente Erogatore</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.titolo_corso }}</td>
+      <td>{{ el.ente_erogatore }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizza" (click)="onVisualizza(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !formazioneProfessionale"
+    (click)="onNuovo()">AGGIUNGI
+    FORMAZIONE PROFESSIONALE</button>
+</p>
+
+<form #formazioneProfessionaleForm="ngForm" *ngIf="formazioneProfessionale">
+  <em data-scroll-marker="formazioneProfessionale"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="form-row form-inline">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-6">
+      <!-- //NOSONAR --><fieldset disabled>
+        <div class="col-12 mr-3 pt-4" #provenienzaFormazioneLabel>Provenienza Formazione</div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-4"
+          [pslwcllibRadioLabelHandler]="provenienzaFormazioneLabel">
+          <div class="md-radio md-radio-inline mt-2 mb-4">
+            <input type="radio" id="tipoEspDichiarata" name="rdb_tipo_esperienza" [value]="true"
+              [ngModel]="provenienzaFormazione" />
+            <label for="tipoEspDichiarata">&nbsp;&nbsp;Formazione Professionale</label>
+          </div>
+          <div class="md-radio md-radio-inline mt-2 mb-4">
+            <input type="radio" id="tipoEspDichiarataCOB" name="rdb_tipo_esperienza" [value]="false"
+              [ngModel]="provenienzaFormazione" />
+            <label for="tipoEspDichiarataCOB">&nbsp;&nbsp;Altri Corsi</label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="titoloCorso" name="titoloCorso" [(ngModel)]="formazioneProfessionale.titolo_corso"
+          required [disabled]='readOnly || isAggiornamento || isVisualizza' maxlength="100"
+          #titoloCorsoFormazione="ngModel"
+          onkeyup="
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(start, end);"
+          />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="titoloCorso">Titolo corso di formazione</label>
+        <pslshare-error-handler [model]="titoloCorsoFormazione"
+          [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Titolo già presente'}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="denomEnteErogatore" name="denomEnteErogatore"
+          [(ngModel)]="formazioneProfessionale.ente_erogatore" maxlength="100" required
+          [disabled]='readOnly || isVisualizza || isAggiornamento' #denomEnte="ngModel"
+          onkeyup="
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(start, end);"/>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="denomEnteErogatore">Denominazione ente erogatore</label>
+        <pslshare-error-handler [model]="denomEnte"
+          [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Denominazione già presente'}">
+        </pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="Sede_ente_erogatore">Sede Ente erogatore</label>
+      </div>
+      <br>
+    </div>
+    <div class="col-sm-12 col-md-12col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="regione" name="regione" [(ngModel)]="formazioneProfessionale.regione_sede.codice_ministeriale"
+          [disabled]='readOnly || isVisualizza'>
+          <option [ngValue]="null"></option>
+          <option *ngFor="let option of listaRegioni" [value]="option.codice_ministeriale">{{option.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="regione">Regione</label>
+      </div>
+    </div>
+
+
+    <ng-container ngModelGroup="corsoFrequentatoInModel" [pslwcllibIfOneThenFullValidate]="ifOneThenFullInput"
+      #groupUtil="ngModelGroup">
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input type="text"
+                id="durataCorso"
+                name="durataCorso"
+                [(ngModel)]="formazioneProfessionale.durata"
+                maxlength="4"
+                [disabled]='readOnly || isVisualizza'
+                pslwcllibNumberNotValidValidator
+                #durataCorsoNumber="ngModel" />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="durataCorso">Durata corso</label>
+              <pslshare-error-handler [model]="durataCorsoNumber" [errors]="{numberNonValido: {path: 'message'}}">
+              </pslshare-error-handler>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <select id="tipoDurata"
+                name="tipoDurata"
+                [(ngModel)]="formazioneProfessionale.tipo_durata"
+                [disabled]='readOnly || isVisualizza'
+                #tipoDurataCorso="ngModel">
+                <option [ngValue]="null"></option>
+                <option *ngFor="let option of listaTipoDurataCorso" [value]="option.key">{{option.value}}
+                </option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="tipoDurata">Tipo Durata</label>
+            </div>
+          </div>
+              <div *ngIf="groupUtil.errors !== null && groupUtil.invalid && (groupUtil.dirty || groupUtil.touched)">
+                <p *ngIf="groupUtil.errors['tuttiONessuno']" class="text-danger">{{ groupUtil.errors['tuttiONessuno'] }}</p>
+              </div>
+
+
+        </ng-container>
+
+
+
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="certificazioni_attestazioni" name="certificazioni_attestazioni" class="col-12"
+          [(ngModel)]="formazioneProfessionale.certificazioni_attestazioni.codice_ministeriale"
+          [disabled]='readOnly || isVisualizza'>
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaCertAttest" [value]="op.codice_ministeriale">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="certificazioni_attestazioni">Certificazioni ed attestazioni</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 pt-2" #stageLabel>Effettuato Stage</div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2">
+      <!-- //NOSONAR --><fieldset [disabled]="readOnly || isVisualizza" [pslwcllibRadioLabelHandler]="stageLabel">
+        <div class="md-radio md-radio-inline mt-2 mb-0">
+          <input type="radio" id="stage_S" name="stage" value="S" [(ngModel)]="stage" (change)="onChangeStage('S')">
+          <label for="stage_S">Si</label>
+        </div>
+        <div class="md-radio md-radio-inline mt-2 mb-0">
+          <input type="radio" id="stage_N" name="stage" value="N" [(ngModel)]="stage" (change)="onChangeStage('N')">
+          <label for="stage_N">No</label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-12 col-md-12 mt-5" [class.d-none]="stage !== 'S'" >
+      <div class="input-group group">
+        <input type="text" id="denominazioneAziendaStage" name="denominazioneAziendaStage" maxlength="100"
+          [(ngModel)]="formazioneProfessionale.nome_azienda_stage" [disabled]='readOnly || isVisualizza'
+          [required]="stage === 'S'" #denomAziendaStage="ngModel"
+          onkeyup="
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(start, end);"
+          />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="anno_di_frequenza_se_in_corso">Denominazione azienda stage</label>
+        <pslshare-error-handler [model]="denomAziendaStage" [errors]="{required: 'Obbligatorio'}">
+        </pslshare-error-handler>
+      </div>
+    </div>
+    <pslshare-showdata [oggettoDati]="formazioneProfessionale"></pslshare-showdata>
+
+  </div>
+
+  <ng-container *ngIf="!readOnly">
+    <div class="row mt-5" *ngIf="!isVisualizza; else elseBlock">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="button"
+          class="btn btn-outline-primary"
+          [disabled]="readOnly || !formazioneProfessionaleForm.valid" (click)="onSalva()">CONFERMA</button>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="row mt-5">
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+          <button type="button" class="btn btn-outline-primary" *ngIf="formazioneProfessionale"
+            (click)="onAnnulla()">ANNULLA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+          <button type="button" class="btn btn-outline-danger" [disabled]="isCorsoProvDaFormProf"
+            (click)="onElimina()">ELIMINA&nbsp;<span class="fas fa-info-circle" *ngIf="isCorsoProvDaFormProf"
+              ngbTooltip="{{msgProvenienteDaFormProf}}"></span>
+          </button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+          <button type="button" class="btn btn-outline-primary" [disabled]="isCorsoProvDaFormProf"
+            (click)="onModifica()">
+            MODIFICA&nbsp;<span class="fas fa-info-circle" *ngIf="isCorsoProvDaFormProf"
+              ngbTooltip="{{msgProvenienteDaFormProf}}"></span>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</form>

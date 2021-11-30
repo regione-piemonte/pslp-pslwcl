@@ -1,0 +1,111 @@
+<div>
+  <h4 id="tabDescrAll" class="border-n mt-5">Documenti Allegati
+    <div class="popup" onclick="myFunction('myPopupAllegati')">
+      <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+      <div class="popuptext" [class.down]="popdown" id="myPopupAllegati" [innerHTML]="messaggioHelp | escapeHtml"></div>
+    </div>
+  </h4>
+  <div class="alert alert-info" role="alert">
+    In questa sezione puoi caricare e successivamente inviare al Centro per l'Impiego di competenza documentazione utile
+    a completare il tuo profilo professionale
+  </div>
+  <h6 class="mt-5">Documenti allegati</h6>
+  <em data-scroll-marker="allegatiScrollTarget"></em>
+  <div class="scrollbar-table scrollbar-primary">
+    <table aria-describedby="tabDescrAll" class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Documento</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Data caricamento</th>
+          <th scope="col">Data invio</th>
+          <th scope="col">Stato</th>
+          <th scope="col">Note</th>
+        </tr>
+      </thead>
+      <tbody *ngIf ="listaDocumenti && listaDocumenti.length >0; else noAllegati">
+        <tr *ngFor="let documento of listaDocumenti">
+          <td class="text-center" *ngIf="!readOnly; else noButton">
+            <button title="invia" class="btn btn-link btn-sm" (click)="onInviaDocumento(documento)" *ngIf="documento.stato === 'NI'" [disabled]="documento.stato !== 'NI'">
+              <span class="fas fa-2x fa-paper-plane"></span>
+            </button>&nbsp;<button title="elimina" class="btn btn-link btn-sm" (click)="onEliminaDocumento(documento)" *ngIf="documento.stato === 'NI'" [disabled]="documento.stato !== 'NI'">
+              <span class="fas fa-2x fa-trash-alt"></span>
+            </button>
+          </td>
+          <ng-template #noButton>
+            <td>&nbsp;</td>
+          </ng-template>
+          <td><a (click)="openDocumento(documento)">{{ documento.nome }}</a></td>
+          <td>{{ getTipoDocumentoDescrizione(documento.codice_tipo_documento) }}</td>
+          <td>{{ documento.data_inserimento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ documento.data_invio | date:'dd/MM/yyyy' }}</td>
+          <td>{{ getStatoDescrizione(documento.stato) }}</td>
+          <td>{{ documento.note_cittadino }}</td>
+
+        </tr>
+      </tbody>
+      <ng-template #noAllegati>
+        <tbody><tr><td colspan=7>Non ci sono dati.</td></tr></tbody>
+    </ng-template>
+    </table>
+  </div>
+
+  <ng-template [ngIf]="!readOnly">
+    <ng-template [ngIf]="flagNuovoAllegato" [ngIfElse]="elseTemplate">
+      <div class="row mb-5" *ngIf="!readOnly && flagNuovoAllegato">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button class="btn btn-outline-primary" type="button" (click)="onAggiungiAllegato()">CARICA UN NUOVO ALLEGATO</button>
+        </div>
+      </div>
+      <div class="collapse" [class.show]="showAggiungiAllegato" *ngIf="flagNuovoAllegato">
+        <div class="grey1">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-7">
+              <div class="input-group group">
+                <select id="tipoDocumento" name="tipoDocumento" [(ngModel)]="tipoDocumento">
+                  <option *ngFor="let tipo of listaTipiDocumento" [ngValue]="tipo">{{ tipo.descrizione }}</option>
+                </select>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="tipoDocumento">Tipo documento</label>
+              </div>
+            </div>
+          </div>
+          <pslshare-aggiungi-allegato *ngIf="tipoDocumento"
+            [tipoDocumento]="tipoDocumento"
+            [consideraDID]="false"
+            [consideraRichiestaIscrizione]="false"
+            (annulla)="annullaAllegato()"
+            (success)="successAllegato()">
+          </pslshare-aggiungi-allegato>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #elseTemplate>{{ userMessage }}</ng-template>
+  </ng-template>
+</div>
+
+<!-- Modal richiesta-->
+<div class="modal fade" id="modal_richiesta" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma {{ titoloRichiesta }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+        <Strong>{{ questioneRichiesta }}</Strong><br>
+        <p>{{ msgRichiesta }}</p></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary float-right" (click)="doRichiesta()" data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal richiesta-->

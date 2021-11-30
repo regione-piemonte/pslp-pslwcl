@@ -1,0 +1,75 @@
+<hr>
+<div *ngIf="loaded">
+  <div class="row" *ngIf="(isDIDPresente())">
+    <div class="col-sm-12 col-md-24 col-lg-12 col-xl-12 mb-3  ml-4">
+      <ng-template [ngIf]="did.flg_rifiuto !== 'S'" [ngIfElse]=statoRespinta>
+        <p class="paragrafo">Stato: <span> <strong
+              class={{textStatoDid}}>&nbsp;{{descrUltimoStato}}&nbsp;</strong>&nbsp;-&nbsp;<strong>{{msgStatoInvio}}</strong><br>
+          </span></p>
+      </ng-template>
+      <ng-template #statoRespinta>
+        Stato: <strong class="bg-danger text-white">&nbsp;RESPINTO&nbsp;</strong>
+      </ng-template>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 mb-3  ml-4">
+      <p class="paragrafo">
+        <strong>{{ sap?.nome  }} {{ sap?.cognome }}</strong><br>
+        CODICE FISCALE: <strong>{{ sap?.codice_fiscale }}</strong>
+        <br>ET&Agrave;: <strong>{{ (eta !== null && eta !== undefined) ? eta : 'n.a.'}}</strong><br><br>
+        <ng-template [ngIf]="!isDIDPresente()" [ngIfElse]="didPresente">
+          <br> Non è presente la DID
+        </ng-template>
+        <ng-template #didPresente>DID n. <strong>{{did.id_did}}&nbsp;</strong>del&nbsp;<strong>{{dataDid}}&nbsp;
+            {{terminata}}</strong><br>
+          <ng-template [ngIf]="did.flg_rifiuto !== 'S'" [ngIfElse]=statoRespinta>
+            Ultima variazione Stato del&nbsp;<strong>{{dataStatoDid}}</strong>&nbsp;<br><br>
+          </ng-template>
+          <ng-template #statoRespinta>
+            Non accettata dal CPI il <strong>{{dataStatoDid}}</strong>&nbsp;per il seguente motivo:&nbsp;<strong>{{msgStatoDid}}</strong><br><br>
+          </ng-template>
+          <ul>
+            <ng-template [ngIf]="did?.ente_titolarita">
+              <li>Titolarità della DID:
+                <strong>{{enteTitolaritaDescrizione}}&nbsp;</strong></li>
+            </ng-template>
+            <ng-template [ngIf]="msgUltimoProfiling && did.dati_profiling_did" [ngIfElse]="senzaProfiling">
+              <li>Ultimo Profiling aggiornato il <strong>{{msgUltimoProfiling}}</strong></li>
+            </ng-template>
+            <ng-template #senzaProfiling>
+              <li>Profiling ancora da aggiornare</li>
+            </ng-template>
+          </ul>
+        </ng-template>
+      </p>
+    </div>
+
+    <ng-template [ngIf]="isDIDPresente()" [ngIfElse]="richiediDID">
+      <div *ngIf="tastoVisualizzaDid()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100" (click)="onVisualizzaDID()">VISUALIZZA<BR>DID</button>
+      </div>
+      <!-- TASTO STAMPA DID NON CONTEMPLATO NEL RILASCIO DEL 2020
+        <div *ngIf="tastoStampaDid()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100" (click)="onStampaDID()">STAMPA<BR>DID</button>
+      </div> -->
+      <div *ngIf="tastoFirmaPatto()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100" (click)="onFirmaPatto()">FIRMARE PATTO<BR>DI
+          SERVIZIO</button>
+      </div>
+      <div *ngIf="tastoAggiornaProfiling()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100"
+          (click)="onAggiornaProfiling()">AGGIORNA<BR>PROFILING</button>
+      </div>
+      <div *ngIf="tastoRichiestaDid()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100" (click)="onRichiediDID()">RICHIEDI<BR>DID</button>
+      </div>
+    </ng-template>
+    <ng-template #richiediDID>
+      <div *ngIf="tastoRichiestaDid()" class="col h-100">
+        <button class="btn btn-outline-primary btn-sm h-100" (click)="onRichiediDID()">RICHIEDI<BR>DID</button>
+      </div>
+    </ng-template>
+  </div>
+</div>
+<hr>

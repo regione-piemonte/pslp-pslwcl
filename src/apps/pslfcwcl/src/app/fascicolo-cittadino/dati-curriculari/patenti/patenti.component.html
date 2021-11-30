@@ -1,0 +1,155 @@
+<pslshare-paginated-table [columnNumber]="2" [pagedResponse]="sap.patenti" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Patenti</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza"
+          class="btn btn-link btn-sm"
+          [disabled] = "!isVisualizza.patenti || !isVisualizza.patentini"
+          (click)="onVisualizzaPatente(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button"
+    [disabled] = "!isVisualizza.patentini"
+    class="btn btn-outline-primary"
+    *ngIf="!readOnly && !patente"
+    (click)="onNuovoPatente()">AGGIUNGI PATENTE</button>
+</p>
+
+<form #patenteForm="ngForm" *ngIf="patente">
+  <em data-scroll-marker="patenti"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <!-- //NOSONAR --><fieldset class="form-row form-inline" [disabled]="readOnly || isVisualizza.patenti">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="patenti" name="patenti" class="col-12" [(ngModel)]="patente.codice_ministeriale" required
+        [pslwcllibValueNotPresentValidator]="{list: sap.patenti, path: 'codice_ministeriale', idx: updateIndex}"
+        #laPatente="ngModel" >
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaPatenti" [value]="op.codice_ministeriale">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="patenti">Patenti</label>
+        <pslshare-error-handler [model]="laPatente" [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Patente già presente'}"></pslshare-error-handler>
+      </div>
+    </div>
+  </fieldset>
+
+  <pslshare-showdata [oggettoDati]="patente"></pslshare-showdata>
+
+  <ng-container *ngIf="!readOnly">
+  <div class="row mt-5" *ngIf="!isVisualizza.patenti; else elseBlockPatente">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnullaPatente()">ANNULLA</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-outline-primary" [disabled]="!patenteForm.valid" (click)="onSubmitPatente()">CONFERMA</button>
+    </div>
+  </div>
+  <ng-template #elseBlockPatente>
+    <div class="row mt-5">
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+      <button type="button" class="btn btn-outline-primary" *ngIf="patente" (click)="onAnnullaPatente()">ANNULLA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+        <button type="button" class="btn btn-outline-danger" (click)="onEliminaPatente()">ELIMINA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+        <button type="button" (click)="onSubmitPatente()" class="btn btn-outline-primary">MODIFICA</button>
+      </div>
+    </div>
+  </ng-template>
+  </ng-container>
+</form>
+
+<hr/>
+
+<pslshare-paginated-table [columnNumber]="2" [pagedResponse]="sap.patentini" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Patentini</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza"
+          class="btn btn-link btn-sm"
+          [disabled] = "!isVisualizza.patentini ||  !isVisualizza.patenti"
+          (click)="onVisualizzaPatentino(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button"
+    class="btn btn-outline-primary"
+    [disabled] = "!isVisualizza.patenti"
+    *ngIf="!readOnly && !patentino"
+    (click)="onNuovoPatentino()">AGGIUNGI PATENTINO</button>
+</p>
+
+<form #patentinoForm="ngForm" *ngIf="patentino">
+  <em data-scroll-marker="patentini"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <!-- //NOSONAR --><fieldset class="form-row form-inline" [disabled]="readOnly || isVisualizza.patentini">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="patentini" name="patentini" class="col-12" [(ngModel)]="patentino.codice_ministeriale" required
+        [pslwcllibValueNotPresentValidator]="{list: sap.patentini, path: 'codice_ministeriale', idx: updateIndex}"
+        #ilPatentino="ngModel" >
+          <option [ngValue]="null"></option>
+          <option *ngFor="let op of listaPatentini" [value]="op.codice_ministeriale">{{op.descrizione}}</option>
+          <option *ngIf="isVisualizza.patentini && patentino" [value]="patentino.codice_ministeriale">{{patentino?.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="albi">Patentini</label>
+        <pslshare-error-handler [model]="ilPatentino" [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Patentino già presente'}"></pslshare-error-handler>
+      </div>
+    </div>
+  </fieldset>
+
+  <pslshare-showdata [oggettoDati]="patentino"></pslshare-showdata>
+  <ng-container *ngIf="!readOnly">
+  <div class="row mt-5" *ngIf="!isVisualizza.patentini; else elseBlockPatentino">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnullaPatentino()">ANNULLA</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-outline-primary" [disabled]="readOnly || !patentinoForm.valid"  (click)="onSubmitPatentino()">CONFERMA</button>
+    </div>
+  </div>
+  <ng-template #elseBlockPatentino>
+    <div class="row mt-5">
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+      <button type="button" class="btn btn-outline-primary" *ngIf="patentino" (click)="onAnnullaPatentino()">ANNULLA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+        <button type="button" class="btn btn-outline-danger" (click)="onEliminaPatentino()">ELIMINA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+        <button type="button" (click)="onSubmitPatentino()" class="btn btn-outline-primary">MODIFICA</button>
+      </div>
+    </div>
+  </ng-template>
+ </ng-container>
+</form>

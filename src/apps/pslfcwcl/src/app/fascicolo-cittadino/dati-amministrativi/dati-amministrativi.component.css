@@ -1,0 +1,16 @@
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948;
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442;
+}
+
+.group {
+  margin-top: 0px;
+}
+form .md-radio input[type].ng-touched ~ label,
+form .md-radio input[type].ng-dirty ~ label {
+  padding-left: 22px;
+}
+

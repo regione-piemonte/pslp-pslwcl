@@ -1,0 +1,170 @@
+<!-- pagina
+  gestione privacy del minore
+
+-->
+<div class="row mb-5 mt-5" *ngIf="hasSap">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3" *ngIf="showTastoAggiungi">
+    <button class="btn btn-outline-primary" type="button" (click)="onAggiungiMinore()">AGGIUNGI UN MINORE</button>
+  </div>
+</div>
+<div *ngIf="showAggiungiMinore">
+  <h6 class="mt-5">Ricerca un minore</h6>
+  <p>Inserisci il codice fiscale di un minore sotto la tua responsabilit&agrave;</p>
+  <div class="row mb-3 align-items-end">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-1">
+      <div class="input-group group">
+        <input id="codiceFiscale"
+            name="codiceFiscale"
+            type="text"
+            required
+            maxlength="16"
+            pslwcllibCodiceFiscaleValidator
+            [disabled]="minoreACarico"
+            [(ngModel)]="codiceFiscaleMinore"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            [pslwcllibValueNotPresentValidator]="{list: minoriACarico, path: 'utenteACarico.tutelato.codice_fiscale', idx: updateIndex}"
+            #codiceFiscale="ngModel">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="codiceFiscale">Codice fiscale</label>
+      </div>
+      <pslshare-error-handler [model]="codiceFiscale" [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Codice fiscale già presente.', codiceMinisterialeNotValid: {path: 'message'}}"></pslshare-error-handler>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3 ">
+      <button type="button" class="btn btn-primary" (click)="onCerca()" [disabled]="!codiceFiscale.valid || minoreACarico">CERCA</button>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3 " *ngIf="!minoreACarico">
+      <button type="button" class="btn btn-outline-primary" (click)="onChiudi()">ANNULLA</button>
+    </div>
+  </div>
+</div>
+<form #utenteACaricoForm="ngForm" class="row mb-3" *ngIf="minoreACarico">
+  <em data-scroll-marker="modificaResponsabilita"></em>
+  <div class="row col-xs-12 col-md-12 col-lg-12 col-xl-12">
+    <div [ngClass]="{'col-sm-12': true, 'col-md-12 col-lg-12 col-xl-12': minoreCensito, 'col-md-6 col-lg-6 col-xl-6': !minoreCensito}" *ngIf="isUpdate">
+      <div class="input-group group">
+        <input id="codiceFiscaleTutelato"
+            name="codiceFiscaleTutelato"
+            type="text"
+            required
+            [(ngModel)]="minoreACarico.utenteACarico.tutelato.codice_fiscale"
+            disabled
+            #nome="ngModel">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nome">Codice fiscale</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6" *ngIf="!minoreCensito">
+      <div class="input-group group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="gg/mm/aaaa"
+          name="dataNascita"
+          id="dataNascita"
+          [(ngModel)]="dataDiNascita"
+          #dataNascitaModel="ngModel"
+          ngbDatepicker
+          #dataNascitaDatepicker="ngbDatepicker"
+          pslwcllibMinorenneValidator
+          maxlength="10"
+          required
+          [disabled]="isUpdate">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="dataNascitaDatepicker.toggle()" type="button" [disabled]="isUpdate"></button>
+        </div>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="dataNascita">Data di nascita</label>
+        <pslshare-error-handler [model]="dataNascitaModel" [errors]="{required: 'Obbligatorio', length: '', age: '', format: ''}"></pslshare-error-handler>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input id="nome"
+            name="nome"
+            type="text"
+            required
+            [(ngModel)]="minoreACarico.utenteACarico.tutelato.nome"
+            [disabled]="minoreCensito || isUpdate"
+            #nome="ngModel"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            >
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nome">Nome</label>
+      </div>
+      <pslshare-error-handler [model]="nome" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input id="cognome"
+            name="cognome"
+            type="text"
+            required
+            [(ngModel)]="minoreACarico.utenteACarico.tutelato.cognome"
+            [disabled]="minoreCensito || isUpdate"
+            #cognome="ngModel"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            >
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cognome">Cognome</label>
+      </div>
+      <pslshare-error-handler [model]="cognome" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+    </div>
+  </div>
+
+  <div class="mt-5 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+    <div class="input-group group">
+      <select
+        id="tipoResponsabilita"
+        name="tipoResponsabilita"
+        required
+        [(ngModel)]="minoreACarico.utenteACarico.tipo_responsabilita"
+        [compareWith]="compareByCodice"
+        (change)="onCheckTipoRespo()"
+        #tipoRespo="ngModel">
+        <option [ngValue]="null"></option>
+        <option
+          *ngFor="let option of tipiResponsabilita"
+          [ngValue]="option">{{ option.descrizione }}
+        </option>
+      </select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label for="tipoResponsabilita">Tipo responsabilit&agrave;</label>
+    </div>
+    <pslshare-error-handler [model]="tipoRespo" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+  </div>
+
+
+  <pslshare-showdata [oggettoDati]="minoreACarico"></pslshare-showdata>
+  <div class="row mt-5 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+      <button type="button" class="btn btn-outline-primary" (click)="onChiudi()">ANNULLA</button>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 text-right">
+      <button
+        type="button"
+        (click)="onSave()"
+        class="btn btn-primary"
+        [disabled]="(utenteACaricoForm?.invalid || !checkTipoRespo)">SALVA</button>
+    </div>
+  </div>
+</form>

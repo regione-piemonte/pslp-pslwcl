@@ -1,0 +1,115 @@
+<div>
+  <h4 class="border-n mt-5">Patto di servizio</h4>
+  <div class="alert alert-info" role="alert" *ngIf="messaggioHelp" [innerHTML]="messaggioHelp | escapeHtml"></div>
+  <h6 id="descTab" class="mt-5">Documenti allegati</h6>
+  <div class="scrollbar-table scrollbar-primary">
+    <table aria-describedby="descTab" class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">&nbsp;</th>
+          <th scope="col">Documento</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Data caricamento</th>
+          <th scope="col">Data invio</th>
+          <th scope="col">Stato</th>
+          <th scope="col">Note</th>
+
+        </tr>
+      </thead>
+      <tbody *ngIf="listaPatti && listaPatti.length >0; else noAllegati">
+        <tr *ngFor="let documento of listaPatti">
+          <td class="text-center" *ngIf="!readOnly; else noButton">
+            &nbsp;
+            <button title="invia" class="btn btn-link btn-sm" (click)="onInviaDocumento(documento)"
+              *ngIf="documento.stato === 'NI'" [disabled]="documento.stato !== 'NI'">
+              <span class="fas fa-2x fa-paper-plane">&nbsp;</span>
+            </button>&nbsp;<button title="elimina" class="btn btn-link btn-sm" (click)="onEliminaDocumento(documento)"
+              *ngIf="documento.stato === 'NI'" [disabled]="documento.stato !== 'NI'">
+              <span class="fas fa-2x fa-trash-alt">&nbsp;</span>
+            </button>
+
+          </td>
+          <ng-template #noButton>
+            <td>&nbsp;</td>
+          </ng-template>
+          <td ><a (click)="openDocumento(documento)" class="btn btn-outline-primary">{{ documento.nome }}</a></td>
+          <td>{{ getTipoDocumentoDescrizione(documento.codice_tipo_documento) }}</td>
+          <td>{{ documento.data_inserimento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ documento.data_invio | date:'dd/MM/yyyy' }}</td>
+          <td>{{ getStatoDescrizione(documento.stato) }}</td>
+          <td>{{ documento.note_cittadino }}&nbsp;</td>
+
+        </tr>
+      </tbody>
+      <ng-template #noAllegati>
+        <tbody>
+          <tr>
+            <td colspan=7>Non ci sono dati.</td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+  <ng-template [ngIf]="!readOnly">
+    <ng-template [ngIf]="flagNuovoAllegato && (this.listaAllTipiDocumento.length > 0) && !flagListaAllegati">
+      <div class="row mb-5" *ngIf="!readOnly && flagNuovoAllegato && !flagListaAllegati">
+        <em data-scroll-marker="aggiungiAllegato"></em>
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button class="btn btn-outline-primary" type="button" (click)="onStampaPatto()">SCARICA patto di servizio da Firmare</button>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button class="btn btn-outline-primary" type="button" (click)="onAggiungiAllegato()">CARICA patto di servizio Firmato</button>
+        </div>
+      </div>
+      <div class="collapse" [class.show]="showAggiungiAllegato" *ngIf="flagNuovoAllegato">
+        <div class="grey1">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-7">
+              <div class="input-group group">
+                <select id="tipoDocumento" name="tipoDocumento" [(ngModel)]="tipoDocumento">
+                  <option *ngFor="let tipo of listaTipiDocumentoValidi" [ngValue]="tipo">{{ tipo.descrizione }}</option>
+                </select>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="tipoDocumento">Tipo documento</label>
+              </div>
+            </div>
+          </div>
+          <pslshare-aggiungi-allegato *ngIf="tipoDocumento" [tipoDocumento]="tipoDocumento"
+            [consideraDID]="true"
+            [consideraRichiestaIscrizione]="false"
+            (annulla)="annullaAllegato()" (success)="successAllegato()">
+          </pslshare-aggiungi-allegato>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+  <ng-template [ngIf]="!(!readOnly && flagNuovoAllegato && !flagListaAllegati)">{{ userMessage }}</ng-template>
+
+</div>
+
+<!-- Modal richiesta-->
+<div class="modal fade" id="modal_richiesta" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma {{ titoloRichiesta }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+          <Strong>{{ questioneRichiesta }}</Strong><br>
+          <p>{{ msgRichiesta }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary float-right" (click)="doRichiesta()"
+          data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal richiesta-->

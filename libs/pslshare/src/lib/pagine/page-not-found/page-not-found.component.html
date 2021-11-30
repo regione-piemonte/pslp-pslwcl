@@ -1,0 +1,9 @@
+<!-- 
+  pagina di errore
+  atterraggio in caso di url errato 
+  pagina non presente 
+-->
+<div class="alert alert-danger mt-5 mb-5" role="alert">
+  <h4>Pagina non trovata.</h4>
+  <p [innerHTML]="errorMessage | escapeHtml"></p>
+</div>

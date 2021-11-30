@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Piattaforma Servizi Lavoro Piemonte - I servizi per il Cittadino</title>
+    <base href="/">
+
+    <link rel="stylesheet" href="assets/css/bootstrap-datepicker.standalone.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-sortable.css" media="screen" />
+
+    <link rel="stylesheet" href="assets/css/style.css" media="screen" />
+    <link rel="stylesheet" href="assets/css/print.css" media="print" />
+    <link rel="stylesheet" href="assets/css/open-sans.css"/>
+    <link rel="stylesheet" href="assets/css/toastr.css"/>
+    <link rel="stylesheet" href="assets/css/ion.rangeSlider.css">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="70">
+
+  <pslphome-root></pslphome-root>
+
+  <script src="assets/js/popper.min.js"></script>
+  <script src="assets/js/jquery-3.3.1.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+
+  <script src="assets/js/bootstrap-datepicker.min.js"></script>
+  <script src="assets/js/jquery.validate.min.js"></script>
+  <script src="assets/js/bootstrap-sortable.js"></script>
+  <script src="assets/js/ion.rangeSlider.min.js"></script>
+
+
+  <script>
+!(function (global) {
+  var $notifica = $(".notifica").hide();
+  $("#notification").on("click", function () {
+    $notifica.fadeToggle("fast");
+  });
+})();
+function closeInfo() {
+  $(".information").hide();
+}
+function closeNotification() {
+  $(".notifica").hide();
+}
+function closeUser() {
+  $(".user").hide();
+}
+function myFunction(name) {
+  var popup = document.getElementById(name || "myPopup");
+  popup.classList.toggle("show");
+}
+  </script>
+
+</body>
+
+</html>

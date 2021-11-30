@@ -1,0 +1,80 @@
+<div class="card no-border">
+
+  <div class="card-header" id="headingThree">
+    <h4 class="mb-0">
+      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+        aria-expanded="false" aria-controls="collapseThree">
+        Informazioni aggiuntive & documenti allegati
+      </button>
+    </h4>
+  </div>
+
+  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionDati">
+
+    <div class="grey1">
+      <p class="text-right m-0"><a (click)="onInformazioniAggiuntive()"><span class="fas fa-edit fa-2x"></span> Modifica</a></p>
+
+      <div>
+        <h6>Informazioni aggiuntive</h6>
+
+        <ng-template [ngIf]="infoUtente && infoUtente.length > 0">
+          <div *ngFor="let info of infoUtente">
+            <ul class="dett">
+              <li>
+                <ng-template [ngIf]="info.descrizione">{{ info.descrizione }} <br/></ng-template>
+                Risposta: <strong>{{ info.informazioneAggiuntiva.valore }}</strong>&nbsp;
+                Data: <strong>{{ info.informazioneAggiuntiva.data | date : 'dd/MM/yyyy' }}</strong>
+                <br/>
+              </li>
+            </ul>
+            <div *ngIf="info.informazioneAggiuntiva.note">
+              <p>Osservazioni</p>
+              <p><strong><em>{{ info.informazioneAggiuntiva.note }}</em></strong></p>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template [ngIf]="!infoUtente || infoUtente.length === 0">
+          <p>Non ci sono informazioni.</p>
+        </ng-template>
+      </div>
+
+      <div class="mt-5">
+        <h6 id="descTab">Documenti allegati</h6>
+
+        <ng-template [ngIf]="listaDocumenti && listaDocumenti.length > 0">
+          <div class="scrollbar-table scrollbar-primary">
+            <table  aria-describedby="descTab" class="table table-bordered table-striped table-hover" id="infoTable">
+              <thead>
+                <tr>
+                    <th scope="col">Documento</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Data caricamento</th>
+                    <th scope="col">Data invio</th>
+                    <th scope="col">Stato</th>
+                    <th scope="col">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let documento of listaDocumenti">
+                  <td>{{ documento.nome }}</td>
+                  <td>{{ getTipoDocumentoDescrizione(documento.codice_tipo_documento) }}</td>
+                  <td>{{ documento.data_inserimento | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ documento.data_invio | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ getStatoDescrizione(documento.stato) }}</td>
+                  <td>{{ documento.note_cittadino }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </ng-template>
+
+        <ng-template [ngIf]="!listaDocumenti || listaDocumenti.length === 0">
+          <p>Non ci sono allegati.</p>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>

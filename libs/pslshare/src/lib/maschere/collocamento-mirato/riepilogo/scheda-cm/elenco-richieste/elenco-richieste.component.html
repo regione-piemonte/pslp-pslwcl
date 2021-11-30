@@ -1,0 +1,45 @@
+
+<h4 class="mt-40 mb-5">ELENCO RICHIESTE  </h4>
+<ng-template [ngIf]="num > 0" [ngIfElse]="elseBlock">
+<div class="grey1">
+  <pslshare-paginated-table [columnNumber]="8" [pagedResponse]="elencoRichieste" [limit]="10">
+    <ng-template pslbasepagePaginationHead>
+      <tr>
+        <th scope="col">Num.</th>
+        <th scope="col">Tipo Iscrizione</th>
+        <th scope="col">Tipo Comunicazione</th>
+        <th scope="col">Motivo</th>
+        <th scope="col">Stato</th>
+        <th scope="col">Cpi</th>
+
+        <th scope="col">Data Stato</th>
+
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pslbasepagePaginationBody let-el>
+      <tr>
+        <td>{{ el.id_richiesta }}</td>
+        <td>{{ el.descr_tipo_iscrizione }}</td>
+        <td>{{ el.descr_tipo_comunicazione }}</td>
+        <td>{{ el.descr_motivo_richiesta }}</td>
+        <td>{{ el.descr_stato_richiesta_iscrizione }}</td>
+        <td>{{ el.descr_cpi }}</td>
+
+        <td>{{ el.data_stato | date:'dd/MM/yyyy' }}</td>
+
+        <td class="text-nowrap">
+          <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizzabile(el)" (click)="onVisualizza(el)">
+            <span class="fas fa-2x fa-eye"></span>
+          </button>&nbsp;
+          <button title="Modifica" class="btn btn-link btn-sm" [disabled]="!isModificabile(el)" (click)="onModifica(el)">
+            <span class="fas fa-2x fa-pencil-alt"></span>
+          </button>&nbsp;<button title="Cancella" class="btn btn-link btn-sm" [disabled]="!isCancellabile(el)" (click)="onCancella(el)">
+            <span class="fas fa-2x fa-trash"></span>
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </pslshare-paginated-table>
+</div>
+</ng-template><ng-template #elseBlock>Nessuna richiesta presente</ng-template>

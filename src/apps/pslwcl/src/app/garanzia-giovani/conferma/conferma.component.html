@@ -1,0 +1,24 @@
+<app-wizard></app-wizard>
+
+<h4 class="mt-5 mb-5">Conferma dati</h4>
+
+<div class="row">
+  <div class="col-12">
+    <div class="accordion" id="accordionDati">
+      <pslshare-conferma-dati-anagrafici-tutore
+        *ngIf="isTutore"
+        (loaded)="checkDataLoaded(1)"
+      >
+      </pslshare-conferma-dati-anagrafici-tutore>
+      <pslshare-conferma-dati-anagrafici (loaded)="checkDataLoaded(2)"></pslshare-conferma-dati-anagrafici>
+      <app-conferma-profiling
+        *ngIf="isProfilingGGEnabled"
+        (loaded)="checkDataLoaded(3)"
+      >
+      </app-conferma-profiling>
+      <pslshare-conferma-informazioni-aggiuntive (loaded)="checkDataLoaded(4)"></pslshare-conferma-informazioni-aggiuntive>
+    </div>
+  </div>
+</div>
+
+<app-navigation-button (exitPage)="onExitPage($event)"></app-navigation-button>

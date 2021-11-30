@@ -1,0 +1,33 @@
+<div class="card no-border">
+  <div class="card-header" id="headingTwo">
+    <h4 class="mb-0">
+      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+        aria-expanded="false" aria-controls="collapseTwo">
+        Profiling
+      </button>
+    </h4>
+  </div>
+  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionDati">
+    <div class="grey1">
+      <p class="text-right m-0"><a (click)="onProfiling()"><span class="fas fa-edit fa-2x"></span> Modifica</a></p>
+
+      <ul class="dett">
+        <ng-template [ngIf]='sap?.domicilio?.comune?.provincia?.descrizione' [ngIfElse]='residenza'>
+          <li>Provincia di domicilio<br>
+            <strong>{{ sap?.domicilio?.comune?.provincia?.descrizione}}&nbsp;</strong></li>
+        </ng-template>
+        <ng-template #residenza>
+          <li>Provincia di residenza<br>
+            <strong>{{ sap?.residenza?.comune?.provincia?.descrizione}}&nbsp;</strong></li>
+        </ng-template>
+        <li>Età<br>
+          <strong>{{ age }}&nbsp;</strong></li>
+        <li>
+        <p *ngIf="profiling && profiling.indice !== undefined; else elseTemplate">Il tuo profiling &egrave;: <strong>{{ profiling?.indice }}&nbsp;</strong></p>
+        <ng-template #elseTemplate><p>Il tuo profiling non &egrave; stato ancora calcolato</p></ng-template>
+        <p *ngIf="profiling && profiling.indice !== undefined">Calcolato in data : <strong>{{ profiling?.data_profiling | date : 'dd/MM/yyyy' }}</strong></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

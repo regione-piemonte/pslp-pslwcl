@@ -1,0 +1,138 @@
+<form #dettaglioRedditoForm="ngForm" *ngIf="redditoSelezionato">
+  <em data-scroll-marker="dettaglioReddito"></em>
+  <div>
+
+    <h5 class="border-n">Dichiarazione del &ldquo;{{ annoDaData }}&rdquo;, relativa ai redditi del
+      &ldquo;{{ redditoSelezionato.anno }}&rdquo;</h5>
+
+    <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+    <div class="form-row form-inline">
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="input-group group">
+          <input type="text" id="annoPrecedente" name="annoPrecedente" [(ngModel)]="redditoSelezionato.anno" disabled
+            maxlength="6" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="annoPrecedente">Anno&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="input-group group">
+          <input type="text" id="dataInserimento" name="dataInserimento" ngbDatepicker
+            [(ngModel)]="redditoSelezionato.dataInserimento" disabled maxlength="10" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataInserimento">Data Dichiarazione&nbsp;</label>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3" *ngIf="redditoSelezionato.provincia && !isRichiestaIscrizione">
+        <div class="input-group group">
+          <input type="text" id="provincia" name="provincia" [(ngModel)]="redditoSelezionato.provincia.descrizione"
+            disabled maxlength="40" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="provincia">Provincia di Iscrizione</label>
+        </div>
+      </div>
+
+    </div>
+    <div class="form-row form-inline">
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <ng-template [ngIf]="isEditingState">
+          <div class="input-group group">
+            <input #importoEconomico=ngModel type="text" id="valoreEconomico" name="valoreEconomico"
+              [(ngModel)]="redditoSelezionato.valore" [disabled]="!isEditingState || isModifyState"
+              pslwcllibImportoEuroValidator required maxlength="10" />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="valoreEconomico">Valore Economico&nbsp;</label>
+            <pslshare-error-handler [model]="importoEconomico"
+              [errors]="{required: 'Obbligatorio', importoNotValid: {path: 'message'}}"></pslshare-error-handler>
+          </div>
+        </ng-template>
+        <ng-template [ngIf]="!isEditingState">
+          <div class="input-group group">
+            <input type="text" id="valoreEconomico" name="valoreEconomico" [(ngModel)]="redditoSelezionato.valore"
+              disabled maxlength="18" />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="valoreEconomico">Valore Economico&nbsp;</label>
+          </div>
+        </ng-template>
+      </div>
+      <ng-template [ngIf]="!isEditingState">
+        <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+          <div class="input-group group" *ngIf="redditoSelezionato.fonte =='SILP' ">
+            <input type="text" id="intermediata" name="intermediata" value="SI" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="intermediata">Intermediata</label>
+          </div>
+          <div class="input-group group" *ngIf="redditoSelezionato.fonte =='PSLP' ">
+            <input type="text" id="intermediata" name="intermediata" value="NO" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="intermediata">Intermediata</label>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+          <div class="input-group group">
+            <input type="text" id="cpl" name="cpl" [ngModel]="redditoSelezionato.cpi?.descrizione" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cpl">Centro per l'Impiego</label>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="form-row form-inline">
+      <div class="col-sm-18 col-md-18 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="note">NOTE</div>
+          <textarea
+          id="note"
+          name="note"
+          rows="2"
+          [disabled]="!isEditingState" maxlength="250"
+          [(ngModel)]="redditoSelezionato.note"
+          onkeyup="
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(start, end);"
+          maxlength="250"
+          style="resize: none;"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <pslshare-showdata [oggettoDati]="redditoSelezionato"></pslshare-showdata>
+  <div *ngIf="!isRichiestaIscrizione">
+  <!-- TASTI ANNULLA/SALVA IN EDITING -->
+  <div class="row mt-5" *ngIf="!readOnly && isEditingState; else elseBlock">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">
+        ANNULLA
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-primary" [disabled]="readOnly || !dettaglioRedditoForm.valid"
+        (click)="onSalva()">
+        CONFERMA
+      </button>
+    </div>
+  </div>
+  <!-- TASTI ELIMINA/MODIFICA IN VISUALIZZAZIONE -->
+  <ng-template #elseBlock>
+    <div class="row mt-5">
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+        <button type="button" class="btn btn-outline-primary" *ngIf="redditoSelezionato"
+          (click)="onAnnulla()">ANNULLA</button>
+      </div>
+    </div>
+  </ng-template>
+  </div>
+</form>
+<pslshare-showdata [oggettoDati]="redditoSelezionato"></pslshare-showdata>

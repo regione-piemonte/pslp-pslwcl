@@ -1,0 +1,72 @@
+<!--
+     pagina configurazione calendario
+     periodi di validità
+-->
+<pslbowcl-wizard [titolo]="titolo" show="true"></pslbowcl-wizard>
+<p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+<div class="row mb-4">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="group">
+      <select
+        id="periodoValidita"
+        required
+        [(ngModel)]="idPeriodo"
+        (change)="onChangePeriodo()"
+        [disabled]="disableConfermaIncontri"
+      >
+        <option value="" selected=""> </option>
+        <option *ngFor="let pv of periodiValidita" [value]="pv.id_periodo"
+          >{{ pv.data_da | date: "dd/MM/yyyy" }} -
+          {{ pv.data_a | date: "dd/MM/yyyy" }}</option
+        >
+      </select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+      <label for="per-val">Periodo validit&agrave;</label>
+    </div>
+
+    <pslbowcl-disponibilita-settimanale
+      *ngIf="periodoValidita.id_periodo !== undefined"
+    >
+      [disableConfermaIncontri]="disableConfermaIncontri", [apertoAltro]=
+      "apertoEccezioni"
+    </pslbowcl-disponibilita-settimanale>
+  </div>
+</div>
+
+<pslbowcl-eccezioni *ngIf="periodoValidita.id_periodo !== undefined">
+  [disableConfermaIncontri]="disableConfermaIncontri", [apertoAltro]=
+  "apertoFascia"
+</pslbowcl-eccezioni>
+
+<div class="row mt-5">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-lg"
+      (click)="onIndietro()"
+    >
+      INDIETRO
+    </button>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+    <button
+      type="button"
+      class="btn btn-primary btn-lg"
+      (click)="onGenera()"
+      [disabled]="disableConfermaIncontri || !idPeriodo"
+    >
+      <span *ngIf="hasIncontriDaGenerare(); else noGenera"
+        >GENERA INCONTRI</span
+      >
+      <ng-template #noGenera>Visualizza INCONTRI</ng-template>
+    </button>
+  </div>
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button class="btn btn-outline-primary btn-lg" (click)="onTorna()">
+        Torna alla Ricerca
+      </button>
+    </div>
+  </div>
+</div>

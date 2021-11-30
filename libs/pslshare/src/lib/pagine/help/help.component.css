@@ -1,0 +1,16 @@
+/** 
+  foglio di stile per pagina aiuto
+
+  dedicata al cittadino
+
+*/
+img.responsiveHome {
+  width: 20%;
+}
+
+.legend .row:nth-of-type(odd) div {
+background-color:antiquewhite;
+}
+.legend .row:nth-of-type(even) div {
+background: #FFFFFF;
+}

@@ -1,0 +1,32 @@
+ng-select.ng-select-opened ~ label,
+ng-select[ng-reflect-model] ~ label {
+  top: -20px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #005ca9;
+}
+.ng-valid[required],
+.ng-valid.required {
+  border-left: 5px solid #42a948;
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442;
+}
+
+label {
+  padding-left: 7px;
+}
+
+.md-radio label {
+  display: inline-block;
+  height: 12px;
+  position: relative;
+  padding: 0 22px;
+  margin-bottom: 0;
+  cursor: pointer;
+  vertical-align: bottom;
+  font-weight: normal;
+  padding-left: 22px;
+}
+

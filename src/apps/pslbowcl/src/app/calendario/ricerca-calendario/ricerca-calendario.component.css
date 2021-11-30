@@ -1,0 +1,16 @@
+/*
+    -------------------------
+    foglio di stile
+    configurazione calendario
+    form ricerca
+    -------------------------
+*/
+.pagination {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.page-select {
+  padding-top: 6px;
+  padding-bottom: 5px;
+}

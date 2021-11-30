@@ -1,0 +1,119 @@
+<form #aggInfoForm="ngForm" >
+    <div class="row mb-4">
+
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="input-group group">
+                <input type="text" id="descrizione"
+                     name="descrizione"
+                    [(ngModel)]="configurazione.descrizione"
+                    required
+                    maxlength="150" >
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="descrizione">Descrizione<span class="ob">*</span></label>
+            </div>
+             <div class="text-danger" [hidden]="!aggInfoForm.controls['descrizione']?.errors">obbligatorio</div>
+        </div>
+
+    </div>
+
+    <div class="row mb-4 mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <fieldset><!-- //NOSONAR -->
+          <div class="mr-3 pt-4">
+            Visibilit&agrave;
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="visibile" id="visibileSi"
+              [value]="true" [(ngModel)]="flgVisibile"
+              [checked]="(flgVisibile !== undefined &&
+                          flgVisibile !== null &&
+                          flgVisibile === true)">
+            <label for="visibileSi" class="pt-1">
+              S&igrave;
+            </label>
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="visibile" id="visibileNo"
+              [value]="false" [(ngModel)]="flgVisibile"
+              [checked]="(flgVisibile !== undefined &&
+                         flgVisibile !== null &&
+                          flgVisibile === false)">
+            <label for="visibileNo" class="pt-1">No</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <fieldset><!-- //NOSONAR -->
+              <div class="mr-3 pt-4">
+                Bloccante
+              </div>
+              <div class="md-radio md-radio-inline pt-4">
+                <input type="radio" name="bloccante" id="bloccanteSi"
+                  [value]="true" [(ngModel)]="flgBloccante"
+                  [checked]="(flgBloccante !== undefined &&
+                              flgBloccante !== null &&
+                             flgBloccante === true)">
+                <label for="bloccanteSi" class="pt-1">
+                  S&igrave;
+                </label>
+              </div>
+              <div class="md-radio md-radio-inline pt-4">
+                <input type="radio" name="bloccante" id="bloccanteNo"
+                  [value]="false" [(ngModel)]="flgBloccante"
+                  [checked]="(flgBloccante !== undefined &&
+                             flgBloccante !== null &&
+                             flgBloccante === false)">
+                <label for="bloccanteNo" class="pt-1">No</label>
+              </div>
+
+            </fieldset>
+      </div>
+    </div>
+
+    <div class="row mb-4 mt-5">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input type="text" class="form-control" required placeholder="gg/mm/aaaa" name="dataInizio" id="dataInizio" [(ngModel)]="configurazione.data_inizio"
+            #dataInizioModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataInizioDatepicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataInizioDatepicker.toggle()" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataInizio">Data inizio</label>
+        </div>
+        <div class="text-danger" *ngIf="dataInizioModel?.errors">
+          <div *ngFor="let err of dataInizioModel?.errors | keyvalue | notErrorObject">{{ err.key === 'required' ? 'obbligatorio' : err.value }}</div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataFine" id="dataFine" [(ngModel)]="configurazione.data_fine"
+              #dataFineModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataFineDatepicker="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="dataFineDatepicker.toggle()" type="button"></button>
+            </div>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="dataFine">Data Fine</label>
+            <div class="text-danger" *ngIf="dataInizioModel?.errors">
+              <div *ngFor="let err of dataInizioModel?.errors | keyvalue | notErrorObject">{{ err.key === 'required' ? 'obbligatorio' : err.value }}</div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-left">
+          <p><button type="button" class="btn btn-outline-primary" (click)="onAnnulla()">ANNULLA</button></p>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-right">
+            <p><button type="button"
+              class="btn btn-primary"
+              (click)="onSalva()"
+              [disabled]="aggInfoForm.untouched || !aggInfoForm.valid">SALVA</button></p>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,138 @@
+<pslshare-wizard-cm
+    [validLink]="isValidData()"
+    (exitPage)="onExitPage($event)"
+></pslshare-wizard-cm>
+<div>
+  <h4 class="border-n mt-5">Documenti Allegati</h4>
+  <div class="alert alert-info" role="alert" *ngIf="messaggioHelp" [innerHTML]="messaggioHelp | escapeHtml"></div>
+  <h6 id="descTab" class="mt-5">Documenti allegati</h6>
+  <div class="scrollbar-table scrollbar-primary">
+    <table aria-describedby="descTab" class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">&nbsp;</th>
+          <th scope="col">Documento</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Data caricamento</th>
+          <th scope="col">Data invio</th>
+          <th scope="col">Stato</th>
+          <th scope="col">Note</th>
+
+        </tr>
+      </thead>
+      <tbody *ngIf="listaDoc && listaDoc.length >0; else noAllegati">
+        <tr *ngFor="let documento of listaDoc">
+          <td class="text-center" >
+            <button title="elimina" class="btn btn-link btn-sm" (click)="onEliminaDocumento(documento)"
+              *ngIf="documento.stato === 'NI'" [disabled]="documento.stato !== 'NI'">
+              <span class="fas fa-2x fa-trash-alt">&nbsp;</span>
+            </button>
+
+          </td>
+          <td ><a (click)="openDocumento(documento)" class="btn btn-outline-primary">{{ documento.nome }}</a></td>
+          <td>{{ getTipoDocumentoDescrizione(documento.codice_tipo_documento) }}</td>
+          <td>{{ documento.data_inserimento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ documento.data_invio | date:'dd/MM/yyyy' }}</td>
+          <td>{{ getStatoDescrizione(documento.stato) }}</td>
+          <td>{{ documento.note_cittadino }}&nbsp;</td>
+
+        </tr>
+      </tbody>
+      <ng-template #noAllegati>
+        <tbody>
+          <tr>
+            <td colspan=7>Non ci sono dati.</td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+    <ng-template [ngIf]=" (this.listaAllTipiDocumento.length > 0) ">
+        <em data-scroll-marker="aggiungiAllegato"></em>
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button class="btn btn-outline-primary" type="button" (click)="onAggiungiAllegato()">CARICA UN NUOVO ALLEGATO</button>
+        </div>
+      <div class="collapse" [class.show]="showAggiungiAllegato">
+        <div class="grey1">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-7">
+              <div class="input-group group">
+                <select id="tipoDocumento" name="tipoDocumento" [(ngModel)]="tipoDocumento">
+                  <option *ngFor="let tipo of listaTipiDocumentoValidi" [ngValue]="tipo">{{ tipo.descrizione }}</option>
+                </select>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="tipoDocumento">Tipo documento</label>
+              </div>
+            </div>
+          </div>
+          <pslshare-aggiungi-allegato *ngIf="tipoDocumento"
+            [tipoDocumento]="tipoDocumento"
+            [consideraDID]="false"
+            [consideraRichiestaIscrizione]="true"
+            (annulla)="annullaAllegato()"
+            (success)="successAllegato()"
+          ></pslshare-aggiungi-allegato>
+        </div>
+      </div>
+    </ng-template>
+  <ng-template>{{ userMessage }}</ng-template>
+
+</div>
+<div class="col-12 col-md-12">
+  <div class="input-group group">
+    <div for="noteCittadino"><h4 class="border-n mt-5">Note Cittadino alla Richiesta&nbsp;</h4></div>
+    <textarea
+        id="noteCittadino"
+        name="noteCittadino"
+        rows="2"
+        maxlength="250"
+        [(ngModel)]="noteDelCittadino"
+        onkeyup="
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        this.value = this.value.toUpperCase();
+        this.setSelectionRange(start, end);"
+        maxlength="250"
+        style="resize: none;"
+        ></textarea>
+  </div>
+</div>
+
+
+<pslshare-navigation-button-cm
+    [nextButtonHide]="false"
+    [prevButtonHide]="false"
+    [nextButtonDisabled]="showAggiungiAllegato"
+    [prevButtonDisabled]="showAggiungiAllegato"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)"
+></pslshare-navigation-button-cm>
+
+<pslshare-showdata [oggettoDati]="listaDoc"></pslshare-showdata>
+<pslshare-showdata [oggettoDati]="richiestaSalvata"></pslshare-showdata>
+
+<!-- Modal richiesta-->
+<div class="modal fade" id="modal_richiesta" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma {{ titoloRichiesta }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+        <Strong>{{ questioneRichiesta }}</Strong><br>
+        <p>{{ msgRichiesta }}</p></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary float-right" (click)="doRichiesta()" data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal richiesta-->

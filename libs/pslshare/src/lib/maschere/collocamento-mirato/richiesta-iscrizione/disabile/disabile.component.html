@@ -1,0 +1,513 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+<h4 class="border-n">Disabile</h4>
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+<form #formDisabile="ngForm">
+  <div *ngIf="submitClicked && formDisabile.invalid" class="text-danger">
+    Inserire tutti i campi obbligatori
+  </div>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+
+  <div class="grey1">
+    <h4 class="border-n">{{'Classificazione Invalidit&agrave; civile' | titlecase}}</h4>
+    <div class="row">
+      <div class="col-12 col-lg-6" *ngIf="!disabilitaCategoriaInvalidita">
+        <div class="input-group group">
+          <select id="categoriaInvalidita" name="cod_categoria_invalidita" required [disabled]="readOnly"
+            [(ngModel)]="disabileModel.cod_categoria_invalidita" #categoriaInvalidita="ngModel">
+            <option [ngValue]="null"> </option>
+            <option *ngFor="let option of liste.categorieInvalidita" [value]="option.codice_ministeriale">
+              {{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="categoriaInvalidita">Categoria invalidit&agrave;
+            <div class="popup" onclick="myFunction('categoriaInvaliditaInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="categoriaInvaliditaInfo"
+                [innerHTML]="liste.messaggi['HC054'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(categoriaInvalidita.touched && categoriaInvalidita.invalid)">obbligatorio
+        </div>
+      </div>
+      <div class="col-12 col-lg-6" *ngIf="disabilitaCategoriaInvalidita">
+        <div class="input-group group">
+          <input type="text" id="grado_invalidita" name="grado_invalidita"
+            [disabled]="readOnly || disabilitaGradoInvalidita" required [(ngModel)]="disabileModel.grado_invalidita"
+            #gradoInvalidita="ngModel" maxlength="3" min="gradoInvaliditaMin"  pattern="[0-9\/\.\- ]+">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="gradoInvalidita">Grado Percentuale di invalidit&agrave;
+            <div class="popup" onclick="myFunction('gradoInvaliditaInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="gradoInvaliditaInfo"
+                [innerHTML]="liste.messaggi['HC053'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(gradoInvalidita.touched && gradoInvalidita.invalid)">obbligatorio</div>
+      </div>
+    </div>
+
+    <div class="row mt-5" *ngIf="!disabilitaQualificheNonVedenti">
+      <label class="col-12" style="font-size:14px; font-weight:normal; color:#005ca9;">
+        Qualifica non vedenti&nbsp;
+        <div class="popup" onclick="myFunction('qualificaNVInfo')">
+          <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+          <div class="popuptext" [class.down]="popdown" id="qualificaNVInfo"
+            [innerHTML]="liste.messaggi['HC055'] | escapeHtml">
+          </div>
+        </div>
+      </label>
+      <div class="col-4 mt-4" *ngFor="let item of liste.qualificheNonVedenti; let i = index">
+        <div class="form-check form-check-inline align-items-baseline">
+          <input class="form-check-input" type="checkbox" id="{{'inlineCheckbox' + i}}" [disabled]="readOnly"
+            (click)="checkQualifica($event, item.codice_ministeriale)"
+            [checked]="isQualificaPresente(item.codice_ministeriale)">
+          <label class="form-check-label" for="{{'inlineCheckbox' + i}}" style="font-weight: normal;">
+            &nbsp;{{item.descrizione}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERBALE INVALIDITA' CIVILE -->
+  <div class="grey1 mt-5">
+    <h4 class="border-n">{{'Verbale Invalidit&agrave; civile' | titlecase}}</h4>
+    <div class="row">
+      <div class="col-5 pb-4">
+        <div class="input-group group">
+          <input [placeholder]="'gg/mm/aaaa'" class="form-control" name="data_emissione" id="data_emissione"
+            [(ngModel)]="disabileModel.verbale_invalidita_civile.data_emissione" [disabled]="readOnly" ngbDatepicker
+            #dataEmissioneDatepicker="ngbDatepicker" pslwcllibDateValueValidator #dataEmissione="ngModel" maxlength="10"
+            [maxDate]="{year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate()}" required>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataEmissioneDatepicker.toggle()"
+              [disabled]="readOnly" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Data emissione verbale Invalidit&agrave; Civile
+            <div class="popup" onclick="myFunction('dataEmissioneVerICInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="dataEmissioneVerICInfo"
+                [innerHTML]="liste.messaggi['HC056'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(dataEmissione.touched && dataEmissione.invalid)">obbligatorio</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 row-form form-inline pb-4">
+        <div class="mr-3 pt-4" #revisioneVerbInvCivileLabel>
+          Verbale Invalidit&agrave; Civile soggetto a revisione?&nbsp;
+          <div class="popup" onclick="myFunction('flgVerICRevisioneInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="flgVerICRevisioneInfo"
+              [innerHTML]="liste.messaggi['HC057'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">&nbsp;*</span>
+        </div>
+        <div class="col-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="revisioneVerbInvCivileLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgRevInvCivSi" name="flgRevInvCiv" [value]="'S'" #flgRevInvCiv="ngModel"
+                [(ngModel)]="disabileModel.verbale_invalidita_civile.flg_soggetto_a_revisione" [disabled]="readOnly"
+                required />
+              <label for="flgRevInvCivSi">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgRevInvCivNo" name="flgRevInvCiv" [value]="'N'" #flgRevInvCiv="ngModel"
+                (change)="resetVerbaleInvCivile()"
+                [(ngModel)]="disabileModel.verbale_invalidita_civile.flg_soggetto_a_revisione" [disabled]="readOnly"
+                required />
+              <label for="flgRevInvCivNo">&nbsp;&nbsp;No</label>
+            </div>
+          </fieldset>
+          <div class="text-danger" [hidden]="!(flgRevInvCiv.touched && flgRevInvCiv.invalid)">obbligatorio</div>
+        </div>
+      </div>
+      <div class="col-lg-6 pb-4" *ngIf="disabileModel.verbale_invalidita_civile.flg_soggetto_a_revisione === 'S'">
+        <div class="input-group group">
+          <label>Prossima revisione verbale Invalidit&agrave; civile (Mese/Anno)
+            <div class="popup" onclick="myFunction('dataRevisioneVerICInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="dataRevisioneVerICInfo"
+                [innerHTML]="liste.messaggi['HC058'] | escapeHtml">
+              </div>
+            </div>
+            <span class="ob">&nbsp;*</span>
+          </label>
+          <input type="text" name="meseAnnoRevIC" [(ngModel)]="meseAnnoRevisioneIC" readonly style="margin-top:25px;">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <ngb-datepicker (navigate)="onChangeDataRevIC($event)" class="datepickerMeseAnno" id="meseAnnoRevIC"
+            name="meseAnnoRevIC" required #dataProssimaRevisioneIC="ngModel"
+            [(ngModel)]="meseAnnoRevisioneIC"></ngb-datepicker>
+        </div>
+        <div class="text-danger"
+          [hidden]="!(dataProssimaRevisioneIC.touched && dataProssimaRevisioneIC.invalid && !dataProssimaRevisioneIC.errors['ngbDate'])">
+          obbligatorio</div>
+        <!-- <div class="text-danger" [hidden]="!(dataProssimaRevisione.errors && dataProssimaRevisione.errors['ngbDate'])">
+          La Data Revisione Verbale di Invalidità Civile Mese/Anno è minore di
+          {{dataMinRevisioneVerbaleInvCivile.getMonth()+1 + "/" + dataMinRevisioneVerbaleInvCivile.getFullYear()}}
+        </div> -->
+      </div>
+
+      <div class="col-12 col-lg-6" *ngIf="!disabilitaSituazioneVisitaRevIC && disabileModel.verbale_invalidita_civile.flg_soggetto_a_revisione === 'S'">
+        <div class="input-group group">
+          <select id="situazioneVisitaRevIC" name="cod_dichiarazione_visita_revisione_invalidita_civile" required
+            [disabled]="readOnly" [(ngModel)]="disabileModel.cod_dichiarazione_visita_revisione_invalidita_civile"
+            #situazioneVisitaRevIC="ngModel" (change)="onChangeSituazioneVisitaIC()">
+            <option [ngValue]="null"> </option>
+            <option *ngFor="let option of liste.comboSituazioneVisitaRevIC" [value]="option.codice_ministeriale">
+              {{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="categoriaInvalidita">Situazione visita di revisione Invalidit&agrave; Civile
+            <div class="popup" onclick="myFunction('situazioneRevisioneVerICInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="situazioneRevisioneVerICInfo"
+                [innerHTML]="liste.messaggi['HC059'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(situazioneVisitaRevIC.touched && situazioneVisitaRevIC.invalid)">
+          obbligatorio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERBALE COLLOCAMENTO MIRATO -->
+  <div class="grey1 mt-5">
+    <h4 class="border-n">{{'Verbale Collocamento Mirato' | titlecase}}</h4>
+    <div class="row">
+      <div class="col-lg-6 row-form form-inline pt-lg-3 pb-4">
+        <div class="mr-3 pt-4" #visitaCMLabel>
+          Dichiaro di avere effettuato la visita specifica per il Collocamento Mirato?&nbsp;
+          <div class="popup" onclick="myFunction('visitaCMInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="visitaCMInfo"
+              [innerHTML]="liste.messaggi['HC060'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">&nbsp;*</span>
+        </div>
+        <div class="col-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="visitaCMLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="visitaSi" name="flgVisitaCM" [value]="'S'" #flgVisitaCM="ngModel"
+                [disabled]="readOnly" required
+                [(ngModel)]="disabileModel.flg_dichiarazione_visita_revisione_collocamento_mirato"
+                (change)="resetAutorizzazioneCpi()" />
+              <label for="visitaSi">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="visitaNo" name="flgVisitaCM" [value]="'N'" #flgVisitaCM="ngModel"
+                [disabled]="readOnly" required
+                [(ngModel)]="disabileModel.flg_dichiarazione_visita_revisione_collocamento_mirato"
+                (change)="resetVerbaleCollMirato()" />
+              <label for="visitaNo">&nbsp;&nbsp;No</label>
+            </div>
+          </fieldset>
+          <div class="text-danger" [hidden]="!(flgVisitaCM.touched && flgVisitaCM.invalid)">obbligatorio</div>
+        </div>
+      </div>
+      <div class="col-lg-6 pb-4" *ngIf="disabileModel.flg_dichiarazione_visita_revisione_collocamento_mirato === 'S'">
+        <div class="input-group group">
+          <input [placeholder]="'gg/mm/aaaa'" class="form-control" name="data_emissione_verbale_cm"
+            id="data_emissione_verbale_cm" [(ngModel)]="disabileModel.verbale_collocamento_mirato.data_emissione"
+            [disabled]="readOnly" ngbDatepicker #dataEmissioneVerbaleCMDatepicker="ngbDatepicker"
+            pslwcllibDateValueValidator #dataEmissioneVerbaleCM="ngModel" maxlength="10"
+            [maxDate]="{year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate()}" required>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataEmissioneVerbaleCMDatepicker.toggle()"
+              [disabled]="readOnly" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataEmissioneVerbale">Data emissione verbale Collocamento Mirato
+            <div class="popup" onclick="myFunction('dataEmissioneVerCMInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="dataEmissioneVerCMInfo"
+                [innerHTML]="liste.messaggi['HC061'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(dataEmissioneVerbaleCM.touched && dataEmissioneVerbaleCM.invalid)">
+          obbligatorio</div>
+      </div>
+
+      <div class="col-lg-6 pt-lg-3 pb-4 row-form form-inline"
+        *ngIf="disabileModel.flg_dichiarazione_visita_revisione_collocamento_mirato === 'S'">
+        <div class="mr-3 pt-4" #revisioneVerbaleCMLabel>
+          Verbale Collocamento Mirato soggetto a revisione?&nbsp;
+          <div class="popup" onclick="myFunction('flgRevisioneVerCMInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="flgRevisioneVerCMInfo"
+              [innerHTML]="liste.messaggi['HC062'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">&nbsp;*</span>
+        </div>
+        <div class="col-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="revisioneVerbaleCMLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="revisioneVisitaCMSi" name="flgRevisioneVisitaCM" [value]="'S'"
+                #flgRevisioneVisitaCM="ngModel"
+                [(ngModel)]="disabileModel.verbale_collocamento_mirato.flg_soggetto_a_revisione" [disabled]="readOnly"
+                required />
+              <label for="revisioneVisitaCMSi">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="revisioneVisitaCMNo" name="flgRevisioneVisitaCM" [value]="'N'"
+                #flgRevisioneVisitaCM="ngModel"
+                [(ngModel)]="disabileModel.verbale_collocamento_mirato.flg_soggetto_a_revisione" [disabled]="readOnly"
+                required (change)="resetDataRevisioneVerbaleCollMirato()" />
+              <label for="revisioneVisitaCMNo">&nbsp;&nbsp;No</label>
+            </div>
+          </fieldset>
+          <div class="text-danger" [hidden]="!(flgRevisioneVisitaCM.touched && flgRevisioneVisitaCM.invalid)">
+            obbligatorio</div>
+        </div>
+      </div>
+      <div class="col-lg-6 pt-lg-3 pb-4"
+        *ngIf="disabileModel.verbale_collocamento_mirato.flg_soggetto_a_revisione === 'S'">
+        <div class="input-group group">
+          <label>Prossima revisione verbale Collocamento Mirato (Mese/Anno)
+            <div class="popup" onclick="myFunction('dataRevisioneVerCMInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="dataRevisioneVerCMInfo"
+                [innerHTML]="liste.messaggi['HC063'] | escapeHtml">
+              </div>
+            </div>
+            <span class="ob">&nbsp;*</span>
+          </label>
+          <input type="text" name="meseAnnoRevCM" [(ngModel)]="meseAnnoRevisioneCM" readonly style="margin-top:25px;">
+          <ngb-datepicker (navigate)="onChangeDataRevCM($event)" class="datepickerMeseAnno" id="dataRevCM"
+            name="dataRevCM" required #dataProssimaRevisioneCM="ngModel" [(ngModel)]="meseAnnoRevisioneCM">
+          </ngb-datepicker>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+        </div>
+        <div class="text-danger"
+          [hidden]="!(dataProssimaRevisioneCM.touched && dataProssimaRevisioneCM.invalid && !dataProssimaRevisioneCM.errors['ngbDate'])">
+          obbligatorio</div>
+      </div>
+
+      <div class="col-lg-6 row-form form-inline pt-lg-3 pb-4"
+        *ngIf="disabileModel.flg_dichiarazione_visita_revisione_collocamento_mirato === 'N'">
+        <div class="mr-3 pt-4" #autorizzazioneLabel>
+          Autorizzo il CpI a richiedere la prenotazione della visita per il Collocamento Mirato?&nbsp;
+          <div class="popup" onclick="myFunction('flgAutorizzazioneCpiInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="flgAutorizzazioneCpiInfo"
+              [innerHTML]="liste.messaggi['HC064'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">&nbsp;*</span>
+        </div>
+        <div class="col-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="autorizzazioneLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="autorizzazioneSi" name="autorizzazionePrenotazione" [value]="'S'"
+                #flg_autorizz_prenotazione="ngModel"
+                [(ngModel)]="disabileModel.flg_autorizzazione_cpi_prenotazione_visita_collocamento_mirato"
+                [disabled]="readOnly" required (change)="onChangeAutorizzazione()" />
+              <label for="autorizzazioneSi">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="autorizzazioneNo" name="autorizzazionePrenotazione" [value]="'N'"
+                #flg_autorizz_prenotazione="ngModel"
+                [(ngModel)]="disabileModel.flg_autorizzazione_cpi_prenotazione_visita_collocamento_mirato"
+                [disabled]="readOnly" required (change)="onChangeAutorizzazione()" />
+              <label for="autorizzazioneNo">&nbsp;&nbsp;No</label>
+            </div>
+          </fieldset>
+          <div class="text-danger" [hidden]="!(flg_autorizz_prenotazione.touched && flg_autorizz_prenotazione.invalid)">
+            obbligatorio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="grey1 mt-5">
+    <h4 class="border-n">Referente dei Servizi Territoriali</h4>
+    <div class="row">
+      <div class="col-12 row-form form-inline pt-lg-3 pb-4">
+        <div class="mr-3 pt-4" #serviziLabel>
+          E' seguito dai Servizi Territoriali (sociali e sanitari)?&nbsp;
+          <div class="popup" onclick="myFunction('flgServiziTerritorialiInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="flgServiziTerritorialiInfo"
+              [innerHTML]="liste.messaggi['HC065'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">&nbsp;*</span>
+        </div>
+        <div class="col-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="serviziLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="serviziSi" name="flgServiziTerritoriali" [value]="'S'"
+                #flgServiziTerritoriali="ngModel" [(ngModel)]="disabileModel.flg_seguito_da_servizi_territoriali"
+                [disabled]="readOnly" required />
+              <label for="serviziSi">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="serviziNo" name="flgServiziTerritoriali" [value]="'N'"
+                #flgServiziTerritoriali="ngModel" [(ngModel)]="disabileModel.flg_seguito_da_servizi_territoriali"
+                [disabled]="readOnly" required (change)="resetReferenteServiziTerritoriali()" />
+              <label for="serviziNo">&nbsp;&nbsp;No</label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="disabileModel.flg_seguito_da_servizi_territoriali === 'S'">
+      <div class="col-lg-6 pb-4">
+        <div class="input-group group">
+          <input type="text" id="cognome" name="cognome_referente" [disabled]="readOnly" required
+            #cognomeReferente="ngModel" [(ngModel)]="disabileModel.referente_servizi_territoriali.cognome_referente"
+            onkeyup="var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(start, end);">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cognome">Cognome</label>
+        </div>
+        <div class="text-danger" [hidden]="!(cognomeReferente.touched && cognomeReferente.invalid)">obbligatorio</div>
+      </div>
+      <div class="col-lg-6 pb-4">
+        <div class="input-group group">
+          <input type="text" id="nome" name="nome_referente" [disabled]="readOnly" required #nomeReferente="ngModel"
+            [(ngModel)]="disabileModel.referente_servizi_territoriali.nome_referente" onkeyup="
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(start, end);">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nome">Nome</label>
+        </div>
+        <div class="text-danger" [hidden]="!(nomeReferente.touched && nomeReferente.invalid)">obbligatorio</div>
+      </div>
+      <div class="col-lg-6 pb-4">
+        <div class="input-group group">
+          <input type="text" id="ente" name="ente_referente" [disabled]="readOnly" required #enteReferente="ngModel"
+            [(ngModel)]="disabileModel.referente_servizi_territoriali.ente_referente" onkeyup="
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(start, end);">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="ente">Ente</label>
+        </div>
+        <div class="text-danger" [hidden]="!(enteReferente.touched && enteReferente.invalid)">obbligatorio</div>
+      </div>
+      <br />
+      <div class="col-lg-6 pb-4">
+        <div class="input-group group">
+          <input type="text" id="telefono" name="telefono_referente" [disabled]="readOnly"
+            [(ngModel)]="disabileModel.referente_servizi_territoriali.telefono_referente" pattern="[0-9\/\.\- ]+">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="telefono">Telefono fisso</label>
+        </div>
+      </div>
+      <div class="col-lg-6 pb-4">
+        <div class="input-group group">
+          <input type="text" id="cellulare" name="cellulare_referente" [disabled]="readOnly"
+            [(ngModel)]="disabileModel.referente_servizi_territoriali.cellulare_referente" pattern="[0-9\/\.\- ]+">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cellulare">Cellulare</label>
+        </div>
+      </div>
+      <div class="col-lg-6 pb-4">
+
+        <div class="input-group group">
+          <input type="email" id="email" name="email" [(ngModel)]="disabileModel.referente_servizi_territoriali.email_referente" required
+           #emailRecapitoModel="ngModel" email
+           [disabled]="readOnly">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="email">Email</label>
+        </div>
+        <div class="text-danger"
+         [hidden]="!emailRecapitoModel.dirty || !emailRecapitoModel.errors || !emailRecapitoModel.errors.required">
+         obbligatorio</div>
+        <div class="text-danger"
+         [hidden]="!emailRecapitoModel.dirty || !emailRecapitoModel.errors || !emailRecapitoModel.errors.email">
+          formato non valido</div>
+
+        <!-- <div class="input-group group">
+          <input type="email" id="email_referente" name="email_referente"
+            [(ngModel)]="disabileModel.referente_servizi_territoriali.email_referente" required [disabled]="readOnly"
+            #emailReferente="ngModel" email_referente>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="email_referente">Email</label>
+        </div>
+          <div class="text-danger"
+            [hidden]="!emailReferente.dirty || !emailReferente.errors || !emailReferente.errors.required">
+            obbligatorio</div>
+          <div class="text-danger"
+            [hidden]="!emailReferente.dirty || !emailReferente.errors || !emailReferente.errors.email_referente">
+            formato non valido</div>
+        <div class="text-danger" [hidden]="!(emailReferente.touched && emailReferente.invalid)">obbligatorio</div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="grey1 mt-5">
+  <div class="row">
+    <div class="col-12 row-form form-inline pt-lg-3 pb-4">
+      <div class="mr-3 pt-4" #licenziamentoLabel>
+        E' stato licenziato nell'ultimo rapporto di lavoro?&nbsp;
+        <div class="popup" onclick="myFunction('flgLicenziatoInfo')">
+          <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+          <div class="popuptext" [class.down]="popdown" id="flgLicenziatoInfo"
+            [innerHTML]="liste.messaggi['HC067'] | escapeHtml">
+          </div>
+        </div><span class="ob">&nbsp;*</span>
+      </div>
+      <div class="col-12 mt-2 mb-5">
+        <fieldset [pslwcllibRadioLabelHandler]="licenziamentoLabel">
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="licenziatoSi" name="flgLicenziamento" [value]="'S'" #flgLicenziamento="ngModel"
+              [(ngModel)]="disabileModel.flg_licenziato_in_ultimo_rapporto" [disabled]="readOnly" required />
+            <label for="licenziatoSi">&nbsp;&nbsp;Si</label>
+          </div>
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="licenziatoNo" name="flgLicenziamento" [value]="'N'" #flgLicenziamento="ngModel"
+              [(ngModel)]="disabileModel.flg_licenziato_in_ultimo_rapporto" [disabled]="readOnly" required />
+            <label for="licenziatoNo">&nbsp;&nbsp;No</label>
+          </div>
+        </fieldset>
+        <div class="text-danger" [hidden]="!(flgLicenziamento.touched && flgLicenziamento.invalid)">obbligatorio</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</form>
+
+<pslshare-navigation-button-cm [nextButtonHide]="false" [prevButtonHide]="false"
+  [nextButtonDisabled]="!formDisabile.valid" [prevButtonName]="prevButtonName" [forcePrevButtonName]="true"
+  (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData()  && messaggioErroreDati" [innerHTML]="messaggioErroreDati | escapeHtml">
+</div>

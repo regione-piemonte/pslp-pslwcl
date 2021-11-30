@@ -1,0 +1,301 @@
+<!-- 
+    -------------------------
+    configurazione calendario
+    impostazione 
+    form dati duplicazione
+    -------------------------
+-->
+<h4 class="border-n">{{ title }}</h4>
+
+<div>
+  <form #datiDupliazioneCalendarioForm="ngForm">
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <select
+            id="ambito_{{ id }}"
+            name="ambito"
+            [(ngModel)]="ambito"
+            #ambitoModel="ngModel"
+            required
+            [disabled]="disabledForm"
+          >
+            <option value=""> </option>
+            <option *ngFor="let option of ambitoList" [value]="option.codice">{{
+              option.descrizione
+            }}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="ambito_{{ id }}"
+            >Ambito&nbsp;<span *ngIf="!disabledForm" class="ob">*</span></label
+          >
+        </div>
+        <div
+          *ngIf="
+            datiDupliazioneCalendarioForm.controls['ambito'] &&
+            datiDupliazioneCalendarioForm.controls['ambito'].invalid
+          "
+        >
+          <div
+            class="text-danger"
+            *ngIf="
+              datiDupliazioneCalendarioForm.controls['ambito'].errors[
+                'required'
+              ]
+            "
+          >
+            Obbligatorio
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="nomeCalendario_{{ id }}"
+            name="nomeCalendario"
+            [(ngModel)]="nomeCalendario"
+            oninput="this.value = this.value.toUpperCase()"
+            required
+            maxlength="60"
+            [disabled]="disabledForm"
+          />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="nomeCalendario_{{ id }}"
+            >Nome del calendario&nbsp;<span *ngIf="!disabledForm" class="ob"
+              >*</span
+            ></label
+          >
+        </div>
+        <div
+          *ngIf="
+            datiDupliazioneCalendarioForm.controls['nomeCalendario'] &&
+            datiDupliazioneCalendarioForm.controls['nomeCalendario'].invalid
+          "
+        >
+          <div
+            class="text-danger"
+            *ngIf="
+              datiDupliazioneCalendarioForm.controls['nomeCalendario'].errors[
+                'required'
+              ]
+            "
+          >
+            Obbligatorio
+          </div>
+        </div>
+      </div>
+    </div>
+    <h5 class="mt-5 mb-2">Centro per l'Impiego</h5>
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div *ngIf="enti != undefined && enti.length === 1; else elseTemplate">
+          <p class="ente">
+            <strong>{{ enti[0].descrizione }}</strong>
+          </p>
+        </div>
+        <ng-template #elseTemplate>
+          <div class="group">
+            <select
+              id="ente_{{ id }}"
+              name="ente"
+              required
+              [(ngModel)]="enteIndex"
+              #ente="ngModel"
+              (change)="onChangeEnte()"
+              [disabled]="disabledForm"
+            >
+              <option [ngValue]="null">Seleziona un ente</option>
+              <option [value]="i" *ngFor="let item of enti; let i = index">{{
+                item.descrizione
+              }}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="ente_{{ id }}"
+              >Ente&nbsp;<span *ngIf="!disabledForm" class="ob">*</span></label
+            >
+          </div>
+          <div
+            *ngIf="
+              datiDupliazioneCalendarioForm.controls['ente'] &&
+              datiDupliazioneCalendarioForm.controls['ente'].invalid
+            "
+          >
+            <div
+              class="text-danger"
+              *ngIf="
+                datiDupliazioneCalendarioForm.controls['ente'].errors[
+                  'required'
+                ]
+              "
+            >
+              Obbligatorio
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
+        <div class="group">
+          <select
+            id="sportello_{{ id }}"
+            name="sportello"
+            [(ngModel)]="sportelloIndex"
+            #sportello="ngModel"
+            required
+            (change)="onChangeSportello()"
+            [disabled]="disabledForm"
+          >
+            <option [value]="i" *ngFor="let item of sportelli; let i = index"
+              >{{ item.descrizione }} ({{ item.descrizione_indirizzo }})</option
+            >
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="sportello_{{ id }}"
+            >Sportello&nbsp;<span *ngIf="!disabledForm" class="ob"
+              >*</span
+            ></label
+          >
+        </div>
+        <div
+          *ngIf="
+            datiDupliazioneCalendarioForm.controls['sportello'] &&
+            datiDupliazioneCalendarioForm.controls['sportello'].invalid
+          "
+        >
+          <div
+            class="text-danger"
+            *ngIf="
+              datiDupliazioneCalendarioForm.controls['sportello'].errors[
+                'required'
+              ]
+            "
+          >
+            Obbligatorio
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4 mb-4">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6" *ngIf="!disabledForm">
+        <div class="input-group group">
+          <div class="mr-3 pt-4">Duplica fasce</div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input
+              type="radio"
+              name="duplicaFasce"
+              id="duplicaFasceSi_{{ id }}"
+              [value]="true"
+              [(ngModel)]="duplicaFasce"
+              [checked]="duplicaFasce"
+            />
+            <label for="duplicaFasceSi_{{ id }}" class="pt-1">S&igrave;</label>
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input
+              type="radio"
+              name="duplicaFasce"
+              id="duplicaFasceNo_{{ id }}"
+              [value]="false"
+              [(ngModel)]="duplicaFasce"
+              [checked]="!duplicaFasce"
+            />
+            <label for="duplicaFasceNo_{{ id }}" class="pt-1">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6" *ngIf="!disabledForm">
+        <div class="input-group group">
+          <div class="mr-3 pt-4">Duplica eccezioni</div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input
+              type="radio"
+              name="duplicaEccezioni"
+              id="duplicaEccezioniSi_{{ id }}"
+              [value]="true"
+              [(ngModel)]="duplicaEccezioni"
+              [checked]="duplicaEccezioni"
+            />
+            <label for="duplicaEccezioniSi_{{ id }}" class="pt-1"
+              >S&igrave;</label
+            >
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input
+              type="radio"
+              name="duplicaEccezioni"
+              id="duplicaEccezioniNo_{{ id }}"
+              [value]="false"
+              [(ngModel)]="duplicaEccezioni"
+              [checked]="!duplicaEccezioni"
+            />
+            <label for="duplicaEccezioniNo_{{ id }}" class="pt-1">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h6 id="descTab" class="mt-5" *ngIf="disabledForm">Periodo di validit&agrave;</h6>
+    <div class="scrollbar-table scrollbar-primary" *ngIf="disabledForm">
+      <table aria-describedby="descTab"
+        class="table table-bordered table-striped table-hover"
+        id="periodiValTable_{{ id }}"
+      >
+        <thead>
+          <tr>
+            <th scope="col">Data di inizio validit&agrave;</th>
+            <th scope="col">Data di fine validit&agrave;</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="periodiValidita.length; else noData">
+          <tr
+            *ngFor="
+              let item of periodiValidita;
+              let i = index;
+              let isLast = last
+            "
+          >
+            <td>{{ item.data_da | date: "dd/MM/yyyy" }}</td>
+            <td>{{ item.data_a | date: "dd/MM/yyyy" }}</td>
+          </tr>
+        </tbody>
+        <ng-template #noData>
+          <tbody>
+            <tr>
+              <td colspan="4">Non ci sono dati.</td>
+            </tr>
+          </tbody>
+        </ng-template>
+      </table>
+    </div>
+    <div class="row mt-5 mb-5" *ngIf="!disabledForm">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <div>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-lg"
+            (click)="onIndietro()"
+          >
+            INDIETRO
+          </button>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary btn-lg"
+            [disabled]="datiDupliazioneCalendarioForm.invalid"
+            (click)="onSalva()"
+          >
+            DUPLICA
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

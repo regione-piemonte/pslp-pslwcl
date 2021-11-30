@@ -1,0 +1,20 @@
+/**
+   foglio di stile 
+   pagina aggiungi periodo
+*/
+.ng-valid[required], .ng-valid.required  {
+    border-left: 5px solid #42A948;
+  }
+  
+  .ng-invalid:not(form)  {
+    border-left: 5px solid #a94442;
+  }
+  
+  label {
+    padding-left: 7px;
+
+  }
+  
+  .group {
+    margin-top: 0px;
+  }

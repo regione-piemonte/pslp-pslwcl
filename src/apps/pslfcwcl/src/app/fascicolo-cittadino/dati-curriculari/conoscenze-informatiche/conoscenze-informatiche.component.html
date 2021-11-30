@@ -1,0 +1,141 @@
+<pslshare-paginated-table [columnNumber]="4" [pagedResponse]="conoscenzeInformaticheWrapper" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Conoscenza Specifica</th>
+      <th scope="col">Tipo Conoscenza</th>
+      <th scope="col">Livello</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.conoscenza?.tipo_conoscenza.descrizione }}</td>
+      <td>{{ el.categoria?.descrizione}}</td>
+      <td>{{ el.conoscenza?.livello_conoscenza.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizza" (click)="onVisualizza(el.conoscenza)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !conoscenza" (click)="onNuovo()">AGGIUNGI
+    CONOSCENZA INFORMATICA</button>
+</p>
+<form #conoscenzaInformaticaForm="ngForm" *ngIf="conoscenza">
+  <em data-scroll-marker="conoscenzeInformatiche"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="form-row form-inline">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="categoriaConoscenza" name="categoriaConoscenza" class="col-12"
+          [(ngModel)]="laCategoriaConoscenzaInformatica.codice_ministeriale" required
+          (change)="conoscenza.tipo_conoscenza.codice_ministeriale = null"
+          [disabled]='readOnly || isVisualizza' #cateCono="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngIf="isVisualizza && conoscenza" selected>{{laCategoriaConoscenzaInformatica?.descrizione}}</option>
+          <option *ngFor="let op of laListaCatConoInfo" [value]="op.codice_ministeriale">
+            {{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="categoriaConoscenza">Tipo Conoscenza</label>
+        <pslshare-error-handler [model]="cateCono" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="livelloConoscenza"
+          name="livelloConoscenza"
+          class="col-12"
+          [(ngModel)]="conoscenza.tipo_conoscenza.codice_ministeriale" required [disabled]='readOnly || isVisualizza'
+          [pslwcllibValueNotPresentValidator]="{list: sap.conoscenze_informatiche, path: 'tipo_conoscenza.codice_ministeriale', idx: updateIndex}"
+          #livelloCono="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngIf="isVisualizza && conoscenza" selected>{{conoscenza?.tipo_conoscenza?.descrizione}}</option>
+          <option *ngFor="let op of listaConoscenzaSpecifica" [value]="op.codice_ministeriale">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="livelloConoscenza">Conoscenza specifica</label>
+        <pslshare-error-handler [model]="livelloCono"
+          [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Conoscenza specifica già presente'}">
+        </pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="gradiLivelloConoscenza" name="gradiLivelloConoscenza" class="col-12"
+          [(ngModel)]="conoscenza.livello_conoscenza.codice_ministeriale" required [disabled]='readOnly || isVisualizza'
+          #gradiLivello="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngIf="isVisualizza && conoscenza" selected>{{conoscenza?.livello_conoscenza?.descrizione}}</option>
+          <option *ngFor="let op of listaGradiConoscenzaInformatica" [value]="op.codice_ministeriale">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="gradiLivelloConoscenza">Livello</label>
+      </div>
+      <pslshare-error-handler [model]="gradiLivello" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="input-group group">
+        <div for="eventualiSpecifiche">Eventuali specifiche&nbsp;</div>
+        <textarea
+            id="eventualiSpecifiche"
+            name="eventualiSpecifiche"
+            rows="2"
+            [disabled]='readOnly || isVisualizza' maxlength="250"
+            [(ngModel)]="noteSpecifiche"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            maxlength="250"
+            style="resize: none;"
+            ></textarea>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="!readOnly">
+    <div class="row mt-5" *ngIf="!isVisualizza; else elseBlock">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="button" class="btn btn-outline-primary" [disabled]="!readOnly && !conoscenzaInformaticaForm.valid"
+          (click)="onSalva()">CONFERMA</button>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="row mt-5">
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+          <button type="button" class="btn btn-outline-primary" *ngIf="conoscenza"
+            (click)="onAnnulla()">ANNULLA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+          <button type="button" class="btn btn-outline-danger" (click)="onElimina()"
+            [disabled]="readOnly">ELIMINA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+          <button type="button" class="btn btn-outline-primary" (click)="onModifica()"
+            [disabled]="readOnly">MODIFICA</button>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+  <pslshare-showdata [oggettoDati]="sap.conoscenze_informatiche"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="conoscenza"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="readOnly"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="isVisualizza"></pslshare-showdata>
+
+
+</form>

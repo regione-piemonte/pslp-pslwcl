@@ -1,0 +1,7 @@
+.mytooltipClass .tooltip-inner {
+  background-color: darkgreen;
+  font-size: 125%;
+}
+.mytooltipClass .arrow::before {
+  border-top-color: darkgreen;
+}

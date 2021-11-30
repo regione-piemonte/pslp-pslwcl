@@ -1,0 +1,81 @@
+<div class="card no-border">
+
+  <div class="card-header" id="headingOne_info">
+    <h4 class="mb-0">
+      <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+        [attr.data-target]="'#collapseOne_info'" aria-expanded="true" aria-controls="collapseOne_info">
+        Configurazione informazioni aggiuntive
+      </button>
+    </h4>
+  </div>
+
+  <div id="collapseOne_info" class="collapse" attr.aria-labelledby="headingOne_info" data-parent="#accordionDati">
+    <div class="grey1">
+      <div class="row mb-4">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+          <div class="group mt-0">
+            <label for="info_ambito">Ambito</label>
+            <select id="info_ambito" name="ambito" required [(ngModel)]="ambito" #ambitoModel="ngModel"
+              (ngModelChange)="onAmbitoChange($event)" [disabled]="showAggiungiInfo">
+              <option value="" selected>Selezionare un'opzione</option>
+              <option *ngFor="let option of ambitoList" [value]="option.codice">{{option.descrizione}}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </div>
+      <div id="descTab" class="row mb-4">
+        &nbsp;
+      </div>
+      <div class="scrollbar-table scrollbar-primary">
+        <table  aria-describedby="descTab" class="table table-bordered table-striped table-hover" id="infoTable">
+          <thead>
+            <tr>
+              <th scope="col" class="width:30%">Descrizione</th>
+              <th scope="col">Visibilit&agrave;</th>
+              <th scope="col">Bloccante</th>
+              <th scope="col">Data inizio</th>
+              <th scope="col">Data fine</th>
+              <th scope="col">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="infoConfList && infoConfList.length > 0; else noData">
+            <tr *ngFor="let info of infoConfList">
+              <td>{{ info.descrizione }}</td>
+              <td>{{ info.flag_visibile_pslp }}</td>
+              <td>{{ info.bloccante }}</td>
+              <td>{{ info.data_inizio | date : 'dd/MM/yyyy' }}</td>
+              <td>{{ info.data_fine | date : 'dd/MM/yyyy' }}</td>
+              <td class="text-center">
+                <button (click)="onModificaInfo(info)" class="mr-2" [disabled]="showAggiungiInfo">
+                  <span class="far fa-edit" ngbTooltip="Modifica"></span> Modifica
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <ng-template #noData>
+            <tbody>
+              <tr>
+                <td colspan="6">Non ci sono dati. <span *ngIf="ambito===''">Selezionare un ambito.</span></td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </table>
+      </div>
+      <div class="row mb-5">
+        <div class="col-12  text-right">
+          <button class="btn btn-outline-primary" type="button" (click)="onAggiungiInfo()"
+            [disabled]="showAggiungiInfo || ambito ===''">AGGIUNGI UN'ALTRA INFORMAZIONE</button>
+        </div>
+      </div>
+      <div class="collapse" [class.show]="showAggiungiInfo">
+        <div class="grey1">
+          <pslbowcl-aggiungi-informazione [ambito]="ambito" [configurazione]="configurazione" [flgBloccante]="flgBloccante"
+            [flgVisibile]="flgVisibile" (annulla)="annullaOrSuccessConfig()" (success)="annullaOrSuccessConfig()">
+          </pslbowcl-aggiungi-informazione>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

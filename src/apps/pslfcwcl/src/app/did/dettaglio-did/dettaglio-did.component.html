@@ -1,0 +1,440 @@
+<form #dettaglioDidForm="ngForm" (ngSubmit)="onSubmit()" *ngIf="ngOnInitTerminated">
+  <div class="grey1">
+    <h4 class="border-n mt-5">DID &nbsp;</h4>
+    <ng-template [ngIf]='!isVisualizationState'>
+      <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+    </ng-template>
+    <ul class="dett">
+      <li>Data dichiarazione DID<br>
+        <strong>{{did?.data_did  | date: 'dd/MM/yyyy'}}&nbsp;</strong></li>
+      <ng-template [ngIf]="isVisualizationState || isModifyState">
+        <li>Data ultimo stato DID<br>
+          <strong>{{did?.data_stato  | date: 'dd/MM/yyyy'}}&nbsp;</strong></li>
+        <li>Stato DID<br>
+          <strong class={{textStatoDid}}>&nbsp;{{descrUltimoStato}}&nbsp;</strong>&nbsp;<strong>{{msgStatoInvio}}</strong><br>
+        </li>
+      </ng-template>
+    </ul>
+
+    <div *ngIf="flgRispostaPresenteLavoroChiuso">
+      <div class="row mt-5 mb-5">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="group">
+            <select id="laRispostaLavoroChiuso" name="laRispostaLavoroChiuso" class="col-12"
+              [(ngModel)]="laRispostaDelLavoroChiuso.id_risposta" (change)="onChangeLavoro()" required
+              #laRispostaLavoroChiuso="ngModel" [disabled]="!isInsertState">
+              <option [ngValue]="null"> </option>
+              <option *ngFor="let op of listaRisposteLavoroChiuso" [value]="op.id_risposta">{{op.risposta}}
+              </option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="domanda">{{domandaLavoroChiuso}}
+              <div class="popup" onclick="myFunction('confermaLavoroInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="confermaLavoroInfo"
+                  [innerHTML]="confermaLavoroInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+            <pslshare-error-handler [model]="laRispostaLavoroChiuso" [errors]="{required: 'Obbligatorio'}">
+            </pslshare-error-handler>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="flgRispostaPresentePercettore">
+      <div class="row mt-5 mb-5">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="group">
+            <select id="laRispostaPercettore" name="laRispostaPercettore" class="col-12"
+              [(ngModel)]="laRispostaDelPercettore.id_risposta" required #laRispostaPercettore="ngModel"
+              [disabled]="!isInsertState">
+              <option [ngValue]="null"> </option>
+              <option *ngFor="let op of listaRispostePercettore" [value]="op.id_risposta">{{op.risposta}}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="domanda">{{domandaPercettore}}
+              <div class="popup" onclick="myFunction('percettoreInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="percettoreInfo"
+                  [innerHTML]="percettoreInfo | escapeHtml">
+                </div>
+              </div>
+
+            </label>
+            <pslshare-error-handler [model]="laRispostaPercettore" [errors]="{required: 'Obbligatorio'}">
+            </pslshare-error-handler>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template [ngIf]="!isDidSenzaProfilng || !isVisualizationState" [ngIfElse]='senzaProfiling'>
+      <h4 class="border-n mt-5">Profiling &nbsp;</h4>
+      <br>
+      <div class="row mb-4">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Genere
+          <div class="popup" onclick="myFunction('genereInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="genereInfo" [innerHTML]="genereInfo | escapeHtml"></div>
+          </div>
+          <br>
+
+          <strong>{{ ilSesso }}</strong>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Cittadinanza
+          <div class="popup" onclick="myFunction('cittadinanzaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="cittadinanzaInfo"
+              [innerHTML]="cittadinanzaInfo | escapeHtml">
+            </div>
+          </div>
+          <br>
+          <strong>{{ laCittadinanza }}</strong>
+        </div>
+
+      </div>
+      <div class="row mb-4">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Et&agrave;
+          <div class="popup" onclick="myFunction('etaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="etaInfo" [innerHTML]="etaInfo | escapeHtml"></div>
+          </div>
+          <br>
+
+          <strong>{{ eta }}</strong>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Provincia di Residenza
+          <div class="popup" onclick="myFunction('provinciaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="provinciaInfo" [innerHTML]="provinciaInfo | escapeHtml">
+            </div>
+          </div>
+          <br>
+          <strong>{{ provinciaRes }}</strong>
+        </div>
+
+      </div>
+      <div class="row mb-3">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div *ngIf="!isCittadinanzaItaliana">
+            <div class="group">
+              <select id="presenza" name="presenza" required [(ngModel)]="dataModel.presenzaItalia" #presenza="ngModel"
+                [disabled]="isVisualizationState">
+                <option value=""></option>
+                <option *ngFor="let option of liste.motivoPresenzaInItalia" [value]="option.codice_silp">
+                  {{option.descrizione}}</option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label class="info" for="presenza">Presenza in Italia da:
+                <div class="popup" onclick="myFunction('presenzaItaInfo')">
+                  <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                  <div class="popuptext" [class.down]="popdown" id="presenzaItaInfo"
+                    [innerHTML]="presenzaItaInfo | escapeHtml">
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="text-danger" [hidden]="presenza.valid || presenza.pristine">obbligatorio</div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="group">
+            <select id="titolo" name="titolo" required [disabled]="!liste?.titoloStudio?.length || isVisualizationState"
+              [(ngModel)]="dataModel.titoloStudio" #titolo="ngModel">
+              <option value=""></option>
+              <option *ngFor="let option of liste.titoloStudio" [value]="option.codice_silp">{{option.descrizione}}
+              </option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="titolo">Titolo di studio &nbsp;
+              <div class="popup" onclick="myFunction('titoloStudioInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="titoloStudioInfo"
+                  [innerHTML]="titoloStudioInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+
+          </div>
+          <div class="text-danger" [hidden]="titolo.valid || titolo.pristine">obbligatorio</div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          NB=Se non è presente il Titolo di Studio ricercato, accedere alla funzionalità di
+          Gestione Fascicolo ed inserirlo
+        </div>
+
+
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="group">
+            <select id="condizione" name="condizione" required [(ngModel)]="dataModel.condizioneOccupazionale"
+              #condizione="ngModel" [disabled]="isVisualizationState">
+              <option value=""></option>
+              <option *ngFor="let option of liste.condizioneOccupazionale" [value]="option.codice_silp">
+                {{option.descrizione}}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="condizione">Condizione occupazionale un anno prima dell'adesione
+              <div class="popup" onclick="myFunction('condizioneOccuInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="condizioneOccuInfo"
+                  [innerHTML]="condizioneOccuInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="text-danger" [hidden]="condizione.valid || condizione.pristine">obbligatorio</div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 row-form form-inline">
+          <div class="mr-3 pt-4" #maiAvutoLavoroLabel>
+            Ha mai avuto un lavoro ? &nbsp;
+            <div class="popup" onclick="myFunction('avutoLavoroInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="avutoLavoroInfo"
+                [innerHTML]="avutoLavoroInfo | escapeHtml">
+              </div>
+            </div>
+            <span class="ob">* </span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-5">
+            <fieldset [disabled]="isVisualizationState"><!-- //NOSONAR -->
+              <div class="md-radio md-radio-inline mt-2 mb-0">
+                <input type="radio" required id="maiAvutoLavoroSi" (change)="onChangeMaiUnLavoro('S')"
+                  name="maiAvutoLavoro" [value]="true" [(ngModel)]="flgHaAvutoLavoro">
+                <label for="maiAvutoLavoroSi">Si</label>
+              </div>
+              <div class="md-radio md-radio-inline mt-2 mb-0">
+                <input type="radio" required id="maiAvutoLavoroNo" (change)="onChangeMaiUnLavoro('N')"
+                  name="maiAvutoLavoro" [value]="false" [(ngModel)]="flgHaAvutoLavoro">
+                <label for="maiAvutoLavoroNo">No</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div *ngIf="flgHaAvutoLavoro">
+            <div class="input-group group">
+              <input type="text" required id="mesi" name="mesi"
+                [(ngModel)]="did?.dati_profiling_did.num_mesi_ultimo_rapporto" pattern="[0-9]+" maxlength="3"
+                [disabled]="isVisualizationState">
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="mesi">Da quanti mesi si è concluso l’ultimo lavoro
+                <div class="popup" onclick="myFunction('mesiUltimoLavInfo')">
+                  <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                  <div class="popuptext" [class.down]="popdown" id="mesiUltimoLavInfo"
+                    [innerHTML]="mesiUltimoLavInfo | escapeHtml">
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- cmbcategoria -->
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div *ngIf="isMaiLavorato">
+            <div class="input-group group">
+              <select id="cmbcategoria" [required]="did?.dati_profiling_did.flg_ha_avuto_lavoro === 'S'"
+                name="cmbcategoria" class="col-12" [(ngModel)]="dataModel.posizioneProfessionale" #categoria="ngModel"
+                [disabled]="isVisualizationState">
+                <option [ngValue]="null"></option>
+                <option *ngFor="let op of listaCategorieInquadramento" [ngValue]="op.codice_silp">{{ op.descrizione }}
+                </option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="cmbcategoria">Posizione nella professione dell'ultima occupazione svolta&nbsp;
+                <div class="popup" onclick="myFunction('posizioneInfo')">
+                  <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                  <div class="popuptext" [class.down]="popdown" id="posizioneInfo"
+                    [innerHTML]="posizioneInfo | escapeHtml">
+                  </div>
+                </div>
+              </label>
+              <pslshare-error-handler [model]="categoria" [errors]="{required: 'Obbligatorio'}">
+              </pslshare-error-handler>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input type="text" id="mesiCercandoLavoro" required name="mesiCercandoLavoro"
+              [(ngModel)]="did?.dati_profiling_did.num_mesi_ricerca_lavoro" pattern="[0-9]+" maxlength="3"
+              [disabled]="isVisualizationState">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="mesiCercandoLavoro">Da quanti mesi sta cercando un lavoro:
+              <div class="popup" onclick="myFunction('mesiCercandoInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="mesiCercandoInfo"
+                  [innerHTML]="mesiCercandoInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="group">
+            <select id="corsoForm" name="corsoForm" required [(ngModel)]="dataModel.corsiFormazione"
+              #corsoForm="ngModel" [disabled]="isVisualizationState">
+              <option value=""></option>
+              <option *ngFor="let option of liste.corsiFormazione" [value]="option.codice_silp">
+                {{option.descrizione}}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="corsoForm">Attualmente &egrave; iscritto a scuola/universit&agrave; o corso di formazione professionale (IFP,
+              IFTS, ITS)
+              <div class="popup" onclick="myFunction('corsiInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="corsiInfo" [innerHTML]="corsiInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="text-danger" [hidden]="corsoForm.valid || corsoForm.pristine">obbligatorio</div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="input-group group">
+            <input type="text" id="numComponentiFam" required name="numComponentiFam"
+              [(ngModel)]="did?.dati_profiling_did.num_componenti_famiglia" pattern="[0-9]+" maxlength="2"
+              [disabled]="isVisualizationState">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="numComponentiFam">Numero di componenti in famiglia
+              <div class="popup" onclick="myFunction('numComponentiInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="numComponentiInfo"
+                  [innerHTML]="numComponentiInfo | escapeHtml">
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 row-form form-inline">
+          <div class="mr-3 pt-4" #figliCoabitantilabel>
+            Presenza figli coabitanti e/o a carico ? &nbsp;
+            <div class="popup" onclick="myFunction('figliCoaInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="figliCoaInfo" [innerHTML]="figliCoaInfo | escapeHtml">
+              </div>
+            </div>
+            <span class="ob">*</span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-5">
+            <fieldset [disabled]="isVisualizationState"><!-- //NOSONAR -->
+              <div class="md-radio md-radio-inline mt-2 mb-0">
+                <input type="radio" required id="figliCoabitantiSi" (change)="onChangeFigliCoabitanti('S')"
+                  name="figliCoabitanti" [value]="true" [(ngModel)]="flgFigliCarico">
+                <label for="figliCoabitantiSi">Si</label>
+              </div>
+              <div class="md-radio md-radio-inline mt-2 mb-0">
+                <input type="radio" required id="figliCoabitantiNo" (change)="onChangeFigliCoabitanti('N')"
+                  name="figliCoabitanti" [value]="false" [(ngModel)]="flgFigliCarico">
+                <label for="figliCoabitantiNo">No</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 row-form form-inline">
+          <div *ngIf="isFigliCoabitanti">
+            <div class="mr-3 pt-4" #figliCoabitantiMinlabel>
+              Presenza figli coabitanti e/o a carico con meno di 18 anni: &nbsp;
+              <div class="popup" onclick="myFunction('figliCoaMinoInfo')">
+                <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+                <div class="popuptext" [class.down]="popdown" id="figliCoaMinoInfo"
+                  [innerHTML]="figliCoaMinoInfo | escapeHtml">
+                </div>
+              </div>
+              <span class="ob">*</span>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-5">
+              <fieldset [disabled]="isVisualizationState"><!-- //NOSONAR -->
+                <div class="md-radio md-radio-inline mt-2 mb-0">
+                  <input type="radio" [required]="did?.dati_profiling_did.flg_figli_carico === 'S'"
+                    id="figliCoabitantiMinSi" name="figliCoabitantiMin" [value]="true"
+                    [(ngModel)]="flgFigliCaricoMinori">
+                  <label for="figliCoabitantiMinSi">Si</label>
+                </div>
+                <div class="md-radio md-radio-inline mt-2 mb-0">
+                  <input type="radio" id="figliCoabitantiMinNo" name="figliCoabitantiMin" [value]="false" required
+                    [(ngModel)]="flgFigliCaricoMinori">
+                  <label for="figliCoabitantiMinNo">No</label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Indice profiling:
+          <div class="popup" onclick="myFunction('indiceProfilingInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="indiceProfilingInfo"
+              [innerHTML]="indiceProfilingInfo | escapeHtml"></div>
+          </div>
+          <br>
+
+          <strong>{{did?.dati_profiling_did.indice_profiling}}&nbsp;</strong>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          Data ultimo aggiornamento profiling:
+          <div class="popup" onclick="myFunction('dataProfilingInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="dataProfilingInfo"
+              [innerHTML]="dataProfilingInfo | escapeHtml"></div>
+          </div>
+          <br>
+          <strong>{{did?.dati_profiling_did.data_inserimento  | date: 'dd/MM/yyyy'}}&nbsp;</strong>
+        </div>
+
+      </div>
+
+    </ng-template>
+    <ng-template #senzaProfiling>
+      <ul><li>
+        Profiling non presente per questa dichiarazione.
+      </li></ul>
+    </ng-template>
+
+  </div>
+
+  <!-- TASTI ANNULLA/SALVA IN EDITING -->
+  <div class="row mt-5" *ngIf="isEditingState">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-outline-primary"
+        [disabled]="readOnly || !dettaglioDidForm.valid || laRispostaDelLavoroChiuso?.id_risposta == ID_RISPOSTA_LAVORO_CHIUSO "
+        (click)="onSalva()">
+        <ng-template [ngIf]="isModifyState" [ngIfElse]="elseBlock">
+          AGGIORNA PROFILING
+        </ng-template>
+        <ng-template #elseBlock>SALVA DID</ng-template>
+
+      </button>
+    </div>
+  </div>
+
+
+</form>
+<pslfcwcl-navigation-button-did
+  [nextButtonHide]="true"
+  [prevButtonHide]="false"
+  [nextButtonDisabled]="true"
+  [prevButtonName]="prevButtonName"
+  [forcePrevButtonName]="true"
+  [isModifyState]= "isEditingState"
+  (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-did>

@@ -1,0 +1,365 @@
+<form #familiariACaricoForm="ngForm" *ngIf="dichiarazioneFamiliariCOMI || isRichiestaIscrizione">
+  <em data-scroll-marker="dichiarazioneFamiliari"></em>
+  <div>
+
+    <h5 *ngIf="dichiarazioneFamiliariCOMI.flag_ultima_dichiarazione_inserita else noUltima" class="border-n">La situazione dei familiari a carico deve essere aggiornata se varia entro il
+      &ldquo;31/12/{{ annoInCorso }}&rdquo; <button class="btn btn-link btn-sm" title="Ultima Dichiarazione Inserita"  >
+        <span class="fa-stack">
+          <span class="fas fa-circle fa-stack-2x"></span>
+          <span class="fas fa-info fa-stack-1x fa-inverse"></span>
+        </span>
+      </button></h5>
+    <ng-template #noUltima><h5 >La situazione dei familiari a carico al
+      &ldquo;{{ dichiarazioneFamiliariCOMI.data_dichiarazione | date:'dd/MM/yyyy' }}&rdquo; </h5></ng-template>
+      <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+    <div class="form-row form-inline">
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3"
+      >
+        <div class="input-group group">
+          <input type="text" id="anno" name="anno" [(ngModel)]="dichiarazioneFamiliariCOMI.anno_validita" disabled
+            maxlength="10" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="anno">Anno</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="input-group group" *ngIf="!isRichiestaIscrizione">
+          <input type="text" id="dataInserimento" name="dataInserimento" ngbDatepicker
+            [(ngModel)]="dichiarazioneFamiliariCOMI.data_dichiarazione" disabled/>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataInserimento">Data Dichiarazione&nbsp;</label>
+        </div>
+      </div>
+      <ng-template [ngIf]="!isEditingState  || isRichiestaIscrizione">
+        <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+          <div class="input-group group">
+            <input type="text" id="numFam" name="numFam" [ngModel]="dichiarazioneFamiliariCOMI.numero_familiari" disabled/>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="numFam">N° familiari a carico&nbsp;</label>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3" *ngIf="!isRichiestaIscrizione">
+          <div class="input-group group" *ngIf="dichiarazioneFamiliariCOMI.fonte =='SILP' ">
+            <input type="text" id="intermediata" name="intermediata" value="SI" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="intermediata">Intermediata</label>
+          </div>
+          <div class="input-group group" *ngIf="dichiarazioneFamiliariCOMI.fonte =='PSLP' ">
+            <input type="text" id="intermediata" name="intermediata" value="NO" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="intermediata">Intermediata</label>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3 col-xl-3" *ngIf="!isRichiestaIscrizione">
+          <div class="input-group group">
+            <input type="text" id="cpl" name="cpl" [ngModel]="dichiarazioneFamiliariCOMI.cpi?.descrizione" disabled />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cpl">Centro per l'Impiego</label>
+          </div>
+        </div>
+      </ng-template>
+
+    </div>
+
+    <div class="form-row form-inline">
+      <div class="col-sm-18 col-md-18 col-lg-12 col-xl-12">
+        <pslshare-no-paginated-table *ngIf="!erroreDettaglioFamiliari" [columnNumber]="4"
+          [pagedResponse]="dichiarazioneFamiliariCOMI.dettaglio_dichiarazione_familiari_a_carico">
+          <ng-template pslbasepageNoPaginationHead>
+            <tr>
+              <th scope="col" class="align-middle">Motivo a Carico</th>
+              <th scope="col" class="align-middle">Cognome</th>
+              <th scope="col" class="align-middle">Nome</th>
+              <th scope="col" class="align-middle">Codice fiscale</th>
+              <th scope="col"></th>
+            </tr>
+          </ng-template>
+          <ng-template pslbasepageNoPaginationBody let-el>
+            <tr>
+              <!-- <td>{{el.motivo_carico.descrizione}}</td> -->
+              <td>{{getDescMotivo(el.motivo_carico.codice_silp)}}</td>
+              <td>{{el.cognome_familiare}}</td>
+              <td>{{el.nome_familiare}}</td>
+              <td>{{el.codice_fiscale_familiare}}</td>
+              <td class="text-nowrap">
+                <button *ngIf="isVisualizationState" title="Visualizza" class="btn btn-link btn-sm"
+                  (click)="onVisualizza(el)">
+                  <span class="fas fa-2x fa-eye"></span>
+                </button>&nbsp;&nbsp;
+                <button *ngIf="isEditingState" title="Modifica" class="btn btn-link btn-sm" (click)="onModifica(el)"
+                  [disabled]="!isVisualizationStateFamiliare">
+                  <span class="fas fa-2x fa-pencil-alt"></span>
+                </button>&nbsp;&nbsp;
+                <button *ngIf="isEditingState" title="Elimina" class="btn btn-link btn-sm" (click)="onElimina(el)"
+                  [disabled]="!isVisualizationStateFamiliare">
+                  <span class="fas fa-2x fa-trash"></span>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </pslshare-no-paginated-table>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="text-danger" *ngIf="erroreDettaglioFamiliari" [innerHTML]="erroreDettaglioFamiliari | escapeHtml">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-5 text-right">
+      <button type="button" class="btn btn-outline-primary"
+        *ngIf="!readOnly && !ilFamiliareSelezionato && !isVisualizationState" (click)="onNuovoFamiliare()">AGGIUNGI
+        FAMILIARE</button>
+    </p>
+
+
+    <form #anagraficaForm="ngForm" *ngIf="ilFamiliareSelezionato">
+      <div class="grey1 mb-5 shadow-sm p-3 mb-5 bg-white">
+        <h5>Dati Anagrafici Familiare&nbsp;</h5>
+
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+
+            <div class="input-group group">
+              <a href="#" data-toggle="modal" data-target="#elencoMotivo">
+                <span class="fas fa-question-circle fa-lg"></span></a>&nbsp;
+              <select id="cmbTipo" name="cmbTipo" class="col-12"
+                [(ngModel)]="ilFamiliareSelezionato.motivo_carico.codice_silp" required
+                (change)="onChangeCambiaMessaggio()" [disabled]="readOnly || isVisualizationState" #laTipo="ngModel">
+                <option [ngValue]="null"> </option>
+                <option *ngFor="let op of listaTipologieFamiliariDescBreve" [ngValue]="op.codice_silp">
+                  {{op.descrizione}}</option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="cmbTipo">&nbsp;&nbsp;&nbsp;Motivo carico familiare </label>
+              <pslshare-error-handler [model]="laTipo" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+            </div>
+
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="text-danger" *ngIf="!laDescrizioneLunga; else siDescLunga">indicare Motivo Carico Familiare
+            </div>
+            <ng-template #siDescLunga>
+              <div class="text-info" [innerHTML]="laDescrizioneLunga | escapeHtml"></div>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input type="text" id="cognome" name="cognome" [(ngModel)]="ilFamiliareSelezionato.cognome_familiare"
+                required [disabled]='readOnly || isVisualizationState' maxlength="100" #ilCognome="ngModel" onkeyup="
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(start, end);" />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="cognome">Cognome</label>
+              <pslshare-error-handler [model]="ilCognome" [errors]="{required: 'Obbligatorio'}">
+              </pslshare-error-handler>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input type="text" id="nome" name="nome" [(ngModel)]="ilFamiliareSelezionato.nome_familiare"
+                #ilNome="ngModel" [disabled]="readOnly || isVisualizationState" required onkeyup="
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.toUpperCase();
+                this.setSelectionRange(start, end);" />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="nome">Nome</label>
+              <pslshare-error-handler [model]="ilNome" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input type="text" id="codiceFiscale" name="codiceFiscale"
+                [(ngModel)]="ilFamiliareSelezionato.codice_fiscale_familiare" #codiceFiscale="ngModel"
+                [disabled]="readOnly || isVisualizationState" required pslwcllibCodiceFiscaleValidator onkeyup="
+                  var start = this.selectionStart;
+                  var end = this.selectionEnd;
+                  this.value = this.value.toUpperCase();
+                  this.setSelectionRange(start, end);"
+                  [pslwcllibValueNotPresentValidator]="{list: dichiarazioneFamiliariCOMI.dettaglio_dichiarazione_familiari_a_carico, path: 'codice_fiscale_familiare', idx: updateIndex}"
+                maxlength="16" />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="codiceFiscale">Codice Fiscale</label>
+              <pslshare-error-handler [model]="codiceFiscale" [errors]="{required: 'Obbligatorio',
+                            valueAlreadyPresent: 'Codice Fiscale già presente in questa Dichiarazione'}"></pslshare-error-handler>
+              <div *ngIf="codiceFiscale.invalid && (codiceFiscale.dirty || codiceFiscale.touched)">
+                <p *ngIf="codiceFiscale.errors['required']" class="text-danger">Obbligatorio</p>
+                <p *ngIf="codiceFiscale.errors['codiceFiscale']" class="text-danger">
+                  {{ codiceFiscale.errors['codiceFiscale'] }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <select id="sesso" name="sesso" [(ngModel)]="ilFamiliareSelezionato.sesso" #sessoModel="ngModel"
+                [disabled]="readOnly || isVisualizationState" required>
+                <option value=""> </option>
+                <option *ngFor="let option of liste.sessi" [value]="option.codice">{{option.codice}}</option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="sesso">Sesso</label>
+              <pslshare-error-handler [model]="sessoModel" [errors]="{required: 'Obbligatorio'}">
+              </pslshare-error-handler>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input class="form-control" placeholder="gg/mm/aaaa" name="dataNascita" id="dataNascita"
+                [(ngModel)]="ilFamiliareSelezionato.data_nascita_familiare" required
+                [disabled]="readOnly || isVisualizationState" ngbDatepicker #dataNascitaDatepicker="ngbDatepicker"
+                pslwcllibFutureDateIsInvalidValidator #dataNascita="ngModel" maxlength="10">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary calendar" (click)="dataNascitaDatepicker.toggle()"
+                  [disabled]="!isEditingState" type="button"></button>
+              </div>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="data2">Data di nascita&nbsp;</label>
+              <pslshare-error-handler [model]="dataNascita"
+                [errors]="{required: 'Obbligatorio', length: '', age: '', format: ''}"></pslshare-error-handler>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="input-group group">
+              <input id="comuneNascita" name="comuneNascita" type="text" class="dropdown-input" #comuneNascita="ngModel"
+                [(ngModel)]="ilFamiliareSelezionato.luogo_di_nascita.comune" [ngbTypeahead]="searchComune"
+                [inputFormatter]="formatMatches" [resultFormatter]="formatMatches" [class.is-invalid]="searchFailed"
+                pslwcllibFnValidate [validateFunction]="noNazioneAndComuneNascita"
+                [disabled]="readOnly || isVisualizationState" />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="comuneNascita">Comune di nascita <span class="ob">*</span></label>
+            </div>
+            <div *ngIf="nazioneComuneError" class="text-danger">{{ nazioneComuneError }}</div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="input-group group">
+              <select id="nazione" name="nazione"
+                [(ngModel)]="ilFamiliareSelezionato.luogo_di_nascita.stato.codice_ministeriale"
+                (ngModelChange)="ilFamiliareSelezionato.luogo_di_nascita.stato.codice_ministeriale = $event"
+                #nazioneModel="ngModel" [disabled]="readOnly || isVisualizationState" pslwcllibFnValidate
+                [validateFunction]="noNazioneAndComuneNascita">
+                <option value=""> </option>
+                <option *ngFor="let option of liste.nazioni" [value]="option.codice_ministeriale"
+                  [attr.data-ue]="option.flag_ue">{{option.descrizione}}</option>
+              </select>
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="nazione">Stato di nascita <span class="ob">*</span></label>
+            </div>
+            <div *ngIf="nazioneComuneError" class="text-danger">{{ nazioneComuneError }}</div>
+          </div>
+        </div>
+        <div class="row mt-5" *ngIf="!isEditingState">
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+            <button type="button" class="btn btn-outline-secondary" (click)="onAnnullaDettaglioFamiliare()">CHIUDI
+              DETTAGLIO</button>
+          </div>
+        </div>
+        <div class="row mt-5" *ngIf="isEditingState">
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+            <button type="button" class="btn btn-outline-secondary" (click)="onAnnullaDettaglioFamiliare()">ANNULLA
+              DETTAGLIO</button>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+            <button type="button" class="btn btn-outline-primary"
+              [disabled]="!anagraficaForm.valid || !isPresenteStatoOrComune" (click)="onSalvaFamiliare()">CONFERMA
+              DETTAGLIO</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="form-row form-inline"  *ngIf="!isRichiestaIscrizione">
+      <div class="col-sm-18 col-md-18 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="note">NOTE&nbsp;</div>
+          <textarea
+          id="note"
+          name="note"
+          rows="2"
+          [disabled]="!isEditingState" maxlength="250"
+          [(ngModel)]="dichiarazioneFamiliariCOMI.note"
+          onkeyup="
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(start, end);"
+          maxlength="250"
+          style="resize: none;"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <pslshare-showdata [oggettoDati]="dichiarazioneFamiliariCOMI"></pslshare-showdata>
+  <div *ngIf="!isRichiestaIscrizione">
+  <!-- TASTI ANNULLA/SALVA IN EDITING -->
+  <div class="row mt-5" *ngIf="!readOnly && isEditingState && !isEditingStateFamiliare ; else elseBlock">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">
+        ANNULLA
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-primary" [disabled]="readOnly" (click)="onSalvaDichiarazione()">
+        SALVA DICHIARAZIONE
+      </button>
+    </div>
+  </div>
+  <!-- TASTI ELIMINA/MODIFICA IN VISUALIZZAZIONE -->
+  <ng-template #elseBlock>
+    <div class="row mt-5">
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+        <button type="button" class="btn btn-outline-primary" *ngIf="dichiarazioneFamiliariCOMI"
+          (click)="onAnnulla()">ANNULLA</button>
+      </div>
+    </div>
+  </ng-template>
+  </div>
+</form>
+
+
+<!-- Modal info -->
+<div class="modal fade" id="elencoMotivo" tabindex="-1" role="dialog" aria-labelledby="elencoMotivo" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Elenco Corrispondenze Motivo Carico Familiare</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5 text-left" [innerHTML]="element  | escapeHtml"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal info -->

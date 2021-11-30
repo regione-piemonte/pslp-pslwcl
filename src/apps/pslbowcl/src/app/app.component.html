@@ -1,0 +1,15 @@
+<ngx-spinner
+   name="main-spinner"
+   bdColor="rgba(51,51,51,0.8)"
+   size="medium"
+   color="#black"
+   type="ball-clip-rotate-multiple">
+   <p style="font-size: 20px; color: white">Caricamento in corso...</p>
+</ngx-spinner>
+<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+<pslshare-header-oper
+  [helpCache]="helpCache"
+  [subheaderContent]="subheaderContentTitolo"
+></pslshare-header-oper>
+<router-outlet></router-outlet>
+<pslshare-footer></pslshare-footer>

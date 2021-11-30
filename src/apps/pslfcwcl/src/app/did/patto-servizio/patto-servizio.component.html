@@ -1,0 +1,17 @@
+<em data-scroll-marker="salvaAllegato"></em>
+
+<pslshare-allegati-patto
+  (dataChanged)="setDataChanged()"
+  (loaded)="checkDataLoaded(2)">
+</pslshare-allegati-patto>
+
+<br/>
+<pslfcwcl-navigation-button-did
+  [nextButtonHide]="true"
+  [prevButtonHide]="false"
+  [nextButtonDisabled]="true"
+  [prevButtonName]="prevButtonName"
+  [forcePrevButtonName]="true"
+  [isModifyState]= "true"
+  (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-did>

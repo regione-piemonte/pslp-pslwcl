@@ -1,0 +1,44 @@
+
+
+<h4>{{ titoloPagina }} </h4>
+
+<div class="grey1 mb-5">
+
+    <div class="row mt-5 mb-5 ml-10">
+
+
+        <ng-template  [ngIf]="!errore">
+            <span [innerHTML]="messaggio | escapeHtml"></span>
+
+            <div class="alert alert-warning mt-5 mb-5" role="alert">
+                <h4>Attenzione</h4>
+                <p *ngIf="esito && esito.esitoErr && esito.esitoErr.messaggioInformativo">{{ esito.esitoErr.messaggioInformativo }}</p>
+
+              </div>
+        </ng-template>
+
+        <ng-template  [ngIf]="errore">
+            <span [innerHTML]="messaggio | escapeHtml"></span>
+
+        <div class="alert alert-danger mt-5 mb-5" role="alert">
+            <h4>Errore</h4>
+            <p>{{ esito.esitoErr.messaggioCittadino }}</p>
+
+            <p *ngIf="esito && esito.esitoErr && esito.esitoErr.messaggioInformativo">{{ esito.esitoErr.messaggioInformativo }}</p>
+          </div>
+        </ng-template>
+
+    </div>
+</div>
+
+
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="readOnly"
+    [prevButtonHide]="true"
+    [nextButtonDisabled]="nextButtonDisabled"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

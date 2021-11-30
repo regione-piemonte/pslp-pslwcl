@@ -1,0 +1,260 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+
+<h4 class="border-n">{{ titoloPagina }}{{ intestazionePagina }}</h4>
+
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+<form #formRichiesta="ngForm">
+  <div *ngIf="submitClicked && formRichiesta.invalid" class="text-danger">
+    Inserire tutti i campi obbligatori
+  </div>
+
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="row">
+    <div class="col-lg-6 pr-5 pb-4">
+      <div class="input-group group">
+        <select id="tipoIscrizione" name="cod_tipo_iscrizione" [(ngModel)]="richiestaModel.cod_tipo_iscrizione"
+            #tipoIscrizione="ngModel" [disabled]="readOnly || isBozza || isTrasferimento" (change)="popolaCategorie()" required>
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let option of liste.tipiIscrizione" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="tipoIscrizione">Tipo iscrizione
+          <div class="popup" onclick="myFunction('tipoIscrizioneInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="tipoIscrizioneInfo"
+              [innerHTML]="liste.messaggi['HC043'] | escapeHtml">
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="text-danger" [hidden]="!(tipoIscrizione.touched && tipoIscrizione.invalid)">obbligatorio</div>
+    </div>
+    <div class="col-lg-6 pr-5 pb-4">
+      <div class="input-group group">
+        <select id="motivoIscrizione" name="cod_motivo_richiesta" [disabled]="readOnly" [(ngModel)]="richiestaModel.cod_motivo_richiesta"
+            #motivoIscrizione="ngModel" required>
+          <option value=""> </option>
+          <option *ngFor="let option of liste.motiviIscrizione" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="motivoIscrizione">Motivo iscrizione
+          <div class="popup" onclick="myFunction('motivoIscrizioneInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="motivoIscrizioneInfo"
+              [innerHTML]="liste.messaggi['HC044'] | escapeHtml">
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="text-danger" [hidden]="!(motivoIscrizione.touched && motivoIscrizione.invalid)">obbligatorio</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 pr-5 pb-4">
+      <div class="input-group group">
+        <select id="categoriaAppartenenza" name="cod_categoria_appartenenza" [disabled]="readOnly || !richiestaModel.cod_tipo_iscrizione"
+          [(ngModel)]="richiestaModel.cod_categoria_appartenenza"  #categoriaAppartenenza="ngModel" required>
+          <option value=""> </option>
+          <option *ngFor="let option of liste.categorie" [value]="option.id_silp">{{option.descrizione_silp || option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="categoriaAppartenenza">Categoria appartenenza iscrizione
+          <div class="popup" onclick="myFunction('categoriaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="categoriaInfo"
+              [innerHTML]="liste.messaggi['HC045'] | escapeHtml">
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="text-danger" [hidden]="!(categoriaAppartenenza.touched && categoriaAppartenenza.invalid)">obbligatorio</div>
+    </div>
+    <div class="col-lg-6 mt-6 px-0">
+      <fieldset [disabled]="readOnly || isBozza || isIscritto">
+        <div class="col-12 mr-3 pt-1" #primaIscrizioneLabel>
+          E' una prima iscrizione?
+          <div class="popup" onclick="myFunction('primaIscrizioneInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="primaIscrizioneInfo"
+              [innerHTML]="liste.messaggi['HC046'] | escapeHtml">
+            </div>
+          </div>
+          <span class="ob">*</span>
+        </div>
+        <div class="col-12 mt-2 mb-0 pl-5" [pslwcllibRadioLabelHandler]="primaIscrizioneLabel">
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="primaIscrizioneSi" name="flg_prima_iscrizione" [value]="true" #flg_prima_iscrizione="ngModel"
+              [(ngModel)]="richiestaModel.flg_prima_iscrizione" [disabled]="readOnly || isBozza" (change)="onPrimaIscrizioneChange()" required/>
+            <label for="primaIscrizioneSi">&nbsp;&nbsp;Si</label>
+          </div>
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="primaIscrizioneNo" name="flg_prima_iscrizione" [value]="false" #flg_prima_iscrizione="ngModel"
+              [(ngModel)]="richiestaModel.flg_prima_iscrizione" [disabled]="readOnly || isBozza" (change)="onPrimaIscrizioneChange()"required/>
+            <label for="primaIscrizioneNo">&nbsp;&nbsp;No</label>
+          </div>
+          <div class="text-danger" [hidden]="!(flg_prima_iscrizione.touched && flg_prima_iscrizione.invalid)">obbligatorio</div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- DATI ULTIMA ISCRIZIONE -->
+  <div *ngIf="richiestaModel.flg_prima_iscrizione === false">
+    <div class="row">
+      <div class="col-lg-6 pr-5 pb-4">
+        <div class="input-group group">
+          <select id="provUltimaIscrizione" name="id_provincia_ultima_iscrizione" [disabled]="readOnly || iscrizioneAttiva"
+              [(ngModel)]="richiestaModel.id_provincia_ultima_iscrizione"
+              #provUltimaIscrizione="ngModel" (change)="popolaCpiByProvincia()" required>
+            <option value=""> </option>
+            <option *ngFor="let option of liste.province" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="provUltimaIscrizione">Provincia ultima iscrizione
+            <div class="popup" onclick="myFunction('provUltIscrInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="provUltIscrInfo"
+                [innerHTML]="liste.messaggi['HC049'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(provUltimaIscrizione.touched && provUltimaIscrizione.invalid)">obbligatorio</div>
+      </div>
+      <div class="col-lg-6 pr-5 pb-4">
+        <div class="input-group group">
+          <select id="cpiUltimaIscrizione" name="id_cpi_ultima_iscrizione"
+              [disabled]="readOnly || iscrizioneAttiva || !richiestaModel.id_provincia_ultima_iscrizione"
+              [(ngModel)]="richiestaModel.id_cpi_ultima_iscrizione" (change)="checkCpiUltimaIscrizione()"
+              #cpiUltimaIscrizione="ngModel" required>
+            <option value=""> </option>
+            <option *ngFor="let option of cpiProvincia" [value]="option.id_cpi_silp">{{option.descrizione}}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cpiUltimaIscrizione">CpI ultima iscrizione
+            <div class="popup" onclick="myFunction('cpiUltIscrInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="cpiUltIscrInfo"
+                [innerHTML]="liste.messaggi['HC050'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(cpiUltimaIscrizione.touched && cpiUltimaIscrizione.invalid)">obbligatorio</div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-lg-5 mb-4">
+        <div class="input-group group">
+          <input [placeholder]="'gg/mm/aaaa'" class="form-control"
+            name="data_ultima_iscrizione" id="data_ultima_iscrizione"
+            [(ngModel)]="richiestaModel.data_ultima_iscrizione"
+            [disabled]="readOnly || iscrizioneAttiva" ngbDatepicker
+            #dataUltimaIscrizioneDatepicker="ngbDatepicker" pslwcllibDateValueValidator
+            #dataUltimaIscrizione="ngModel" maxlength="10"
+            [maxDate]="{year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate()}"
+            required>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataUltimaIscrizioneDatepicker.toggle()"
+              [disabled]="readOnly || iscrizioneAttiva" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Data ultima iscrizione
+            <div class="popup" onclick="myFunction('dataUltIscrInfo')">
+              <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+              <div class="popuptext" [class.down]="popdown" id="dataUltIscrInfo"
+                [innerHTML]="liste.messaggi['HC051'] | escapeHtml">
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" [hidden]="!(dataUltimaIscrizione.touched && dataUltimaIscrizione.invalid)">obbligatorio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATI RICHIESTA -->
+  <div class="row mt-3">
+    <div class="col-lg-6 pr-5 pb-4">
+      <div class="input-group group">
+        <select id="provinciaRichiesta" name="id_provincia" [disabled]="true" [(ngModel)]="richiestaModel.id_provincia"
+            #provinciaRichiesta="ngModel" required>
+          <option value=""> </option>
+          <option *ngFor="let option of liste.province" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="provinciaRichiesta">Provincia richiesta
+          <div class="popup" onclick="myFunction('provRichiestaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="provRichiestaInfo"
+              [innerHTML]="liste.messaggi['HC047'] | escapeHtml">
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="text-danger" [hidden]="!(provinciaRichiesta.touched && provinciaRichiesta.invalid)">obbligatorio</div>
+    </div>
+    <div class="col-lg-6 pr-5 pb-4">
+      <div class="input-group group">
+        <select id="cpiRichiesta" name="id_cpi" [disabled]="true" [(ngModel)]="richiestaModel.id_cpi"
+            #cpiRichiesta="ngModel" required>
+          <option value=""> </option>
+          <option *ngFor="let option of liste.listaCpi" [value]="option.id_cpi_silp">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cpiRichiesta">CpI richiesta
+          <div class="popup" onclick="myFunction('cpiRichiestaInfo')">
+            <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+            <div class="popuptext" [class.down]="popdown" id="cpiRichiestaInfo"
+              [innerHTML]="liste.messaggi['HC048'] | escapeHtml">
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="text-danger" [hidden]="!(cpiRichiesta.touched && cpiRichiesta.invalid)">obbligatorio</div>
+    </div>
+  </div>
+  <br>
+  <div class="row" *ngIf="msgCpiRichiesta?.length > 0">
+    <span [innerHTML]="msgCpiRichiesta | escapeHtml"></span>
+  </div>
+
+  <br/>
+  <!-- DOMICILIO -->
+  <pslshare-indirizzo *ngIf="iscrizioneAttiva"
+    [capVisible]="true"
+    [indirizzoRequired] = "true"
+    [capVisible]="true"
+    [nazioneVisibile]="false"
+    [name]="'Domicilio Trasferimento'"
+    [indirizzo]="domicilioTrasferimento"
+    [mayUpdate]="!readOnly"
+    [edit]="indirizzoEdit"
+    [filtraProvincePiemonte]="true"
+    (indirizzoEditState)="domicilioEditState($event)"
+    (indirizzoChanged)="domicilioChanged($event)">
+  </pslshare-indirizzo>
+
+</form>
+
+<pslshare-navigation-button-cm *ngIf="formRichiesta"
+  [nextButtonHide] = "false"
+  [prevButtonHide] = "false"
+  [nextButtonDisabled] = "formRichiesta.invalid || (isTrasferimento && !domicilioValido)"
+  [prevButtonName]= "prevButtonName"
+  [nextButtonName] = "nextButtonName"
+  [forcePrevButtonName] = "true"
+
+  (exitPage) = "onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData()  && messaggioErroreDati" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

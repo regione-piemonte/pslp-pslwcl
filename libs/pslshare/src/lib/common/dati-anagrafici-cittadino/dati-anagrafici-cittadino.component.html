@@ -1,0 +1,43 @@
+<h4 class="border-n">Dati anagrafici
+  <div class="popup" onclick="myFunction()">
+    <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+    <div class="popuptext" [class.down]="popdown" id="myPopup" [innerHTML]="helpMessage | escapeHtml"></div>
+  </div>
+</h4>
+
+<div *ngIf="!sap; else pagina">
+    <p>Load data...</p>
+</div>
+<ng-template #pagina>
+    <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+    <pslshare-dati-anagrafici-display
+      [sap]="sap">
+    </pslshare-dati-anagrafici-display>
+
+    <pslshare-indirizzo
+        [name]="'residenza'"
+        [indirizzo]="sap.residenza"
+        [capVisible]="true"
+        [indirizzoRequired] = "true"
+        [mayUpdate]="!forceReadOnlyResidenza && !readOnly"
+        (indirizzoEditState)="residenzaEditState($event)"
+        (indirizzoChanged)="residenzaChanged($event)">
+    </pslshare-indirizzo>
+
+    <pslshare-indirizzo [capVisible]="true" [indirizzoRequired] = "true"
+        [name]="'domicilio'"
+        [indirizzo]="sap.domicilio"
+        [mayUpdate]="!readOnly"
+        (indirizzoEditState)="domicilioEditState($event)"
+        (indirizzoChanged)="domicilioChanged($event)">
+    </pslshare-indirizzo>
+
+    <pslshare-recapiti
+        [name]="'recapiti'"
+        [recapiti]="sap.recapito"
+        [mayUpdate]="!readOnly"
+        (recapitiEditState)="recapitiEditState($event)"
+        (recapitiChanged)="recapitiChanged($event)">
+    </pslshare-recapiti>
+
+</ng-template>

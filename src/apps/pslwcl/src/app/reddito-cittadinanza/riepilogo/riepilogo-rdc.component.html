@@ -1,0 +1,15 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+<div class="row mt-3" *ngIf="enableNuovaDomanda">
+  <div class="col-sm-12 col-md-12 col-lg-4">
+    <button type="button" class="btn btn-primary btn-lg" (click)="onNuovaDomanda()">NUOVO APPUNTAMENTO</button>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-4">
+    <button type="button" class="btn btn-primary btn-lg" (click)="onGestionePrivacyEMinori()">GESTIONE PRIVACY e MINORI</button>
+  </div>
+
+</div>
+
+<h4 class="mt-80">La tua domanda</h4>
+<app-scheda-rdc
+  [idUtente]="idUtente"
+  (loadedData)="decreaseLoading()"></app-scheda-rdc>

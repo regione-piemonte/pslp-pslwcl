@@ -1,0 +1,148 @@
+<div class="grey1 mt-5">
+    <h4 class="border-n">{{name | titlecase}} <span *ngIf="indirizzoRequired" class="ob">*</span></h4>
+    <div class="row" *ngIf="!edit; else editTemplate">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <ul class="dett">
+                <li>Indirizzo<br>
+                    <strong>{{indirizzo?.indirizzo_esteso}}&nbsp;</strong></li>
+                <li>Comune&nbsp;(Prov.)<br>
+                    <strong>{{indirizzo?.comune?.descrizione}}&nbsp;
+                        <span *ngIf="indirizzo?.comune?.provincia?.targa">({{indirizzo?.comune?.provincia?.targa}})</span>
+                    </strong></li>
+                <li *ngIf="capVisible">CAP<br>
+                    <strong><span *ngIf="indirizzo?.comune?.cap > ''">{{indirizzo?.comune?.cap}}</span>&nbsp;</strong></li>
+                <li *ngIf="nazioneVisibile">Nazione<br>
+                    <strong>{{indirizzo?.stato?.descrizione}}&nbsp;</strong></li>
+                <li *ngIf="cpiVisible">Cpi<br>
+                  <strong>{{descCpi}}&nbsp;</strong></li>
+            </ul>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-right" *ngIf="mayUpdate">
+            <p>
+              <a *ngIf="copiaDa" class="btn btn-outline-secondary mr-2" (click)="copia()">{{ copiaMsg }}</a>
+              <a class="btn btn-outline-primary" (click)="onToggle()">MODIFICA DATI</a>
+            </p>
+        </div>
+    </div>
+
+    <ng-template #editTemplate>
+        <form #indirizzoForm="ngForm" pslwcllibIndirizzoValidator>
+            <div *ngIf="indirizzoForm.invalid && indirizzoForm.errors && indirizzoForm.errors['indirizzo']" class="text-danger">
+              {{ indirizzoForm.errors['indirizzo'] }}
+            </div>
+
+            <div class="row mb-4">
+
+                <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
+                    <div class="group">
+                        <select id="toponimo-{{idIndirizzo}}" name="toponimo" [(ngModel)]="indirizzoModel.toponimo"
+                          (ngModelChange)="cleanNazione()">
+                          <option [ngValue]="null"></option>
+                          <option *ngFor="let option of toponimiOptions" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+                        </select>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="toponimo-{{idIndirizzo}}">Toponimo </label>
+                    </div>
+                    <div class="text-danger" [hidden]="!indirizzoForm.controls['toponimo']?.errors">obbligatorio</div>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
+                    <div class="input-group group">
+                        <input type="text" id="indirizzo-{{idIndirizzo}}" name="indirizzo"
+                            [(ngModel)]="indirizzoModel.indirizzo" oninput="this.value = this.value.toUpperCase()"
+                            (ngModelChange)="cleanNazione()" maxlength="60">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="indirizzo-{{idIndirizzo}}">Indirizzo </label>
+                    </div>
+                    <div class="text-danger" [hidden]="!indirizzoForm.controls['indirizzo']?.errors">obbligatorio</div>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
+                    <div class="group">
+                        <input type="text" id="numero-{{idIndirizzo}}" name="numero" [(ngModel)]="indirizzoModel.numero"
+                            (ngModelChange)="cleanNazione()" maxlength="15"
+                            oninput="this.value = this.value.toUpperCase()"
+                        >
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="numero-{{idIndirizzo}}">N. civico </label>
+                    </div>
+                    <div class="text-danger" [hidden]="!indirizzoForm.controls['numero']?.errors">obbligatorio</div>
+                </div>
+            </div>
+
+            <div class="row mb-4 mt-5">
+
+                <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+                    <div class="input-group group">
+                        <select id="provincia-{{idIndirizzo}}" name="provincia" [(ngModel)]="indirizzoModel.provincia"
+                          (ngModelChange)="onChangeProvincia()">
+                          <option [ngValue]="null"></option>
+                            <option *ngFor="let option of provinceOptions" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+                        </select>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="provincia-{{idIndirizzo}}">Prov. </label>
+                    </div>
+                    <div class="text-danger" [hidden]="!indirizzoForm.controls['provincia']?.errors">obbligatorio</div>
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                    <div class="input-group group">
+                        <input id="comune-{{idIndirizzo}}"
+                            name="comune" type="text" class="dropdown-input"
+                            #comune="ngModel" [(ngModel)]="indirizzoModel.comune" [ngbTypeahead]="searchComune"
+                            [inputFormatter]="formatMatches" [resultFormatter]="formatMatches"
+                            [class.is-invalid]="searchFailed" (ngModelChange)="cleanNazione()" />
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="comune-{{idIndirizzo}}">Comune </label>
+                    </div>
+                    <div *ngIf="comune.invalid" class="text-danger">
+                      <div *ngIf="comune.errors['required']">obbligatorio</div>
+                      <div *ngIf="comune.errors['noFound']">{{ comune.errors['noFound'] }}</div>
+                    </div>
+                </div>
+
+                <div *ngIf="capVisible" class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
+                    <div class="group">
+                        <input type="text" id="cap-{{idIndirizzo}}" name="cap" #cap="ngModel"
+                               [(ngModel)]="indirizzoModel.cap" (ngModelChange)="cleanNazione()" maxlength="5">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="cap-{{idIndirizzo}}">CAP </label>
+                    </div>
+                    <div *ngIf="cap.invalid" class="text-danger">
+                      <div *ngIf="cap.errors['required']">obbligatorio</div>
+                      <div *ngIf="cap.errors['length']">deve essere lungo 5 numeri</div>
+                      <div *ngIf="cap.errors['number']">deve contenere solo numeri</div>
+                    </div>
+                </div>
+
+                <div *ngIf="nazioneVisibile" class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
+                    <div class="group">
+                        <select id="nazione-{{idIndirizzo}}" name="nazione" [(ngModel)]="indirizzoModel.nazione"
+                                (change)="onChangeNazione()">
+                          <option value=""> </option>
+                          <option *ngFor="let option of nazioniOptions" [value]="option.codice_ministeriale">{{option.descrizione}}</option>
+                        </select>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label for="nazione-{{idIndirizzo}}">Nazione</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-left">
+                  <p><button type="button" class="btn btn-outline-primary" (click)="onToggle()">ANNULLA</button></p>
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 text-right">
+                    <p><button type="button" (click)="onSubmit()" class="btn btn-outline-primary"
+                         [disabled]="indirizzoForm.pristine || indirizzoForm.invalid">CONFERMA MODIFICHE</button></p>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</div>

@@ -1,0 +1,18 @@
+<div class="mt-5" [innerHTML]="messaggioGenerale | escapeHtml"></div>
+
+<div class="card m-0 mt-5">
+  <div [innerHTML]="privacyTestata | escapeHtml"></div>
+  <ng-template [ngIf]="privacyDettaglio">
+    <p><a data-toggle="collapse" href="#collapseLeggiTutto" role="button" aria-expanded="false"
+        aria-controls="collapseLeggiTutto" class="collapsed op">Leggi tutto</a></p>
+    <div class="collapse" id="collapseLeggiTutto" [innerHTML]="privacyDettaglio | escapeHtml"></div>
+  </ng-template>
+</div>
+
+<div class="md-checkbox md-radio-inline mt-5">
+  <input type="checkbox" id="informativa" [checked]="checkInformativaPrivacy"
+    (click)="onCheckInformativaPrivacy()">
+  <label for="informativa">
+    Dichiaro di aver preso visione dell'informativa sul trattamento dei dati personali
+  </label>
+</div>

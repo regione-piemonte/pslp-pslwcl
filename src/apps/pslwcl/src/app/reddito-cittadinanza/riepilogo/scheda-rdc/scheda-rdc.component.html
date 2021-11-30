@@ -1,0 +1,93 @@
+<hr>
+<div class="row" *ngIf="sap && domanda">
+  <div class="col-6">
+    <p class="paragrafo">
+      <strong>{{sap.nome}} {{sap.cognome}}</strong><br>
+      CODICE FISCALE: <strong>{{ sap.codice_fiscale }}</strong><br>
+      <span *ngIf="hasDomanda()">
+        Domanda Reddito di Cittadinanza n. <strong>{{ domanda.codice }}</strong><br>
+        del <strong>{{ domanda.data_domanda | date : 'd/MM/yyyy' }}</strong>
+        notificata il <strong>{{ domanda.data_notifica_silp | date : 'd/MM/yyyy' }}</strong></span>
+    </p>
+
+  </div>
+  <div class="col-md-12 col-lg-3" *ngIf="hasDomanda()">
+    <button type="button" class="btn btn-outline-primary btn-lg" (click)="onPrint()">STAMPA DOMANDA</button>
+  </div>
+  <div class="col-md-12 col-lg-3" *ngIf="isVisualizzabileAppuntamento()">
+    <div ngbDropdown>
+      <button type="button" class="btn btn-primary btn-lg" ngbDropdownToggle>VISUALIZZA<span
+          *ngIf="isModificabileAppuntamento()">
+          MODIFICA</span></button>
+      <div ngbDropdownMenu aria-labelledby="visializza modifica">
+        <button ngbDropdownItem class="btn btn-outline-primary btn-sm mt-1 lati" (click)="onDatiAnagrafici()">Dati
+          Anagrafici</button>
+        <button ngbDropdownItem class="btn btn-outline-primary btn-sm mt-1 lati"
+          (click)="onInformazioniAggiuntive()">Informazioni aggiuntive<br>Documenti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="(appuntamento && appuntamento.id_prenotazione) || loadingData">
+  <h4 class="mt-80">Il tuo appuntamento al Centro per l'Impiego</h4>
+  <hr>
+  <div class="row" *ngIf="appuntamento">
+    <div class="col-6">
+      <p><span [ngClass]="{'lati': true,
+                        'bg-success': appuntamentoIn('ER'),
+                        'bg-danger': appuntamentoIn('DI','NP'),
+                        'bg-warning': appuntamentoIn('DE'),
+                        'bg-info': appuntamentoIn('DC','SP')}">
+        {{ appuntamentoDescrizione }}
+      </span></p>
+      <p class="paragrafo"><strong>
+          {{ appuntamento.sportello?.descrizione }} - {{ appuntamento.sportello?.descrizione_indirizzo }}
+          <br>
+          {{ appuntamento.slot?.giorno }} - ore {{ appuntamento.slot?.da_ora }}
+        </strong></p>
+    </div>
+    <div class="col-md-12 col-lg-3">
+      <button type="button" class="btn btn-outline-danger btn-lg" *ngIf="appuntamentoIn('DE')"
+        (click)="onAnnullaAppuntamento()">
+        ANNULLA
+      </button>
+    </div>
+    <div class="col-md-12 col-lg-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" *ngIf="appuntamentoIn('DE')"
+        (click)="onSpostaAppuntamento()" [disabled]="!allowSposta">
+        SPOSTA
+      </button>
+    </div>
+  </div>
+  <hr>
+</div>
+
+<!-- Modal annulla -->
+<div *ngIf="appuntamentoIn('DE')" class="modal fade" id="annulla_appuntamento_{{ idUtente }}" tabindex="-1"
+  role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma annullamento</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <strong>Si desidera annullare l'appuntamento?</strong><br />
+        <ng-template *ngIf="msgAnnulla">
+          <span [innerHTML]="msgAnnulla | escapeHtml"></span>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doAnnullaAppuntamento()"
+          data-dismiss="modal">CONFERMA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal annulla -->

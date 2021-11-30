@@ -1,0 +1,29 @@
+<!--
+    pagina home 
+    portale pslp
+    cittadino / operatore
+-->
+<div class="container" *ngIf="flgAccesso; else noAccesso">
+  <div class="mt-40 card-deck">
+    <div class="col-md-6 col-lg-4 d-flex p-0" *ngFor="let el of elencoCard">
+      <a (click)="onGotoLink(el)" class="card">
+        <div class="card-block">
+          <img class="responsiveHome" src="{{el.urlImg}}" alt="{{el.titolo}}">
+          <h5 class="card-title" [innerHTML]="el.titolo | escapeHtml"></h5>
+          <p class="card-text" id="HC011" [innerHTML]="el.testoCard | escapeHtml"></p>
+        </div>
+        <div class="card-footer" *ngIf="el.flgAccessoAutenticato && !hasUtente">
+          <p class="lock">Servizio ad accesso autenticato </p>
+        </div>
+      </a>
+    </div>
+  </div>
+  &nbsp;<br>
+</div>
+<ng-template #noAccesso>
+  <div class="col-md-12 col-lg-10">
+    <div class="alert alert-warning valign-middle" role="alert">
+      <h4 class="col-md-9 text-center"> - {{ msgAccesso }} - </h4>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,98 @@
+<!--
+    pagina di assistenza e guida alle applicazioni
+    portale 
+-->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml">
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <h4 class="border-n  font-weight-bold">Guida alle applicazioni</h4>
+    <div class="row vertical-center">
+      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 cont-accordion">
+        <ngb-accordion id="parent" [closeOthers]="false" activeIds="panel_1" [destroyOnHide]="false" #accordionHelp>
+          <ngb-panel id="panel_1">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Assistenza</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="border container">
+                <div *ngIf="listaMessaggi && listaMessaggi.length >0; else noMessaggi">
+                  <div class="ml-3" *ngFor="let messaggio of listaMessaggi">
+                    <span  [innerHTML]="messaggio.testo | escapeHtml"></span><br>
+                  </div>
+                </div>
+                <ng-template #noMessaggi>
+                  <div class="ml-3">
+                      <span>Non esistono sedi di assistenza disponibili.</span><br>
+                  </div>                   
+                </ng-template>
+              </div>
+            </ng-template>
+          </ngb-panel>
+          <ngb-panel id="panel_2">
+            <ng-template ngbPanelTitle>
+              <h5 id="hlpManuali" class="font-weight-bold">Manuali</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+               
+              <div class="border container">
+                <div class="ml-3 container legend" *ngIf="listaManuali && listaManuali.length >0; else noManuali">
+                  <div class="row ml-3" *ngFor="let manuale of listaManuali">
+                    <a href="{{ manuale.link }}" target="_blank"><span class="fas fa-file-pdf"></span>&nbsp;<span  [innerHTML]="manuale.titolo | escapeHtml"></span></a> 
+                  </div>
+                </div>
+                <ng-template #noManuali>
+                  <div class="row">
+                    Non ci sono manuali disponibili.
+                  </div>
+                </ng-template>
+              </div> 
+               
+            </ng-template>
+
+          </ngb-panel>
+          <ngb-panel id="panel_video" *ngIf="listaVideo && listaVideo.length >0;">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Video Tutorial</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="border container">
+              <ngb-accordion id="child" [closeOthers]="true" [destroyOnHide]="false" #accordionVideo >
+
+                <ngb-panel id="panelv_{{ i }}" *ngFor="let item of listaVideo; let i = index">
+                  <ng-template ngbPanelTitle>
+                    <h5 class="font-weight-bold" [innerHTML]="item.titolo | escapeHtml"></h5>
+                  </ng-template>
+                  <ng-template ngbPanelContent>
+                    <div class="border container">
+                      <div class="ml-3 container legend" *ngIf="item.contenuto  && item.contenuto.length >0; else noVideoGG">
+                        <div class="row ml-3" *ngFor="let video of item.contenuto ">
+                          <a href="{{ video.file_url }}" target="_blank" ><span class="fas fa-video"></span>&nbsp;<span  [innerHTML]="video.file_titolo | escapeHtml"></span></a> 
+                        </div>
+                      </div>
+                      <ng-template #noVideoGG>
+                        <div class="row">>Non ci sono video disponibili.</div>
+                      </ng-template>
+                    </div>
+                  </ng-template>
+                </ngb-panel>
+
+              </ngb-accordion>
+               </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 ">
+        <img src="assets/im/aiuto.png" alt="Assistenza">
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="row">
+</div>

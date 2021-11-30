@@ -1,0 +1,311 @@
+<!--
+    configurazione calendario
+    form ricerca
+    -------------------------
+-->
+
+<h4 id="descTab" class="border-n">Ricerca calendario</h4>
+
+<form #ricercaForm="ngForm" *ngIf="searchParameters">
+  <div class="row mt-4 mb-4">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <select id="ambito" name="ambito" [(ngModel)]="searchParameters.codiceAmbito" #ambitoModel="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaAmbiti" [value]="op.codice">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="ambito">Ambito</label>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <select id="ente" name="ente" [ngModel]="idEnte" #enteModel="ngModel" (ngModelChange)="onEnteChange()">
+          <option [value]="null"> </option>
+          <option *ngFor="let op of listaEnti" [value]="op.id">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="ente">Ente e sportello</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 mb-4">
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataInizio" id="dataInizio" [(ngModel)]="searchParameters.dataInizio"
+          #dataInizioModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataInizioDatepicker="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="dataInizioDatepicker.toggle()" type="button"></button>
+        </div>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="dataInizio">Data inizio validit&agrave;</label>
+      </div>
+      <div class="text-danger" *ngIf="dataInizioModel?.errors">
+        <div *ngFor="let err of dataInizioModel?.errors | keyvalue | notErrorObject">
+          {{ err.key === 'required' ?  'obbligatorio' : err.value }}</div>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input type="text" class="form-control" placeholder="gg/mm/aaaa" name="dataFine" id="dataFine" [(ngModel)]="searchParameters.dataFine"
+          #dataFineModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataFineDatepicker="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="dataFineDatepicker.toggle()" type="button"></button>
+        </div>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="dataFine">Data fine validit&agrave;</label>
+      </div>
+      <div class="text-danger" *ngIf="dataFineModel?.errors">
+        <div *ngFor="let err of dataFineModel?.errors | keyvalue | notErrorObject">
+          {{ err.key === 'required' ?  'obbligatorio' : err.value }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 mb-4">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="input-group group">
+        <input type="text" id="nome" name="nome" maxlength="200" oninput="this.value = this.value.toUpperCase()"
+          [(ngModel)]="searchParameters.nomeCalendario" #nomeCalendarioModel="ngModel">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nome">Nome calendario</label>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="mr-3 pt-4" #eliminaLabel>
+        Calendario eliminato</div>
+        <fieldset  [pslwcllibRadioLabelHandler]="eliminaLabel"><!-- //NOSONAR -->
+
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="calendarioEliminato" id="calendarioEliminatoSi" value="S"
+              [(ngModel)]="calendarioElimina" (change)="onChangeCalendarioEliminato('S')">
+            <label for="calendarioEliminatoSi" class="pt-1">S&igrave;</label>
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="calendarioEliminato" id="calendarioEliminatoNo" value="N"
+              [(ngModel)]="calendarioElimina"
+              (change)="onChangeCalendarioEliminato('N')">
+            <label for="calendarioEliminatoNo" class="pt-1">No</label>
+          </div>
+          <div class="md-radio md-radio-inline pt-4">
+            <input type="radio" name="calendarioEliminato" id="calendarioEliminatoNA" value="I"
+              [(ngModel)]="calendarioElimina"
+              (change)="onChangeCalendarioEliminato('I')">
+            <label for="calendarioEliminatoNA" class="pt-1">Non specificato</label>
+          </div>
+
+        </fieldset>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <div *ngIf="abilitaNuovo">
+        <button type="button"  class="btn btn-primary btn-lg" [disabled]="!abilitaNuovo" (click)="onAzione('nuovo')">NUOVO
+          CALENDARIO</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <div>
+        <button type="button"  [disabled]="!ricercaForm.valid" class="btn btn-outline-primary btn-lg"
+          (click)="onCerca(true)">CERCA</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<ng-template [ngIf]="ricercaExecute">
+  <div class="mt-5 scrollbar-table scrollbar-primary">
+    <nav aria-label="Navigazione">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row">
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-1">
+          <select id="pageSize" name="pageSize" [(ngModel)]="pageSize" class="page-select">
+            <option *ngFor="let ps of pageSizes" [value]="ps" [selected]="pageSize === ps">{{ps}}</option>
+          </select>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+          <button type="button"  class="btn btn-outline-success" (click)="onExportExcel()">Esporta in Excel&nbsp;<span
+              class="fas fa-file-excel"></span></button>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+          <ngb-pagination class="d-flex justify-content-end" [collectionSize]="calendari.length" [(page)]="page"
+            [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"
+            (pageChange)="goToPage($event)"></ngb-pagination>
+        </div>
+      </div>
+    </nav>
+    <table  aria-describedby="descTab" class="table table-bordered table-striped table-hover" id="infoTable">
+      <thead>
+        <tr style="vertical-align:middle">
+          <th scope="col" style="vertical-align:middle">Sel.</th>
+          <th scope="col" style="vertical-align:middle">Cpi &amp; Sportelli</th>
+          <th scope="col" style="vertical-align:middle">Ambito</th>
+          <th scope="col" style="vertical-align:middle">Nome</th>
+          <th scope="col" style="vertical-align:middle">Incontri<br />disponibili<br />da oggi</th>
+          <th scope="col" style="vertical-align:middle">Visibile</th>
+          <th scope="col" style="vertical-align:middle">Bloccato</th>
+          <th scope="col" style="vertical-align:middle">Eliminato</th>
+          <th scope="col" style="vertical-align:middle">Promemoria</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="calendari.length > 0; else noData">
+        <tr *ngFor="let c of getPage()">
+          <td><input type="radio" name="calendario" (click)="onCalendarioSelect(c.id_calendario)"
+              [checked]="isSelected(c.id_calendario)"></td>
+          <td>{{ c.descrizione_ente }}</td>
+          <td>{{ c.descrizione_ambito }}</td>
+          <td>{{ c.nome }}</td>
+          <td style="text-align:center"><span *ngIf="c.numero_slot_liberi; else noDisp">{{ c.numero_slot_prenotabili }}
+              su {{ c.numero_slot_liberi }}</span>
+            <ng-template #noDisp>0 su 0</ng-template>
+          </td>
+          <td>{{ c.visibile_in_base }}</td>
+          <td>{{ c.bloccato && c.bloccato | siNo }}</td>
+          <td>{{ c.eliminato  && c.eliminato | siNo }}</td>
+          <td>{{ c.promemoria && c.promemoria | siNo }}</td>
+        </tr>
+      </tbody>
+      <ng-template #noData>
+        <tbody>
+          <tr><td colspan="9">Non ci sono dati.</td></tr>
+        </tbody>
+      </ng-template>
+    </table>
+    <nav aria-label="Navigazione">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row">
+        <div class="col-sm-4 col-md-6 col-lg-6 col-xl-6">{{ paginationFooter }}</div>
+        <div class="col-sm-8 col-md-6 col-lg-6 col-xl-6">
+          <ngb-pagination class="d-flex justify-content-end" [collectionSize]="calendari.length" [(page)]="page"
+            [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"
+            (pageChange)="goToPage($event)"></ngb-pagination>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1 mt-1 mb-2 text-right">&nbsp;</div>
+    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-1 mb-2 text-right" *ngIf="selected">
+      <div>
+        <button type="button"  class="btn btn-primary btn-lg" (click)="onAzione('incontri')">INCONTRI</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right" *ngIf="selected">
+      <div>
+        <button type="button"  class="btn btn-primary btn-lg" (click)="onAzione('duplica')">DUPLICA</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right" *ngIf="selected && !selected.eliminato">
+      <div>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onAzione('elimina')">ELIMINA</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right"
+      *ngIf="selected && !selected.bloccato && !selected.eliminato">
+      <div>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onAzione('blocca')">BLOCCA</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right"
+      *ngIf="selected && selected.bloccato && !selected.eliminato">
+      <div>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onAzione('sblocca')">SBLOCCA</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right" *ngIf="selected && !selected.eliminato">
+      <div>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onAzione('modifica')">MODIFICA</button>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 mt-1 mb-2 text-right" *ngIf="selected && selected.eliminato">
+      <div>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onAzione('visualizza')">VISUALIZZA</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div class="row">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <div>
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">INDIETRO</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal elimina-->
+<div class="modal fade" id="modal_elimina" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione calendario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">{{ messaggioElimina }}</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doEliminaCalendario()"
+          data-dismiss="modal">CONFERMA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal elimina-->
+
+<!-- Modal blocca-->
+<div class="modal fade" id="modal_blocca" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma blocco calendario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Si desidera bloccare il calendario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doBloccaCalendario()"
+          data-dismiss="modal">CONFERMA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal blocca-->
+
+<!-- Modal sblocca-->
+<div class="modal fade" id="modal_sblocca" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma sblocco calendario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Si desidera sbloccare il calendario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doSbloccaCalendario()"
+          data-dismiss="modal">CONFERMA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal sblocca-->

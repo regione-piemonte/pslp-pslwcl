@@ -1,0 +1,41 @@
+<hr>
+
+<div class="row vertical-center" *ngIf="loaded">
+
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+
+    <p class="paragrafo">
+      <strong>{{ sap?.nome || utenteACarico?.tutelato?.nome }} {{ sap?.cognome || utenteACarico?.tutelato?.cognome }}</strong><br>
+      CODICE FISCALE: <strong>{{ sap?.codice_fiscale || utenteACarico?.tutelato?.codice_fiscale }}</strong>
+      <ng-template [ngIf]="utenteACarico">
+        <br>TIPO RESPONSABILIT&Agrave;: <strong>{{ utenteACarico?.tipo_responsabilita?.descrizione | uppercase }}</strong>
+          <br>ET&Agrave;: <strong>{{ (eta !== null && eta !== undefined) ? eta : 'n.a.'}}</strong>
+      </ng-template>
+    </p>
+
+  </div>
+
+  <div class="col" *ngIf="sap">
+    <button class="btn btn-outline-primary btn-sm h-100"
+    [disabled]="privacyNonConfermata"
+    (click)="onPrint()">STAMPA FASCICOLO</button>
+  </div>
+
+  <div class="col" *ngIf="isVisualizzabileSAP(); else creaNuovoFascicolo">
+    <button class="btn btn-primary btn-sm h-100" (click)="onModifica()">
+      VISUALIZZA<span *ngIf="isModificabileSAP()"> / MODIFICA</span>
+    </button>
+  </div>
+  <ng-template #creaNuovoFascicolo>
+    <div class="col" *ngIf="utenteACarico">
+      <button class="btn btn-primary btn-sm h-100" (click)="onNuovaSap()">NUOVO FASCICOLO</button>
+      <br><br><br>
+    </div>
+  </ng-template>
+
+</div>
+<hr>
+
+
+
+

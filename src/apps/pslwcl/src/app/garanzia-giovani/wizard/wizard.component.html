@@ -1,0 +1,10 @@
+<ng-template [ngIf]="show">
+   <ng-template [ngIf]="!loading">
+      <ul class="nav nav-tabs wizard">
+         <li [class]="w.li" *ngFor="let w of wizard; let i = index">
+            <span [class]="w.span">{{ i+1 }}</span>
+            <span class="text" [innerHTML]="w.text | escapeHtml"></span>
+         </li>
+      </ul>
+   </ng-template>
+</ng-template>

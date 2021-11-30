@@ -1,0 +1,180 @@
+<div class="grey1 mt-5 border_b">
+
+  <h5>Configurazione eccezioni</h5>
+
+  <div class="row">
+    <div class="col-12 text-right">
+      <span *ngIf="!apertoNuovaEccezione && !apertoAltro && !disableConfermaIncontri; else noDropMenu">
+        <div class="dropdown mt-4 mb-2">
+          <a class="dropdown-toggle btn-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">&nbsp;</a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <button class="btn dropdown-item" [disabled]="modificaDisabled" (click)="onModificaEccezione()"><span
+                class="fas fa-edit fa-sm"></span> modifica</button>
+            <span *ngIf="enableApplica">
+              <button class="btn dropdown-item" [disabled]="applicaDisabled" (click)="onApplicaEccezione()"><span
+                  class="fas fa-share-square fa-sm"></span> applica ad altri calendari</button>
+            </span>
+            <button class="btn dropdown-item" [disabled]="modificaDisabled" (click)="onEliminaEccezione()"><span
+                class="far fa-trash-alt fa-sm"></span> elimina</button>
+
+          </div>
+        </div>
+      </span>
+      <ng-template #noDropMenu>
+        <a class="dropdown-toggle btn-link" disabled role="button"></a>
+      </ng-template>
+    </div>
+  </div>
+  <nav aria-label="Navigazione">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row">
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-1">
+        <select id="pageSize" name="pageSize" [(ngModel)]="pageSize" class="page-select"
+          [disabled]="apertoAltro || disableConfermaIncontri">
+          <option *ngFor="let ps of pageSizes" [value]="ps" [selected]="pageSize === ps">{{ps}}</option>
+        </select>
+      </div>
+      <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <ngb-pagination class="d-flex justify-content-end" [collectionSize]="eccezioni.length" [(page)]="page"
+          [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"
+          (pageChange)="goToPage($event)" [disabled]="apertoAltro || disableConfermaIncontri"></ngb-pagination>
+      </div>
+    </div>
+  </nav>
+  <ul class="white" *ngIf="eccezioni.length > 0; else noData">
+    <li *ngFor="let ex of getPage()">
+      <div class="md-checkbox">
+        <input id="{{ex.id_eccezione}}" type="checkbox" name="id_eccezione" [checked]="isChecked(ex)"
+          (change)="onChangeEccezione(ex)" [disabled]="apertoAltro || disableConfermaIncontri || !checkAble(ex)">
+        <label for="{{ex.id_eccezione}}">{{printExceptionDate(ex)}}
+          <sup>{{printNumAppEccezione(ex)}}</sup>
+          <span *ngIf="!ex.flag_elaborata">&nbsp;ECCEZIONE&nbsp;DA&nbsp;CONFERMARE, al termine con GENERA INCONTRI</span>
+        </label>
+      </div>
+    </li>
+  </ul>
+  <ng-template #noData>
+    <ul class="white">
+      <li>Non ci sono dati.</li>
+    </ul>
+  </ng-template>
+  <nav aria-label="Navigazione">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row">
+      <div class="col-sm-4 col-md-6 col-lg-6 col-xl-6">{{ paginationFooter }}</div>
+      <div class="col-sm-8 col-md-6 col-lg-6 col-xl-6">
+        <ngb-pagination class="d-flex justify-content-end" [collectionSize]="eccezioni.length" [(page)]="page"
+          [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"
+          (pageChange)="goToPage($event)" [disabled]="apertoAltro || disableConfermaIncontri"></ngb-pagination>
+      </div>
+    </div>
+  </nav>
+  <p class="mt-5 text-right" *ngIf="!eccezioneElaborazione && !periodoScaduto">
+    <button type="button" class="btn btn-outline-primary"
+      [disabled]="readOnly || disableConfermaIncontri || apertoNuovaEccezione" (click)="onNuovaEccezione()">AGGIUNGI
+      ECCEZIONE</button>
+  </p>
+  <form #eccezioneForm="ngForm" *ngIf="eccezioneElaborazione">
+    <div class="form-row form-inline mb-4">
+      <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5">
+        <div class="input-group group">
+          <input type="text" class="form-control" required placeholder="gg/mm/aaaa" name="giorno" id="giorno" [(ngModel)]="eccezioneElaborazione.giorno"
+            ngbDatepicker #giornoDatepicker="ngbDatepicker" #giornoModel="ngModel" pslwcllibDateFormatValidator maxlength="10">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="giornoDatepicker.toggle()" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Selezionare una data</label>
+        </div>
+        <div class="text-danger" *ngIf="giornoModel?.errors">
+          <div *ngFor="let err of giornoModel?.errors | keyvalue | notErrorObject">
+            {{ err.key === 'required' ? 'obbligatorio' : err.value }}</div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7">
+        <button type="button" class="btn btn-outline-primary mt-5" (click)="onConfermaData()">CONFERMA</button>
+      </div>
+    </div>
+
+    <ng-template [ngIf]="finestreDisponibilita">
+      <p class="mb-5">Selezionare finestre disponibilit&agrave;</p>
+
+      <div class="md-checkbox border_n" *ngIf="eccezioneElaborazione.id_eccezione === undefined || noOneChecked()">
+        <input id="tutteFinestre" type="checkbox" name="tutte" [checked]="allSelectedFinestraDisponibilita"
+          (change)="onSelezioneTuttoFinestraDisponibilita()">
+        <label for="tutteFinestre">Tutte le finestre</label>
+      </div>
+      <div class="md-checkbox md-checkbox-inline" *ngFor="let fd of finestreDisponibilita; let i = index">
+        <input id="fd_{{i}}" type="checkbox" name="finestraDisponibilitaScelta"
+          (change)="onChangeFinestraDisponibilita(i)" [checked]="isCheckedFinestraDisponibilita(i)">
+        <label for="fd_{{i}}">{{toHourMinute(fd.ora_inizio)}} - {{toHourMinute(fd.ora_fine)}}</label>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <div class="group">
+            <input type="text" id="appuntamentiPerFinestra" name="eccezioneElaborazione.num_max_prenotazioni" required
+              [(ngModel)]="eccezioneElaborazione.num_max_prenotazioni" #appuntamentiPerFinestraModel="ngModel"
+              pslboDigitOnly>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="appuntamentiPerFinestra">Appuntamenti per finestra</label>
+          </div>
+          <div class="text-danger" *ngIf="appuntamentiPerFinestraModel?.errors">
+            <div *ngFor="let err of appuntamentiPerFinestraModel?.errors | keyvalue">
+              {{ err.key === 'required' ? 'obbligatorio' : err.value }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row mt-5">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="submit" class="btn btn-outline-secondary" (click)="onChiudiEccezione()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="submit" class="btn btn-primary"
+          [disabled]="!eccezioneForm.valid || !finestreDisponibilita || noOneChecked()"
+          (click)="onSalvaEccezione()">SALVA</button>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+
+<!-- Modal conferma eliminazione eccezione-->
+<div class="modal fade" id="modal_elimina_eccezione" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione eccezione selezionata</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="onChiudiEccezione()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <strong>Si desidera eliminare l'eccezione selezionata ?</strong><br>
+        <span *ngIf="eccezioneDaEliminare">
+          {{printExceptionDate(eccezioneDaEliminare)}}
+          <sup>({{eccezioneDaEliminare.num_max_prenotazioni}}
+            appuntament{{eccezioneDaEliminare.num_max_prenotazioni === 1 ? 'o' : 'i'}})</sup>
+          <span *ngIf="!eccezioneDaEliminare.flag_elaborata">&nbsp;ECCEZIONE DA CONFERMARE</span>
+        </span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-lg float-left" (click)="onChiudiEccezione()"
+          data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary btn-lg float-right" (click)="doEliminaEccezione(eccezioneDaEliminare)"
+          data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal conferma eliminazione eccezione-->
+
+<!-- finestra modale
+  per applica ad altri calendari -->
+<pslbowcl-applica-ad-altri></pslbowcl-applica-ad-altri>
+<!--/ finestra modale
+  per applica ad altri calendari -->

@@ -1,0 +1,98 @@
+<!-- 
+    configurazione calendario
+    form incontri
+    -------------------------
+-->
+<pslbowcl-wizard [titolo]="titolo" show="true"></pslbowcl-wizard>
+<div class="row mb-4">
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+    <div class="cal"></div>
+    <div class="calendar-container" *ngIf="calendario && calendario.length; else messaggioCalendario">
+      <div class="calendar-container__header">
+        <h5 class="calendar-container__title">
+          <button class="calendar-container__btn calendar-container__btn--left" title="Previous"
+                  (click)="onPrevCalendario()" [disabled]="!flag.prevCalendario || flag.disableCalendar">
+            <span class="fas fa-chevron-left"></span>
+          </button>
+          {{ dataDa.format('MMMM YYYY') }}
+          <button class="calendar-container__btn calendar-container__btn--right" title="Next"
+                  (click)="onNextCalendario()" [disabled]="!flag.nextCalendario || flag.disableCalendar">
+            <span class="fas fa-chevron-right"></span>
+          </button>
+        </h5>
+      </div>
+      <div class="calendar-container__body">
+        <div class="calendar-table">
+          <div class="calendar-table__header">
+            <div class="calendar-table__row">
+              <div class="calendar-table__col">LUN</div>
+              <div class="calendar-table__col">MAR</div>
+              <div class="calendar-table__col">MER</div>
+              <div class="calendar-table__col">GIO</div>
+              <div class="calendar-table__col">VEN</div>
+              <div class="calendar-table__col">SAB</div>
+              <div class="calendar-table__col">DOM</div>
+            </div>
+          </div>
+          <div class="calendar-table__body">
+            <div class="calendar-table__row" *ngFor="let s of weeks">
+              <div *ngFor="let g of [0,1,2,3,4,5,6]"
+                   [ngClass]="{'calendar-table__col': true,
+                               'calendar-table__inactive': calendario[s*7+g].massimo === 0,
+                               'calendar-table__event': calendario[s*7+g].selected}">
+                <div class="calendar-table__item"
+                     (click)="onClickCalendario(s*7+g)"
+                      *ngIf="calendario[s*7+g].massimo !== 0 && !flag.disableCalendar; else itemDisabilitato">
+                  <span>{{ calendario[s*7+g].giorno }}</span>
+                </div>
+                <ng-template #itemDisabilitato>
+                  <div class="calendar-table__item">
+                    <span>{{ calendario[s*7+g].giorno }}</span>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #messaggioCalendario>
+      <div class="alert alert-primary" role="alert" *ngIf="!calendario || !calendario.length">
+        Non ci sono appuntamenti per questo sportello!
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+    <div class="clock"></div>
+    <div class="calendar-container time" *ngIf="isCalendarioSelezionato(); else messaggioOrario">
+      <div class="text-center">
+        <h5 class="mb-5">{{ getSlotDisponibili(calendario[calendarioIndex]).length }}
+          {{ getSlotDisponibili(calendario[calendarioIndex]).length === 1 ? 'orario disponibile' : 'orari disponibili' }}<br/>(Numero Appuntamenti / Prenotati)</h5>
+      </div>
+      <div class="calendar-table__body">
+        <div class="calendar-table__row" *ngFor="let riga of orario; let rowIndex=index">
+          <div class="calendar-table__col" *ngFor="let colonna of riga; let colIndex=index">
+            <button
+              *ngIf="colonna != null"
+              [ngClass]="{'btn': true, 'active': colonna.selected}"
+              [disabled]="!colonna.active || flag.disableCalendar"
+              (click)="onClickOrario(rowIndex, colIndex)">
+              {{ colonna.ora | padNumber }}:{{ colonna.minuti | padNumber }} - {{ colonna.oraFine | padNumber }}:{{ colonna.minutiFine | padNumber }}<br/>({{ colonna.massimo }} / {{ colonna.valide }})
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #messaggioOrario>
+      <div class="alert alert-primary" role="alert">Selezionare una data.</div>
+    </ng-template>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <div>
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">INDIETRO</button>
+    </div>
+  </div>
+</div>

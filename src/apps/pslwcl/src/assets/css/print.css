@@ -1,0 +1,31 @@
+
+header .navbar-light .navbar-brand h1 {
+ padding: 0; margin:0; font-size:30px;
+}
+header .navbar-light .navbar-brand h1 img{ margin-right:25px;}
+#menu-sx, .btn, #myNav, .modal, #notification-item, .info-item, #offcanvas-sidebar,
+ .utente, ul.wizard li br, .pagination{display: none;}
+
+a{text-decoration:none;}
+ul.wizard {justify-content: left !important; margin-left:-40px;}
+ul.wizard li {padding: 0; display: inline; margin-right:25px;}
+ul.wizard li span.badge{   margin-right:10px;}
+ul.navbar-expand li{ list-style: none;}		
+.user-item{ text-transform: uppercase; padding: 0; margin:0 0 0 -40px;}
+.d-print-none{ display:none;}
+
+.alert-info, .alert-warning, .alert-danger, .alert-success {   padding: 20px 0px;}
+.mt-8, .mt-5 { margin-top: 30px;}
+.mb-5{ margin-bottom: 30px;}
+table{ border-collapse:collapse; width:100%;}
+.table.table-bordered th, .table.table-bordered td{ border:1px solid #ddd; padding:8px;}
+.table.table-bordered th{ font-size:14px;}
+
+.group input, .group select { margin-bottom:15px;}
+ul.wizard li.active { font-weight:bold;}
+.card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+ margin-bottom:20px;
+}
+
+footer img{ display:none;}

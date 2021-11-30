@@ -1,0 +1,96 @@
+<h4 class="border-n">Ricerca Collocamento Mirato</h4>
+
+<div>
+  <p>Inserisci un codice fiscale</p>
+
+  <div class="row mb-3 align-items-end">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-1">
+      <div class="input-group group">
+        <input id="cf" name="cf"
+            type="text"
+            required
+            maxlength="16"
+            pslwcllibCodiceFiscaleValidator
+            [(ngModel)]="codiceFiscale"
+            #cf="ngModel">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cf">Codice fiscale</label>
+      </div>
+      <div *ngIf="cf.invalid && (cf.dirty || cf.touched)">
+        <p *ngIf="cf.errors['required']" class="text-danger">Obbligatorio</p>
+        <p *ngIf="cf.errors['codiceFiscale']" class="text-danger">{{ cf.errors['codiceFiscale'] }}</p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+      <button type="button" class="btn btn-primary" (click)="onCerca()" [disabled]="!cf.valid">CERCA</button>
+    </div>
+  </div>
+
+
+
+  <div class="container" *ngIf="sap">
+       <div class="row">
+         <h4 class="mb-0">  Dati anagrafici  </h4>
+       </div>
+
+
+        <div class="grey1" >
+          <ul class="dett">
+              <li>Cognome<br>
+                  <strong>{{sap.cognome}}&nbsp;</strong></li>
+              <li>Nome<br>
+                  <strong>{{sap.nome}}&nbsp;</strong></li>
+              <li>Codice fiscale<br>
+                  <strong>{{sap.codice_fiscale}}&nbsp;</strong></li>
+              <li>Sesso<br>
+                  <strong>{{sap.sesso}}&nbsp;</strong></li>
+              <li>Data di nascita<br>
+                  <strong>{{sap.dataDiNascita | date:'dd/MM/yyyy'}}&nbsp;</strong></li>
+              <li>Comune di nascita<br>
+                  <strong>{{sap.luogoDiNascita?.comune?.descrizione}}&nbsp;</strong></li>
+              <li>Stato di nascita<br>
+                  <strong>{{sap.luogoDiNascita?.stato?.descrizione}}&nbsp;</strong></li>
+              <li>Cittadinanza<br>
+                  <strong>{{sap.cittadinanza}}&nbsp;</strong></li>
+              <li>Comune Residenza<br>
+                    <strong>{{sap.residenza?.comune?.descrizione}}&nbsp;
+                        <span *ngIf="sap.residenza?.comune?.provincia?.targa">({{sap.residenza?.comune?.provincia?.targa}})</span></strong>
+                        &nbsp;
+                  </li>
+              <li>Comune Domicilio<br>
+                    <strong>{{sap.domicilio?.comune?.descrizione}}&nbsp;
+                      <span *ngIf="sap.domicilio?.comune?.provincia?.targa">({{sap.domicilio?.comune?.provincia?.targa}})</span></strong>
+                      &nbsp;</li>
+          </ul>
+          <div class="row justify-content-end" >
+            <div>
+              <button class="btn btn-outline-primary" (click)="onIscrizione()">AVANTI</button>
+            </div>
+          </div>
+        </div>
+
+
+    <div class="card no-border" *ngIf="msgWarning">
+        <div class="alert alert-primary" role="alert" [innerHTML]="msgWarning | escapeHtml">
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <div>
+        <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">INDIETRO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

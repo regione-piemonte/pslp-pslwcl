@@ -1,0 +1,19 @@
+<pslfcwcl-wizard
+ [validLink]="isValidData()"
+ (exitPage)="onExitPage($event)"></pslfcwcl-wizard>
+
+<pslshare-dati-anagrafici-fascicolo
+  (sapChange)='onSapChange($event)'
+  (dataChange)='onDataChange($event)'
+  (flagChanging)='onFlagChanging($event)'
+></pslshare-dati-anagrafici-fascicolo>
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="readOnly"
+    [nextButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>
+<div class="text-danger" *ngIf="!isValidData()" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

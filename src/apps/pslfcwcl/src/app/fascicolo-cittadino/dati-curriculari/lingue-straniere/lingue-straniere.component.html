@@ -1,0 +1,127 @@
+<pslshare-paginated-table [columnNumber]="5" [pagedResponse]="sap.lingue_straniere" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Lingua</th>
+      <th scope="col">Letta</th>
+      <th scope="col">Scritta</th>
+      <th scope="col">Parlata</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.lingua?.descrizione }}</td>
+      <td>{{ el.letto?.descrizione }}</td>
+      <td>{{ el.scritto?.descrizione }}</td>
+      <td>{{ el.parlato?.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizationState"
+          (click)="onVisualizza(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !linguaSelezionata"
+    (click)="onNuovo()">AGGIUNGI LINGUA</button>
+</p>
+
+<form #linguaForm="ngForm" *ngIf="linguaSelezionata">
+  <em data-scroll-marker="lingueStraniere"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="form-row form-inline">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="cmblingua" name="cmblingua" class="col-12" [(ngModel)]="linguaSelezionata.lingua" required
+          [compareWith]="compareByCodiceMinisteriale" [disabled]="readOnly || isVisualizationState"
+          [pslwcllibValueNotPresentValidator]="{list: sap.lingue_straniere, idx: updateIndex, valuePath: 'codice_ministeriale', path: 'lingua.codice_ministeriale'}"
+          #lingua="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaConoscenzaLingua" [ngValue]="op">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cmblingua">Lingua</label>
+        <pslshare-error-handler [model]="lingua"
+          [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Lingua già presente'}"></pslshare-error-handler>
+
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="cmbLivelloLetta" name="cmbLivelloLetta" class="col-12" [(ngModel)]="linguaSelezionata.letto"
+          required [compareWith]="compareByCodiceMinisteriale" [disabled]='readOnly || isVisualizationState'
+          #letta="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaGradoConoscenzaLingua" [ngValue]="op">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cmbLivelloLetta">Letta</label>
+        <pslshare-error-handler [model]="letta" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="cmbLivelloScritta" name="cmbLivelloScritta" class="col-12" [(ngModel)]="linguaSelezionata.scritto"
+          required [compareWith]="compareByCodiceMinisteriale" [disabled]='readOnly || isVisualizationState'
+          #scritto="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaGradoConoscenzaLingua" [ngValue]="op">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cmbLivelloScritta">Scritta</label>
+        <pslshare-error-handler [model]="scritto" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+      <div class="input-group group">
+        <select id="cmbLivelloParlata" name="cmbLivelloParlata" class="col-12" [(ngModel)]="linguaSelezionata.parlato"
+          required [compareWith]="compareByCodiceMinisteriale" [disabled]='readOnly || isVisualizationState'
+          #parlata="ngModel">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaGradoConoscenzaLingua" [ngValue]="op">{{op.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cmbLivelloParlata">Parlata</label>
+        <pslshare-error-handler [model]="parlata" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+      </div>
+    </div>
+
+  </div>
+
+  <pslshare-showdata [oggettoDati]="linguaSelezionata"></pslshare-showdata>
+
+  <ng-container *ngIf="!readOnly">
+    <div class="row mt-5" *ngIf="isEditingState; else elseBlock">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="button" class="btn btn-outline-primary" [disabled]="!linguaForm.valid"
+          (click)="onSalva()">CONFERMA</button>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="row mt-5">
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+        <button type="button" class="btn btn-outline-primary" *ngIf="linguaSelezionata" (click)="onAnnulla()">ANNULLA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+          <button type="button" class="btn btn-outline-danger" (click)="onElimina()">ELIMINA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+          <button type="button" class="btn btn-outline-primary" (click)="onModifica()">MODIFICA</button>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</form>

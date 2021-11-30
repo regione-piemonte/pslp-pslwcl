@@ -1,0 +1,57 @@
+<!--
+    gestione aggiungi periodo
+    configurazione calendario
+
+-->
+<div class="grey1">
+  <h5 class="border-n">Periodo di validit&agrave;</h5>
+  <form #periodoForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input type="text" class="form-control" required placeholder="gg/mm/aaaa" name="dataInizio" id="dataInizio" [(ngModel)]="periodoValidita.data_da"
+            #dataInizioModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataInizioDatepicker="ngbDatepicker" [disabled]="periodoValidita.flag_slot_generati || duplicazione">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataInizioDatepicker.toggle()" type="button" [disabled]="periodoValidita.flag_slot_generati || duplicazione"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataInizio">Data di inizio validit&agrave;&nbsp;<span class="ob">*</span></label>
+        </div>
+        <div class="text-danger" *ngIf="dataInizioModel?.errors">
+          <div *ngFor="let err of dataInizioModel?.errors | keyvalue | excludeKeys:'ngbDate,maxlength'">{{ err.key === 'required' ?  'obbligatorio' : err.value }}</div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
+        <div class="input-group group">
+          <input type="text" class="form-control" required placeholder="gg/mm/aaaa" name="dataFine" id="dataFine" [(ngModel)]="periodoValidita.data_a"
+            #dataFineModel="ngModel" pslwcllibDateFormatValidator maxlength="10" ngbDatepicker #dataFineDatepicker="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataFineDatepicker.toggle()" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataFine">Data di fine validit&agrave;&nbsp;<span class="ob">*</span></label>
+        </div>
+        <div class="text-danger" *ngIf="dataFineModel?.errors">
+          <div *ngFor="let err of dataFineModel?.errors | keyvalue | excludeKeys:'ngbDate,maxlength'">{{ err.key === 'required' ?  'obbligatorio' : err.value }}</div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-primary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right" >
+        <button type="submit" class="btn btn-primary" [disabled]="periodoForm.invalid">
+          <span *ngIf="periodoIndex < 0; else modific">AGGIUNGI</span>
+          <ng-template #modific>CONFERMA</ng-template>
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

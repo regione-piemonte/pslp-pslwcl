@@ -1,0 +1,32 @@
+<ul class="dett">
+    <li>Cognome<br>
+      <strong>{{sap.cognome}}&nbsp;</strong></li>
+    <li>Nome<br>
+        <strong>{{sap.nome}}&nbsp;</strong></li>
+    <li>Codice fiscale<br>
+        <strong>{{sap.codice_fiscale}}&nbsp;</strong></li>
+    <li>Sesso<br>
+        <strong>{{sap.sesso}}&nbsp;</strong></li>
+    <li>Data di nascita<br>
+        <strong>{{sap.dataDiNascita | date:'dd/MM/yyyy'}}&nbsp;</strong></li>
+    <li>Comune di nascita<br>
+        <strong>{{sap.luogoDiNascita?.comune?.descrizione}}&nbsp;</strong></li>
+    <li>Stato di nascita<br>
+        <strong>{{sap.luogoDiNascita?.stato?.descrizione}}&nbsp;</strong></li>
+    <li>Cittadinanza<br>
+        <strong>{{sap.cittadinanza}}&nbsp;</strong></li>
+</ul>
+
+<ng-template [ngIf]="sap.permessoDiSoggiorno && sap.permessoDiSoggiorno.numero">
+  <h4 class="border-n">Permesso di soggiorno</h4>
+  <ul class="dett">
+    <li>Titolo<br>
+      <strong>{{sap.permessoDiSoggiorno.titolo}}&nbsp;</strong></li>
+    <li>Numero<br>
+      <strong>{{sap.permessoDiSoggiorno.numero}}&nbsp;</strong></li>
+    <li>Motivo rilascio<br>
+      <strong>{{sap.permessoDiSoggiorno.motivo_rilascio}}&nbsp;</strong></li>
+    <li>Data scadenza<br>
+      <strong>{{sap.permessoDiSoggiorno.data_scadenza | date : 'dd/MM/yyyy'}}&nbsp;</strong></li>
+  </ul>
+</ng-template>

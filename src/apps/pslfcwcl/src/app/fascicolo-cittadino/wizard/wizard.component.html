@@ -1,0 +1,15 @@
+<ng-template [ngIf]="show">
+   <ng-template [ngIf]="!loading">
+      <ul class="nav nav-tabs wizard">
+         <li [class]="w.li" *ngFor="let w of wizard; let i = index">
+            <span [class]="w.span">&bull;</span>
+            <span *ngIf="activeLink && w.path !== thisPath; else noLink">
+            <a (click)="onLink(i)" routerLinkActive="active"><span class="text text-primary" [innerHTML]="w.text | escapeHtml"></span></a>
+            </span>
+            <ng-template #noLink>
+               <span class="text" [innerHTML]="w.text | escapeHtml"></span>
+            </ng-template>
+         </li>
+      </ul>
+   </ng-template>
+</ng-template>

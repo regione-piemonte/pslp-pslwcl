@@ -1,0 +1,194 @@
+<pslfcwcl-wizard
+ [validLink]="isValidData()"
+ (exitPage)="onExitPage($event)"></pslfcwcl-wizard>
+
+<h4 class="mtb-40">{{ titoloPagina }}</h4>
+<div class="row mb-5" *ngIf="sap else noSap">
+
+  <div class="grey1 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-4">
+    <pslshare-paginated-table [columnNumber]="3" [pagedResponse]="sap.politiche_attive" [limit]="10">
+      <ng-template pslbasepagePaginationHead>
+        <tr>
+          <th scope="col">Data Proposta</th>
+          <th scope="col">Attivit&agrave;</th>
+          <th scope="col"></th>
+        </tr>
+      </ng-template>
+      <ng-template pslbasepagePaginationBody let-el>
+        <tr>
+          <td>{{ el.data_proposta | date: 'dd/MM/yyyy'}}</td>
+          <td>{{ el.attivita.descrizione }}</td>
+          <td class="text-nowrap">
+            <button title="Visualizza" class="btn btn-link btn-sm" (click)="onVisualizza(el)">
+              <span class="fas fa-2x fa-eye"></span>
+            </button>
+          </td>
+
+        </tr>
+      </ng-template>
+    </pslshare-paginated-table>
+  </div>
+</div>
+<ng-template #noSap>
+
+</ng-template>
+
+<form #politicheAttiveForm="ngForm" *ngIf="politicaAttiva">
+  <div class="grey1 mb-5">
+    <div class="grey1 row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-12">
+        <em data-scroll-marker="politicheAttive"></em>
+        <div class="input-group group">
+          <input type="text" id="attivita" name="attivita" [ngModel]="politicaAttiva.attivita.descrizione" disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="attivita">Attivit&agrave;&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-12">
+        <div class="input-group group">
+          <input type="text" id="titolo" name="titolo" [ngModel]="politicaAttiva.titolo_progetto.descrizione"
+            disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="titolo">Titolo Progetto&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="denominazione">Denominazione&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <label for="descrizione">Descrizione&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <textarea
+            id="denominazione"
+            name="denominazione"
+            rows="5"
+            [ngModel]="politicaAttiva.denominazione"
+            disabled
+            style="resize: none;"></textarea>
+
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <textarea id="descrizione" name="descrizione" rows="5" [ngModel]="politicaAttiva.descrizione" disabled
+            style="resize: none;"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <input type="text" id="dataproposta" name="dataproposta"
+            [ngModel]="politicaAttiva.data_proposta | date: 'dd/MM/yyyy'" disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="dataproposta">Data proposta&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <input type="text" id="durata" name="durata" [ngModel]="getDurataEDescrizione()" disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="durata">Durata</label>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <input type="text" id="datainizio" name="datainizio"
+            [ngModel]="politicaAttiva.data_inizio | date: 'dd/MM/yyyy'" disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="datainizio">Data inizio&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <input type="text" id="datafine" name="datafine" [ngModel]="politicaAttiva.data_fine | date: 'dd/MM/yyyy'"
+            disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="datafine">Data fine&nbsp;</label>
+        </div>
+      </div>
+
+
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-12">
+        <div class="input-group group">
+          <input type="text" id="entepromotore" name="entepromotore"
+            [ngModel]="getCodiceDescrizione(politicaAttiva.ente_promotore)" disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="entepromotore">Ente promotore&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+        <div class="input-group group">
+          <input type="text" id="indiceprofiling" name="indiceprofiling" [ngModel]="politicaAttiva.indice_profiling"
+            disabled />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="indiceprofiling">Indice profiling&nbsp;</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      <!-- ----------------------- ULTIMO EVENTO ------------------------------------------------ -->
+      <div class="grey1">
+        <h4 class="border-n">Ultimo evento</h4>
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+            <div class="input-group group">
+              <input type="text" id="evento" name="evento" [ngModel]="politicaAttiva.ultimo_evento.evento.descrizione"
+                disabled />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="evento">Evento&nbsp;</label>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-6">
+            <div class="input-group group">
+              <input type="text" id="dataevento" name="dataevento"
+                [ngModel]="politicaAttiva.ultimo_evento.data_evento | date: 'dd/MM/yyyy'" disabled />
+              <span class="highlight"></span>
+              <span class="bar"></span>
+              <label for="dataevento">Data evento&nbsp;</label>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-12">
+            <div class="input-group group">
+              <input
+            type="text"
+            id="descrizioneevento"
+            name="descrizioneevento"
+            [ngModel]="politicaAttiva.ultimo_evento.descrizione"
+            disabled
+          />
+              <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="descrizioneevento">Descrizione evento&nbsp;</label>
+            </div>
+          </div>
+
+    </div>
+  </div>
+
+</form>
+<pslshare-showdata [oggettoDati]="politicaAttiva"></pslshare-showdata>
+
+<pslfcwcl-navigation-button-fc [nextButtonHide]="readOnly" [nextButtonDisabled]="!isValidData()"
+  [nextButtonName]="nextButtonName" [forceNextButtonName]="true" [prevButtonName]="prevButtonName"
+  [forcePrevButtonName]="true" (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

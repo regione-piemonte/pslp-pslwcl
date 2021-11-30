@@ -1,0 +1,8 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+GRADUATORIA
+<pslshare-dati-graduatoria></pslshare-dati-graduatoria>
+
+<pslshare-navigation-button-cm [nextButtonHide]="false" [prevButtonHide]="false" [nextButtonDisabled]="false"
+  [prevButtonName]="prevButtonName" [forcePrevButtonName]="true" (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData()  && messaggioErroreDati" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

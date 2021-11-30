@@ -1,0 +1,127 @@
+<app-wizard></app-wizard>
+
+<h4 class="border-n">Profiling
+  <div class="popup" onclick="myFunction()">
+    <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+    <div class="popuptext" [class.down]="popdown" id="myPopup" [innerHTML]="profilingHelp | escapeHtml"></div>
+  </div>
+</h4>
+
+<div class="row mb-4">
+  <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5" *ngIf="provinciaDomicilio; else residenza">
+    Provincia di domicilio<br>
+    <strong>{{ provinciaDomicilio.descrizione }}</strong>
+  </div>
+  <ng-template #residenza>
+    <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5" *ngIf="provinciaResidenza">
+      Provincia di residenza<br>
+      <strong>{{ provinciaResidenza.descrizione }}</strong>
+    </div>
+  </ng-template>
+
+  <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
+    Età<br>
+    <strong>{{ eta }}</strong>
+  </div>
+</div>
+<div class="alert alert-warning" role="alert" *ngIf="infoMsg">{{ infoMsg }}</div>
+
+<form #profilingForm="ngForm" (ngSubmit)="onSubmit()">
+
+  <div class="row mb-3">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="group">
+        <select id="livello" name="livello" required (change)="onChangeLivello()"
+          [(ngModel)]="dataModel.livelloStudio" #livello="ngModel"
+          [disabled]="profilingDisabled">
+          <option value=""></option>
+          <option *ngFor="let option of liste.gradoStudio" [value]="option.codice_silp">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="livello">Livello titolo di studio <span *ngIf="datiObbligatori" class="ob">*</span></label>
+      </div>
+      <div class="text-danger" [hidden]="livello.valid || livello.pristine">obbligatorio</div>
+      </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="group">
+        <select id="titolo" name="titolo" required
+                [disabled]="!dataModel.livelloStudio || !liste.titoloStudio?.length || profilingDisabled"
+                [(ngModel)]="dataModel.titoloStudio" #titolo="ngModel">
+            <option value=""></option>
+            <option *ngFor="let option of liste.titoloStudio" [value]="option.codice_silp">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="titolo">Titolo di studio <span *ngIf="datiObbligatori" class="ob">*</span></label>
+      </div>
+      <div class="text-danger" [hidden]="titolo.valid || titolo.pristine">obbligatorio</div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="group">
+        <select id="condizione" name="condizione" required
+            [(ngModel)]="dataModel.condizioneOccupazionale" #condizione="ngModel"
+            [disabled]="profilingDisabled">
+            <option value=""></option>
+            <option *ngFor="let option of liste.condizioneOccupazionale" [value]="option.codice_silp">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="condizione">Condizione occupazionale un anno prima dell'adesione <span *ngIf="datiObbligatori" class="ob">*</span></label>
+      </div>
+      <div class="text-danger" [hidden]="condizione.valid || condizione.pristine">obbligatorio</div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="group">
+        <select id="presenza" name="presenza" required
+            [(ngModel)]="dataModel.presenzaItalia" #presenza="ngModel"
+            [disabled]="profilingDisabled">
+            <option value=""></option>
+            <option *ngFor="let option of liste.motivoPresenzaInItalia" [value]="option.codice_silp">{{option.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="presenza">Presenza in Italia da: <span *ngIf="datiObbligatori" class="ob">*</span></label>
+      </div>
+      <div class="text-danger" [hidden]="presenza.valid || presenza.pristine">obbligatorio</div>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-8">
+      &nbsp;
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  mt-3 mb-8 text-right">
+        <button type="submit" class="btn btn-outline-primary"
+            [disabled]="working || profilingForm.invalid || profilingDisabled"
+            *ngIf="!readOnly">
+          CALCOLA PROFILING
+        </button>
+    </div>
+  </div>
+</form>
+
+<ngx-spinner name='profiling-spinner' [fullScreen]="false" type="ball-spin-clockwise" size="medium">
+  <p style="font-size: 20px; color: white">Il calcolo del profiling è in corso...</p>
+</ngx-spinner>
+
+<ng-template [ngIf]="!working">
+  <div class="alert alert-success" role="alert" *ngIf="profiloResult?.indice">
+    <p>Il tuo profiling &egrave; : <strong>{{ profiloResult.indice }}</strong></p>
+    <p *ngIf="profiloResult.data_profiling">Calcolato in data : {{ profiloResult.data_profiling | date : 'dd/MM/yyyy' }}</p>
+    <p *ngIf="profiloResult.eta">Et&agrave; : {{ profiloResult.eta }}</p>
+    <p *ngIf="profiloResult.codice_ministeriale_provincia">Provincia : {{ provinciaDescResult | async }}</p>
+    <p *ngIf="profiloResult.titolo_studio">Livello titolo di studio : {{ profiloResult.titolo_studio.gradoStudio.descrizione }}</p>
+    <p *ngIf="profiloResult.titolo_studio">Titolo di studio : {{ profiloResult.titolo_studio.descrizione }}</p>
+    <p *ngIf="profiloResult.condizione_occupazionale">Condizione occupazionale un anno prima dell'adesione : {{ profiloResult.condizione_occupazionale.descrizione }}</p>
+    <p *ngIf="profiloResult.motivo_presenza_in_italia">Presenza in Italia da : {{ profiloResult.motivo_presenza_in_italia.descrizione }}</p>
+  </div>
+</ng-template>
+
+<app-navigation-button
+  (exitPage)="onExitPage($event)"
+  [nextButtonDisabled]="navigationDisabled"
+  [nextButtonHide]="readOnly">
+</app-navigation-button>

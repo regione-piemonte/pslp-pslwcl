@@ -1,0 +1,41 @@
+/**
+ *  foglio di stile 
+ *   della pagina
+ *  scheda privacy
+ */
+.basso {
+  position: absolute;
+  bottom: 0;
+}
+
+button hr {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+button hr.lineblue{
+  color: #004076;
+  background-color: #004076;
+  border-bottom: #004076;
+}
+
+button hr.linewhite{
+  color: white;
+  background-color: white;
+  border-bottom: white;
+}
+
+.lati {
+  padding: 4px 20px;
+  border-radius: 5px;
+}
+
+.paragrafo {
+  margin-bottom: 1rem;
+  line-height: inherit;
+}
+
+.action-container {
+  height: 73px;
+}
+

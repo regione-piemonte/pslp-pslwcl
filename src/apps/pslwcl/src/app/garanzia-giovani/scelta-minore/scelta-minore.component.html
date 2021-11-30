@@ -1,0 +1,165 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+
+<h4 class="border-n">Scelta minore</h4>
+  <div class="row mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-primary btn-lg" (click)="onGestionePrivacyEMinori()">GESTIONE PRIVACY e MINORI</button>
+    </div>
+  </div>
+
+<div>
+  <h6 id="descTab" class="mt-5">Minori a carico</h6>
+  <div class="scrollbar-table scrollbar-primary mt-3">
+    <table aria-describedby="descTab" class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr  style="height:4em">
+          <th scope="col"></th>
+          <th scope="col" class="align-middle">Cognome e&nbsp;nome</th>
+          <th scope="col" class="align-middle">Codice fiscale</th>
+          <th scope="col" class="align-middle width:24%">Stato Adesione</th>
+          <th scope="col" class="align-middle width:24%">Appuntamento</th>
+          <th scope="col" class="align-middle">Tipo responsabilit&agrave;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let uacwi of minoriACarico; let i = index;">
+          <td><input *ngIf="uacwi.prenotabile; else noPrenotabile"
+                type="radio"
+                [value]="uacwi.utenteACarico"
+                name="minore"
+                [(ngModel)]="minore">
+                <ng-template #noPrenotabile>
+                  <div class="popup" (click)="myPopUp('minoreDescrizione_' + i)">
+                    <span class="fas fa-exclamation-triangle"><span class="sr-only">Informazioni</span></span>
+                    <div class="popuptext ml-5 popdown" [id]="'minoreDescrizione_' + i" [innerHTML]="uacwi.descrizione | escapeHtml"></div>
+                  </div>
+
+                </ng-template>
+              </td>
+          <td><span *ngIf="uacwi.utenteACarico.tutelato.cognome">{{ uacwi.utenteACarico.tutelato.cognome }}</span><span *ngIf="uacwi.utenteACarico.tutelato.nome"> {{ uacwi.utenteACarico.tutelato.nome }}</span></td>
+          <td><span *ngIf="uacwi.utenteACarico.tutelato.codice_fiscale">{{ uacwi.utenteACarico.tutelato.codice_fiscale }}</span></td>
+          <td><span *ngIf="uacwi.adesione">{{ uacwi.adesione.descrizione }}</span></td>
+          <td [innerHTML]="formatAppuntamento(uacwi) | escapeHtml"></td>
+          <td>{{ uacwi.utenteACarico.tipo_responsabilita.descrizione }} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="collapse" [class.show]="showAggiungiMinore">
+  <h6 class="mt-5">Ricerca un minore</h6>
+  <p>Inserisci il codice fiscale di un minore sotto la tua responsabilit&agrave;</p>
+
+  <div class="row mb-3 align-items-end">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-1">
+      <div class="input-group group">
+        <input id="codiceFiscale" name="codiceFiscale"
+            type="text"
+            required
+            maxlength="16"
+            pslwcllibCodiceFiscaleValidator
+            [(ngModel)]="codiceFiscaleMinore"
+            #codiceFiscale="ngModel"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="codiceFiscale">Codice fiscale</label>
+      </div>
+      <div *ngIf="codiceFiscale.invalid && (codiceFiscale.dirty || codiceFiscale.touched)">
+        <p *ngIf="codiceFiscale.errors['required']" class="text-danger">Obbligatorio</p>
+        <p *ngIf="codiceFiscale.errors['codiceFiscale']" class="text-danger">{{ codiceFiscale.errors['codiceFiscale'] }}</p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+      <button type="button" class="btn btn-primary" (click)="onCerca(codiceFiscale)" [disabled]="!codiceFiscale.valid">CERCA</button>
+    </div>
+  </div>
+  <div class="row mb-3 align-items-end" *ngIf="minoreACarico">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <ul class="dett">
+          <li>Nome<br>
+            <strong>{{ minoreACarico.utenteACarico.tutelato.nome }}&nbsp;</strong></li>
+          <li>Cognome<br>
+            <strong>{{ minoreACarico.utenteACarico.tutelato.cognome }}&nbsp;</strong></li>
+        </ul>
+    </div>
+    <form #utenteACaricoForm="ngForm" (ngSubmit)="onSave()" class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="col-sm-12">
+        <div class="group">
+          <select
+            id="tipoResponsabilita" name="tipoResponsabilita"
+            [(ngModel)]="tipoResponsabilita"
+            required>
+            <option
+              *ngFor="let option of tipiResponsabilita"
+              [value]="option.codice">{{ option.descrizione }}
+            </option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="tipoResponsabilita">Tipo responsabilit&agrave;</label>
+        </div>
+        <div class="text-danger" [hidden]="!utenteACaricoForm.controls['tipoResponsabilita']?.errors">obbligatorio</div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-right">
+          <p><button type="submit" class="btn btn-primary" [disabled]="utenteACaricoForm.invalid">
+            SALVA
+          </button></p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-navigation-button
+  (exitPage)="onExitPage($event)"
+  [nextButtonDisabled]="!minore || !minore.tutelato || !minore.tutelato.id_utente">
+</app-navigation-button>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="dateOfBirth">Date of birth</label>
+        <div class="input-group">
+          <input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #modalPresaInCaricoContent let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('NO')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="grey mb-5">Il minore risulta essere gi&agrave; associato a un responsabile.<br>Si conferma di volerlo prendere in carico?</div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close('OK')">S&igrave;</button>
+    <button type="button" class="btn btn-outline-primary" (click)="modal.dismiss('NO')">NO</button>
+  </div>
+</ng-template>

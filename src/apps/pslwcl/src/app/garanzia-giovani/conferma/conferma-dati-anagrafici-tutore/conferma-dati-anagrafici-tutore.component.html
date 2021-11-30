@@ -1,0 +1,55 @@
+<div class="card no-border">
+
+  <div class="card-header" id="headingOne_tutore_{{ id }}">
+    <h4 class="mb-0">
+      <button class="btn btn-link" type="button" data-toggle="collapse" [attr.data-target]="'#collapseOne_tutore_' + id" aria-expanded="true"
+        aria-controls="collapseOne">
+        Dati anagrafici Responsabile richiedente
+      </button>
+    </h4>
+  </div>
+
+  <div id="collapseOne_tutore_{{ id }}" class="collapse" [attr.aria-labelledby]="'headingOne_tutore_' + id" data-parent="#accordionDati">
+    <div class="grey1">
+      <p class="text-right m-0"><a (click)="onDatiAnagrafici()"><span class="fas fa-edit fa-2x"></span> Modifica</a></p>
+      <ul class="dett">
+        <li>Cognome<br>
+          <strong>{{ sap?.cognome }}&nbsp;</strong></li>
+        <li>Nome<br>
+          <strong>{{ sap?.nome }}&nbsp;</strong></li>
+
+        <li>Codice fiscale<br>
+          <strong>{{ sap?.codice_fiscale }}&nbsp;</strong></li>
+        <li>Sesso<br>
+          <strong>{{ sap?.sesso }}&nbsp;</strong></li>
+
+        <li>Data di nascita<br>
+          <strong>{{ sap?.dataDiNascita | date:'dd/MM/yyyy' }}&nbsp;</strong></li>
+        <li>Comune di nascita<br>
+          <strong>{{ sap?.luogoDiNascita?.comune?.descrizione }}&nbsp;</strong></li>
+
+        <li>Stato di nascita<br>
+          <strong>{{ sap?.luogoDiNascita?.stato?.descrizione }}&nbsp;</strong></li>
+        <li>Cittadinanza<br>
+          <strong>{{ sap?.cittadinanza }}&nbsp;</strong></li>
+      </ul>
+      <hr>
+      <pslshare-indirizzo *ngIf="sap?.residenza" [capVisible]="true" [indirizzoRequired] = "true"
+        [name]="'residenza'"
+        [indirizzo]="sap?.residenza"
+        [mayUpdate]="false">
+      </pslshare-indirizzo>
+      <pslshare-indirizzo *ngIf="sap?.domicilio" [capVisible]="true" [indirizzoRequired] = "true"
+        [name]="'domicilio'"
+        [indirizzo]="sap?.domicilio"
+        [mayUpdate]="false">
+      </pslshare-indirizzo>
+      <pslshare-recapiti *ngIf="sap?.recapito"
+        [name]="'recapiti'"
+        [recapiti]="sap?.recapito"
+        [mayUpdate]="false">
+      </pslshare-recapiti>
+
+    </div>
+  </div>
+</div><!-- /Conferma dati-->

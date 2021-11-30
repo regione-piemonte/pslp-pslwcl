@@ -1,0 +1,21 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+
+  <h4 class="border-n" [innerHTML]="msgMI029 | escapeHtml"></h4>
+
+
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+<pslshare-dettaglio-reddito  *ngIf="loaded"
+[isRichiestaIscrizione]="isRichiestaIscrizione"
+[readOnly]="readOnly"
+[statoMaschera]="statoMaschera"
+[indiceSelezionato]="indiceSelezionato"
+[redditoSelezionato]="redditoSelezionato"
+(formChanged)="onFormRedditoChanged($event)"
+(formValid)="onFormRedditoValid($event)"
+(flagChanging)="onFlagChanging($event)"></pslshare-dettaglio-reddito>
+
+
+<pslshare-navigation-button-cm *ngIf="loaded" [nextButtonHide]="false" [prevButtonHide]="false" [nextButtonDisabled]="!formValid"
+  [prevButtonName]="prevButtonName" [forcePrevButtonName]="true" (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+<div class="text-danger" *ngIf="!isValidData()  && messaggioErroreDati" [innerHTML]="messaggioErroreDati | escapeHtml"></div>

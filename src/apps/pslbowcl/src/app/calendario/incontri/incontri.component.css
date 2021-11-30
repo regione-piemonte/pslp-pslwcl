@@ -1,0 +1,10 @@
+/*
+    -------------------------
+    foglio di stile
+    configurazione calendario
+    form incontri
+    -------------------------
+*/
+.calendar-container__btn:disabled, .calendar-container__btn[disabled] {
+  color: #9FAAB7;
+}

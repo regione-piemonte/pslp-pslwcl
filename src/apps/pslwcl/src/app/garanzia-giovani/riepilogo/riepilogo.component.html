@@ -1,0 +1,35 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+<div class="row mt-3" *ngIf="loading === 0">
+  <div class="col-sm-12 col-md-12 col-lg-4">
+    <button type="button" class="btn btn-primary btn-lg" (click)="onNuovoAppuntamento()">NUOVO APPUNTAMENTO</button>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-4">
+    <button type="button" class="btn btn-primary btn-lg" (click)="onGestionePrivacyEMinori()">GESTIONE PRIVACY e MINORI</button>
+  </div>
+</div>
+
+<ng-template [ngIf]="hasAdesione">
+  <h4 class="mt-80">La tua adesione a Garanzia Giovani</h4>
+  <app-scheda-gg [idUtente]="idUtente" (loadedData)="decreaseLoading()"></app-scheda-gg>
+</ng-template>
+
+<ng-template [ngIf]="hasMinori" ngbPanelTitle>
+  <h4 class="mt-40 mb-5">Prenotazione per conto di</h4>
+</ng-template>
+<ngb-accordion [closeOthers]="true" *ngIf="hasMinori" [destroyOnHide]="false" #accordionMinori>
+  <ngb-panel id="minore-{{ minore.tutelato.id_utente }}" *ngFor="let minore of minori">
+    <ng-template ngbPanelTitle>
+      <h4>{{ minore.tutelato.nome }} {{ minore.tutelato.cognome }}</h4>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <app-scheda-gg
+        [idUtente]="minore.tutelato.id_utente"
+        [utenteACarico]="minore"
+        [idTutore]="idUtente"
+        (loadedData)="decreaseLoading()">
+        </app-scheda-gg>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

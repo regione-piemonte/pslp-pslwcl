@@ -1,0 +1,19 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+
+  <div class="row mt-3" *ngIf="loading === 0">
+    <div class="col-sm-12 col-md-12 col-lg-4">
+      <button class="btn btn-primary btn-lg" (click)="onGestionePrivacyEMinori()">GESTIONE PRIVACY</button>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
+      <button class="btn btn-primary btn-lg" (click)="onGestioneFascicolo()">GESTIONE FASCICOLO</button>
+    </div>
+    <br><br><br>
+  </div>
+
+  <ng-template [ngIf]="hasSAP">
+    <h4 class="border-n mt-5">La tua ultima DID</h4>
+    <pslfcwcl-scheda-did
+      [idUtente]="idUtente"
+      (loadedData)="decreaseLoading()"></pslfcwcl-scheda-did>
+  </ng-template>

@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3" [class.order-last]="invertColumns">
+    <div *ngIf="!prevButtonHide">
+      <button type="button"
+        class="btn btn-outline-primary btn-lg"
+        [disabled]="prevButtonDisabled"
+        (click)="onPrev()">{{ prevButtonName }}
+      </button>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3" [class.text-right]="!invertColumns" [class.order-first]="invertColumns">
+    <div *ngIf="!nextButtonHide">
+      <button type="button"
+        class="btn btn-primary btn-lg"
+        [disabled]="nextButtonDisabled"
+        (click)="onNext()">{{ nextButtonName }}
+      </button>
+    </div>
+  </div>
+</div>

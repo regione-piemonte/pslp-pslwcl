@@ -1,0 +1,52 @@
+{
+  "name": "rfs",
+  "version": "7.1.3",
+  "main": "postcss/rfs.js",
+  "description": "Powerfull & easy-to-use responsive font sizing system.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "codepen": "browserify postcss/codepen.js | babel --presets=env | uglifyjs --compress --mangle > postcss/codepen.bundle.js",
+    "gulp-examples": "cd examples/less/gulp && gulp build && cd ../../postcss/gulp && gulp build && cd ../../sass/gulp && gulp build && cd ../../scss/gulp && gulp build && cd ../../stylus/gulp && gulp build && cd ../../../..",
+    "node-examples": "node examples/less/node/index.js && node examples/postcss/node/index.js && node examples/sass/node/index.js && node examples/scss/node/index.js && node examples/stylus/node/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/project-rfs/rfs.git"
+  },
+  "keywords": [
+    "rfs",
+    "responsive",
+    "font-size",
+    "typography",
+    "scss",
+    "sass",
+    "less",
+    "stylus",
+    "postcss"
+  ],
+  "author": "Martijn Cuppens <martijn.cuppens@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/project-rfs/rfs/issues"
+  },
+  "homepage": "https://github.com/project-rfs/rfs#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "browserify": "^16.2.2",
+    "gulp": "^3.9.1",
+    "gulp-less": "^4.0.1",
+    "gulp-postcss": "^7.0.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-stylus": "^2.7.0",
+    "less": "^3.7.1",
+    "node-sass": "^4.9.2",
+    "postcss": "^6.0.23",
+    "postcss-nested": "^3.0.0",
+    "postcss-prettify": "^0.3.4",
+    "stylelint": "^9.3.0",
+    "stylelint-scss": "^3.1.3",
+    "stylus": "^0.54.5",
+    "uglify-js": "^3.4.4"
+  }
+}

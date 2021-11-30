@@ -1,0 +1,830 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "",
+  "projects": {
+    "pslwcl": {
+      "root": "apps/pslwcl",
+      "sourceRoot": "apps/pslwcl/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/pslwcl",
+            "baseHref": "/",
+            "index": "apps/pslwcl/src/index.html",
+            "main": "apps/pslwcl/src/main.ts",
+            "polyfills": "apps/pslwcl/src/polyfills.ts",
+            "tsConfig": "apps/pslwcl/tsconfig.app.json",
+            "assets": ["apps/pslwcl/src/favicon.ico", "apps/pslwcl/src/assets"],
+            "crossOrigin": "use-credentials",
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslwcl/environment.local.ts"
+                }
+              ],
+              "baseHref": "/",
+              "outputPath": "dist/apps/local/pslwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "dev-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslwcl/environment.dev-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslweb/",
+              "outputPath": "dist/apps/dev-rp-01/pslwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "tst-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslwcl/environment.tst-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslweb/",
+              "outputPath": "dist/apps/tst-rp-01/pslwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "coll-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslwcl/environment.coll-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslweb/",
+              "outputPath": "dist/apps/coll-rp-01/pslwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "prod-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslwcl/environment.prod-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslweb/",
+              "outputPath": "dist/apps/prod-rp-01/pslwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "pslwcl:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "pslwcl:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "pslwcl:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/pslwcl/src/test.ts",
+            "polyfills": "apps/pslwcl/src/polyfills.ts",
+            "tsConfig": "apps/pslwcl/tsconfig.spec.json",
+            "karmaConfig": "apps/pslwcl/karma.conf.js",
+            "styles": [
+              "apps/pslwcl/src/style.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "apps/pslwcl/src/favicon.ico",
+              "apps/pslwcl/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/pslwcl/tsconfig.app.json",
+              "apps/pslwcl/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "src/app/pslapi/**/*"
+            ]
+          }
+        }
+      }
+    },
+    "pslapi": {
+      "projectType": "library",
+      "root": "libs/pslapi",
+      "sourceRoot": "libs/pslapi/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/pslapi/tsconfig.lib.json",
+              "libs/pslapi/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/pslapi/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/pslapi/jest.config.js",
+            "tsConfig": "libs/pslapi/tsconfig.spec.json",
+            "setupFile": "libs/pslapi/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "pslfcwcl": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "apps/pslfcwcl",
+      "sourceRoot": "apps/pslfcwcl/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/pslfcwcl",
+            "index": "apps/pslfcwcl/src/index.html",
+            "main": "apps/pslfcwcl/src/main.ts",
+            "polyfills": "apps/pslfcwcl/src/polyfills.ts",
+            "tsConfig": "apps/pslfcwcl/tsconfig.app.json",
+            "crossOrigin": "use-credentials",
+            "aot": false,
+            "assets": [
+              "apps/pslfcwcl/src/favicon.ico",
+              "apps/pslfcwcl/src/assets"
+            ],
+            "styles": [
+              "node_modules/@ng-select/ng-select/themes/material.theme.css",
+              "apps/pslfcwcl/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslfcwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslfcwcl/environment.local.ts"
+                }
+              ],
+              "baseHref": "/",
+              "outputPath": "dist/apps/local/pslfcwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "dev-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslfcwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslfcwcl/environment.dev-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslfcweb/",
+              "outputPath": "dist/apps/dev-rp-01/pslfcwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "tst-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslfcwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslfcwcl/environment.tst-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslfcweb/",
+              "outputPath": "dist/apps/tst-rp-01/pslfcwcl/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "coll-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslfcwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslfcwcl/environment.coll-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslfcweb/",
+              "outputPath": "dist/apps/coll-rp-01/pslfcwcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "prod-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslfcwcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslfcwcl/environment.prod-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslfcweb/",
+              "outputPath": "dist/apps/prod-rp-01/pslfcwcl/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "pslfcwcl:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "pslfcwcl:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "pslfcwcl:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/pslfcwcl/tsconfig.app.json",
+              "apps/pslfcwcl/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/pslfcwcl/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/pslfcwcl/jest.config.js",
+            "tsConfig": "apps/pslfcwcl/tsconfig.spec.json",
+            "setupFile": "apps/pslfcwcl/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "pslservice": {
+      "projectType": "library",
+      "root": "libs/pslservice",
+      "sourceRoot": "libs/pslservice/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/pslservice/tsconfig.lib.json",
+              "libs/pslservice/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/pslservice/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/pslservice/jest.config.js",
+            "tsConfig": "libs/pslservice/tsconfig.spec.json",
+            "setupFile": "libs/pslservice/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "pslmodel": {
+      "projectType": "library",
+      "root": "libs/pslmodel",
+      "sourceRoot": "libs/pslmodel/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/pslmodel/tsconfig.lib.json",
+              "libs/pslmodel/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/pslmodel/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/pslmodel/jest.config.js",
+            "tsConfig": "libs/pslmodel/tsconfig.spec.json",
+            "setupFile": "libs/pslmodel/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "psldirective": {
+      "projectType": "library",
+      "root": "libs/psldirective",
+      "sourceRoot": "libs/psldirective/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/psldirective/tsconfig.lib.json",
+              "libs/psldirective/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/psldirective/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/psldirective/jest.config.js",
+            "tsConfig": "libs/psldirective/tsconfig.spec.json",
+            "setupFile": "libs/psldirective/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "pslphome": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "apps/pslphome",
+      "sourceRoot": "apps/pslphome/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/pslphome",
+            "index": "apps/pslphome/src/index.html",
+            "main": "apps/pslphome/src/main.ts",
+            "polyfills": "apps/pslphome/src/polyfills.ts",
+            "crossOrigin": "use-credentials",
+            "tsConfig": "apps/pslphome/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/pslphome/src/favicon.ico",
+              "apps/pslphome/src/assets"
+            ],
+            "styles": [
+              "apps/pslphome/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslphome/src/environments/environment.ts",
+                  "with": "buildfiles/pslphome/environment.local.ts"
+                }
+              ],
+              "baseHref": "/",
+              "outputPath": "dist/apps/local/pslphome",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "dev-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslphome/src/environments/environment.ts",
+                  "with": "buildfiles/pslphome/environment.dev-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslphome/",
+              "outputPath": "dist/apps/dev-rp-01/pslphome",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "tst-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslphome/src/environments/environment.ts",
+                  "with": "buildfiles/pslphome/environment.tst-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslphome/",
+              "outputPath": "dist/apps/tst-rp-01/pslphome/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "coll-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslphome/src/environments/environment.ts",
+                  "with": "buildfiles/pslphome/environment.coll-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslphome/",
+              "outputPath": "dist/apps/coll-rp-01/pslphome",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "prod-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslphome/src/environments/environment.ts",
+                  "with": "buildfiles/pslphome/environment.prod-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslphome/",
+              "outputPath": "dist/apps/prod-rp-01/pslphome/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "pslphome:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "pslphome:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "pslphome:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/pslphome/tsconfig.app.json",
+              "apps/pslphome/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/pslphome/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/pslphome/jest.config.js",
+            "tsConfig": "apps/pslphome/tsconfig.spec.json",
+            "setupFile": "apps/pslphome/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "pslshare": {
+      "projectType": "library",
+      "root": "libs/pslshare",
+      "sourceRoot": "libs/pslshare/src",
+      "prefix": "pslwcl",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/pslshare/tsconfig.lib.json",
+              "libs/pslshare/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/pslshare/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/pslshare/jest.config.js",
+            "tsConfig": "libs/pslshare/tsconfig.spec.json",
+            "setupFile": "libs/pslshare/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "pslbowcl": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "apps/pslbowcl",
+      "sourceRoot": "apps/pslbowcl/src",
+      "prefix": "pslbowcl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/pslbowcl",
+            "index": "apps/pslbowcl/src/index.html",
+            "main": "apps/pslbowcl/src/main.ts",
+            "polyfills": "apps/pslbowcl/src/polyfills.ts",
+            "tsConfig": "apps/pslbowcl/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/pslbowcl/src/favicon.ico",
+              "apps/pslbowcl/src/assets"
+            ],
+            "styles": [
+              "apps/pslbowcl/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslbowcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslbowcl/environment.local.ts"
+                }
+              ],
+              "baseHref": "/",
+              "outputPath": "dist/apps/local/pslbowcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "dev-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslbowcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslbowcl/environment.dev-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslboweb/",
+              "outputPath": "dist/apps/dev-rp-01/pslbowcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "tst-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslbowcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslbowcl/environment.tst-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslboweb/",
+              "outputPath": "dist/apps/tst-rp-01/pslbowcl/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "coll-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslbowcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslbowcl/environment.coll-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslboweb/",
+              "outputPath": "dist/apps/coll-rp-01/pslbowcl",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "prod-rp-01": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/pslbowcl/src/environments/environment.ts",
+                  "with": "buildfiles/pslbowcl/environment.prod-rp-01.ts"
+                }
+              ],
+              "baseHref": "/pslboweb/",
+              "outputPath": "dist/apps/prod-rp-01/pslbowcl/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "pslbowcl:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "pslbowcl:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "pslbowcl:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/pslbowcl/tsconfig.app.json",
+              "apps/pslbowcl/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/pslbowcl/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/pslbowcl/jest.config.js",
+            "tsConfig": "apps/pslbowcl/tsconfig.spec.json",
+            "setupFile": "apps/pslbowcl/src/test-setup.ts"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "pslwcl",
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  }
+}

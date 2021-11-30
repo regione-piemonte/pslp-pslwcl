@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "target": "es2015",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
+    "paths": {
+      "@pslwcl/pslapi": ["libs/pslapi/src/index.ts"],
+      "@pslwcl/pslservice": ["libs/pslservice/src/index.ts"],
+      "@pslwcl/pslmodel": ["libs/pslmodel/src/index.ts"],
+      "@pslwcl/psldirective": ["libs/psldirective/src/index.ts"],
+      "@pslwcl/pslshare": ["libs/pslshare/src/index.ts"]
+    },
+    "rootDir": "."
+  }
+}

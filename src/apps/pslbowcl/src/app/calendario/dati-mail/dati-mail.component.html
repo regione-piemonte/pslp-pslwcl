@@ -1,0 +1,271 @@
+<!--
+    -------------------------
+    configurazione calendario
+    impostazione dati mail
+    -------------------------
+-->
+<pslbowcl-wizard [titolo]="titolo" show="true"> </pslbowcl-wizard>
+<p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+<form #datiMailForm="ngForm">
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="mr-3 pt-4">
+        Invio mail di conferma prenotazione <span class="ob">*</span>
+      </div>
+      <fieldset>
+        <div class="md-radio md-radio-inline pt-4">
+          <input
+            type="radio"
+            name="invioMailConferma"
+            id="invioMailConfermaSi"
+            [value]="true"
+            [(ngModel)]="
+              confCalendarioMail.flag_invio_mail_conferma_prenotazione
+            "
+          />
+          <label for="invioMailConfermaSi" class="pt-1">S&igrave;</label>
+        </div>
+        <div class="md-radio md-radio-inline pt-4">
+          <input
+            type="radio"
+            name="invioMailConferma"
+            id="invioMailConfermaNo"
+            [disabled]="readOnly"
+            [value]="false"
+            [(ngModel)]="
+              confCalendarioMail.flag_invio_mail_conferma_prenotazione
+            "
+          />
+          <label for="invioMailConfermaNo" class="pt-1">No</label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="mr-3 pt-4">
+        Invio promemoria prenotazione <span class="ob">*</span>
+      </div>
+      <div class=" float-left">
+        <div class="md-radio md-radio-inline pt-4">
+          <input
+            type="radio"
+            name="invioPromemoria"
+            id="invioPromemoriaSi"
+            [value]="true"
+            [(ngModel)]="flagInvioMailPromemoria"
+            (ngModelChange)="mostraOrePromemoria()"
+          />
+          <label for="invioPromemoriaSi" class="pt-1">S&igrave;</label>
+        </div>
+        <div class="md-radio md-radio-inline pt-4 float-left">
+          <input
+            type="radio"
+            name="invioPromemoria"
+            id="invioPromemoriaNo"
+            [disabled]="readOnly"
+            [value]="false"
+            [(ngModel)]="flagInvioMailPromemoria"
+            (ngModelChange)="azzeraOrePromemoria()"
+          />
+          <label for="invioPromemoriaNo" class="pt-1">No</label>
+        </div>
+        <div class="col-lg-6 float-right" *ngIf="mostraOre">
+          ore&nbsp;prima&nbsp;
+          <input
+            type="text"
+            id="orePromemoriaPrenotazione"
+            [disabled]="readOnly"
+            pslboDigitOnly
+            name="orePromemoriaPrenotazione"
+            [(ngModel)]="
+              confCalendarioMail.ore_invio_mail_promemoria_prenotazione
+            "
+            maxlength="2"
+          />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grey1">
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="oggetto_mail"
+            [disabled]="readOnly"
+            [(ngModel)]="confCalendarioMail.oggetto_mail"
+            name="oggetto_mail"
+            maxlength="100"
+          />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="oggetto_mail">Oggetto Mail</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msg1">Messaggio aggiuntivo all'e-mail di conferma</div>
+          <textarea
+            id="msg1"
+            name="msg1"
+            rows="3"
+            [disabled]="readOnly"
+            [(ngModel)]="confCalendarioMail.messaggio_aggiuntivo_mail_conferma"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msg2">Messaggio aggiuntivo all'e-mail di promemoria</div>
+          <textarea
+            id="msg2"
+            name="msg2"
+            rows="3"
+            [disabled]="readOnly"
+            [(ngModel)]="
+              confCalendarioMail.messaggio_aggiuntivo_mail_promemoria
+            "
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msg3">
+            Messaggio aggiuntivo all'e-mail di annullamento prenotazione da
+            operatore
+          </div>
+          <textarea
+            id="msg3"
+            name="msg3"
+            rows="3"
+            [disabled]="readOnly"
+            [(ngModel)]="
+              confCalendarioMail.messaggio_aggiuntivo_mail_non_presentato
+            "
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="msg4">
+            Messaggio aggiuntivo all'e-mail di appuntamento mancato
+          </div>
+          <textarea
+            id="msg4"
+            name="msg4"
+            rows="3"
+            [disabled]="readOnly"
+            [(ngModel)]="
+              confCalendarioMail.messaggio_aggiuntivo_mail_annullamento
+            "
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5 mb-5">&nbsp;</div>
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">
+        INDIETRO
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button"
+        class="btn btn-primary btn-lg"
+        [disabled]="datiMailForm.invalid"
+        (click)="onSalva()"
+      >
+        <span
+          *ngIf="
+            readOnly || (!flgToBeSaved && !datiMailForm.dirty && !modified);
+            else salvaEProsegui
+          "
+          >PROSEGUI</span
+        >
+        <ng-template #salvaEProsegui>
+          <span>SALVA & PROSEGUI</span>
+        </ng-template>
+      </button>
+    </div>
+  </div>
+
+  <div class="row mt-5 mb-5">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="onTorna()">
+        Torna alla Ricerca
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Modal indietro-->
+<div
+  class="modal fade"
+  id="modal_indietro"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma uscita Dati Mail Calendario</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+          <strong
+            ><span *ngIf="ritornoRicerca; else msgIndietro"
+              >Sei sicuro di voler uscire?</span
+            ><ng-template #msgIndietro
+              >Si desidera tornare indietro?</ng-template
+            ></strong
+          ><br />
+          <p>I dati modificati dall'ultimo salvataggio andranno perduti.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-primary float-left"
+          data-dismiss="modal"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary float-right"
+          (click)="doIndietro()"
+          data-dismiss="modal"
+        >
+          Si
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal indietro-->

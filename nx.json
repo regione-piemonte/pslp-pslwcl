@@ -1,0 +1,39 @@
+{
+  "npmScope": "pslwcl",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "pslwcl": {
+      "tags": []
+    },
+    "pslapi": {
+      "tags": []
+    },
+    "pslfcwcl": {
+      "tags": []
+    },
+    "pslservice": {
+      "tags": []
+    },
+    "pslmodel": {
+      "tags": []
+    },
+    "psldirective": {
+      "tags": []
+    },
+    "pslphome": {
+      "tags": []
+    },
+    "pslshare": {
+      "tags": []
+    },
+    "pslbowcl": {
+      "tags": []
+    }
+  }
+}

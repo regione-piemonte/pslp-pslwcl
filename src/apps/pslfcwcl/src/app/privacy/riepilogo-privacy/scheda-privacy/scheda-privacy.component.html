@@ -1,0 +1,80 @@
+<!--
+   sezione scheda privacy
+
+-->
+<div class="row vertical-center" *ngIf="loaded">
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+    <p id="tabDescr" class="paragrafo">
+      <strong>{{ sap?.nome || utenteACarico?.tutelato?.nome || utenteSenzaSap?.nome }}
+        {{ sap?.cognome || utenteACarico?.tutelato?.cognome || utenteSenzaSap?.cognome }}</strong><br>
+      CODICE FISCALE:
+      <strong>{{ sap?.codice_fiscale || utenteACarico?.tutelato?.codice_fiscale || utenteSenzaSap?.codice_fiscale }}</strong>
+      <ng-template [ngIf]="utenteACarico">
+        <br>TIPO RESPONSABILIT&Agrave;: <strong>{{ utenteACarico?.tipo_responsabilita?.descrizione | uppercase }}</strong>
+        <br>ET&Agrave;: <strong>{{ (eta !== null && eta !== undefined) ? eta : 'n.a.'}}</strong>
+      </ng-template>
+    </p>
+    <ng-template [ngIf]="utenteACarico">
+      <button title="Modifica Responsabilità" class="btn btn-outline-primary btn-sm"
+      [disabled]="!pulsantiAbilitati"
+      (click)="onSparaSuUtentePerModificareRespo()">
+         Modifica Responsabilità
+      </button></ng-template>
+  </div>
+  <div class="scrollbar-table scrollbar-primary col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+    <table aria-describedby="tabDescr"  class="table table-bordered table-striped table-hover table-sortable" id="infoTable">
+      <ng-template [ngIf]="!utenteACarico" [ngIfElse]="elseBlock">
+        <thead>
+          <tr>
+            <th scope="col">Privacy</th>
+            <th scope="col">Stato</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr *ngFor="let lePrivacy of elencoPrivacyUtente">
+            <td class="align-middle">{{lePrivacy.descr_ambito}}</td>
+            <td  [ngClass]="{'text-center': true,
+            'align-middle': true,
+              'table-success': lePrivacy.stato}">
+             <strong>{{ getDescrStatoPrivacy(lePrivacy) }}</strong>
+              </td>
+            <td class="text-center" class="text-nowrap">
+              <button title="Privacy" class="btn btn-outline-primary"
+              [disabled]="!pulsantiAbilitati"
+                (click)="onPrivacy(lePrivacy.cod_ambito, lePrivacy.code_msg, lePrivacy.stato)">
+                VEDI
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </ng-template>
+      <ng-template #elseBlock>
+        <thead>
+          <tr>
+            <th scope="col">Privacy responsabile</th>
+            <th scope="col">Stato</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr *ngFor="let lePrivacy of elencoPrivacyMinore">
+            <td class="align-middle">{{lePrivacy.descr_ambito}}</td>
+            <td  [ngClass]="{'text-center': true,
+            'align-middle': true,
+              'table-success': lePrivacy.stato}">
+             <strong>{{ getDescrStatoPrivacy(lePrivacy) }}</strong>
+              </td>
+            <td class="text-nowrap">
+              <button title="Privacy" class="btn btn-outline-primary"
+              [disabled]="!pulsantiAbilitati"
+                (click)="onPrivacy(lePrivacy.cod_ambito, lePrivacy.code_msg, lePrivacy.stato, utenteACarico?.tutelato?.id_utente, eta)">
+                VEDI
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+</div>

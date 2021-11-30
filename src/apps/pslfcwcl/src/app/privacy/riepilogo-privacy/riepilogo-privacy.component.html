@@ -1,0 +1,48 @@
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+
+<h4 class="border-n mt-5">Privacy per conto proprio</h4>
+<ng-template [ngIf]="loadedRiepilogo">
+  <pslfcwcl-scheda-privacy
+    [idUtente]="idUtente"
+    [ilDestino]="ilDestino"
+    [pulsantiAbilitati]="pulsantiAbilitati"
+    (loadedData)="decreaseLoading()">
+  </pslfcwcl-scheda-privacy>
+
+  <ng-template [ngIf]="hasMinori" ngbPanelTitle>
+    <h4 class="mt-40 mb-5">Privacy Responsabile per conto di</h4>
+  </ng-template>
+  <ngb-accordion [closeOthers]="true" *ngIf="hasMinori" [destroyOnHide]="false" #accordionMinori>
+    <ngb-panel id="minore-{{ minore.tutelato.id_utente }}" *ngFor="let minore of minori">
+      <ng-template ngbPanelTitle>
+        <h5>
+          {{ minore.tutelato.nome }} {{ minore.tutelato.cognome }}
+        </h5>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="grey1">
+          <pslfcwcl-scheda-privacy
+            [idUtente]="minore.tutelato.id_utente"
+            [utenteACarico]="minore"
+            [idTutore]="idUtente"
+            [ilDestino]="ilDestino"
+            (loadedData)="decreaseLoading()"
+            [pulsantiAbilitati]="pulsantiAbilitati"
+            (sparaSuUtentePerModificareRespo)="onSparaSuUtentePerModificareRespo($event)">
+          </pslfcwcl-scheda-privacy>
+        </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+  <pslfcwcl-gestione-minore-privacy  [hasSap]="hasSAP" [ilDestino]="ilDestino"
+    (loadedData)="decreaseLoading()"
+    (editingData)="inModifica($event)">
+  </pslfcwcl-gestione-minore-privacy>
+</ng-template>
+
+<div class="row mt-40 mb-5" *ngIf="linkIndietro">
+  <div class="col-md-12 col-lg-4">
+    <button class="btn btn-primary btn-lg" (click)="onIndietro()">RITORNA ALLA FUNZIONALITA'</button>
+  </div>
+</div>

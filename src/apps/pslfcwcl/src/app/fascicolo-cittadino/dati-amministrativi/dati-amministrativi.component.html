@@ -1,0 +1,228 @@
+<pslfcwcl-wizard
+  [validLink]="isValidData()"
+  (exitPage)="onExitPage($event)">
+</pslfcwcl-wizard>
+
+<h4 class="mtb-40">{{ titoloPagina }}</h4>
+
+<form #datiAmministrativiForm="ngForm">
+  <div class="grey1 mb-5">
+    <h5>Posizione nel mercato del Lavoro</h5>
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="statoOccupazionale"
+            name="statoOccupazionale"
+            [(ngModel)]="statoOccupazionale"
+            disabled
+            maxlength="40"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="statoOccupazionale">Stato Occupazionale&nbsp;</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="condizione"
+            name="condizione"
+            [(ngModel)]="condizione"
+            disabled
+            maxlength="40"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="condizione">Condizione&nbsp;</label>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="categoria"
+            name="categoria"
+            [(ngModel)]="categoria"
+            disabled
+            maxlength="3"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="categoria">Categoria&nbsp;dlg.297</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="anzianita"
+            name="anzianita"
+            [(ngModel)]="anzianita"
+            disabled
+            maxlength="30"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="anzianita"
+            >Anzianit&agrave;&nbsp;di&nbsp;disoccupazione in mesi</label
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="indiceProfiling"
+            name="indiceProfiling"
+            [(ngModel)]="indiceProfiling"
+            disabled
+            maxlength="11"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="indiceProfiling">Indice&nbsp;di&nbsp;Profiling</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+
+            id="dataUltimoEvento"
+            name="dataUltimoEvento"
+            [(ngModel)]="dataUltimoEvento"
+            #dataUltimoEventoModel="ngModel"
+            pslwcllibDateFormatValidator
+            maxlength="10"
+            ngbDatepicker
+            #dataUltimoEventoDatepicker="ngbDatepicker"
+            disabled
+          />
+          <label for="dataUltimoEvento">Data Ultimo Evento</label>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+        <div class="input-group group">
+          <input
+            type="text"
+
+            id="dataDID"
+            name="dataDID"
+            [(ngModel)]="dataDID"
+            #dataDIDModel="ngModel"
+            pslwcllibDateFormatValidator
+            maxlength="10"
+            ngbDatepicker
+            #dataDIDDatepicker="ngbDatepicker"
+            disabled
+          />
+          <label for="dataDID">Data Dichiarazione&nbsp;di&nbsp;Immediata&nbsp;Disponibilit&agrave;&nbsp;(D.I.D.)</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grey1 mb-5">
+    <h5 id="descTab">Liste speciali e graduatorie</h5>
+    <div class="scrollbar-table scrollbar-primary">
+      <table aria-describedby="descTab"
+        class="table table-bordered table-striped table-hover"
+        id="periodiValTable">
+        <thead>
+          <tr>
+            <th scope="col">Tipo di lista</th>
+            <th scope="col">Data iscrizione in lista</th>
+            <th scope="col">Data termine iscrizione</th>
+            <th scope="col">Data massimo differimento</th>
+            <th scope="col">Provincia iscrizione alla lista</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="listeSpeciali && listeSpeciali.length > 0; else noData">
+          <tr *ngFor="let item of listeSpeciali; let i = index">
+            <td>{{ item.descrizione_lista }}</td>
+            <td>{{ item.data_iscrizione_lista | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ item.data_termine_iscrizione | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ item.data_massimo_differimento | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ item.provincia?.descrizione }}</td>
+          </tr>
+        </tbody>
+        <ng-template #noData>
+          <tbody>
+            <tr>
+              <td colspan="5">Non ci sono dati.</td>
+            </tr>
+          </tbody>
+        </ng-template>
+      </table>
+    </div>
+  </div>
+  <div class="grey1">
+    <h5>Altri Dati</h5>
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 row-form form-inline">
+        <div class="mr-3 pt-4" #obbligoFormativoAssoltoLabel>
+          Obbligo Formativo Assolto
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-5">
+          <fieldset [pslwcllibRadioLabelHandler]="obbligoFormativoAssoltoLabel"><!-- //NOSONAR -->
+            <div class="md-radio md-radio-inline mt-2 mb-0" >
+              <input type="radio" [disabled]="readOnly || assoltoOrigine"
+               id="obbligoFormativoAssoltoSi" name="obbligoFormativoAssolto" [value]="true" [(ngModel)]="obbligoFormativoAssolto">
+              <label for="obbligoFormativoAssoltoSi">Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" disabled
+               id="obbligoFormativoAssoltoNo" name="obbligoFormativoAssolto" [value]="false" [(ngModel)]="obbligoFormativoAssolto">
+              <label for="obbligoFormativoAssoltoNo">No</label>
+            </div>
+          </fieldset>
+        </div>
+  </div>
+    </div>
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-12">
+        <div class="input-group group">
+          <input
+            type="text"
+            id="appartenenzaCP"
+            name="appartenenzaCP"
+            [(ngModel)]="appartenenzaCP"
+            disabled
+            maxlength="40"
+          />
+
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="appartenenzaCP">Appartenenza&nbsp;a&nbsp;Categorie&nbsp;Protette</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-4">
+      </div>
+    </div>
+  </div>
+</form>
+
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="false"
+    [nextButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

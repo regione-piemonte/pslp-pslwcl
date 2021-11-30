@@ -1,0 +1,17 @@
+<div class="scrollbar-table scrollbar-primary">
+  <!-- //NOSONAR --><table class="table table-bordered table-striped table-hover table-sortable" id="infoTable">
+    <thead>
+      <ng-template [ngTemplateOutlet]="tplHead?.templateRef"></ng-template>
+    </thead>
+    <tbody *ngIf="pagedResponse?.length > 0; else noData">
+      <ng-template *ngFor="let el of pageSlice" [ngTemplateOutlet]="tplBody?.templateRef" [ngTemplateOutletContext]="{$implicit: el, el: el}"></ng-template>
+    </tbody>
+    <ng-template #noData>
+      <tbody>
+        <tr *ngIf="columnNumber > 0">
+          <td [colSpan]="columnNumber + 1">Non ci sono dati.</td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</div>

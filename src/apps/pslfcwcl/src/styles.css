@@ -1,0 +1,101 @@
+/* You can add global styles to this file, and also import other style files */
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+.calendar:hover:before {
+  color: #5591c3;
+}
+.calendar[disabled]:hover:before,
+.calendar:disabled:hover:before {
+  color: #005ca9;
+}
+
+ngb-pagination .pagination {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.input-group-prepend .calendar:before {
+  position: static;
+}
+.input-group-append .calendar:before {
+  position: static;
+}
+ngb-datepicker.dropdown-menu {
+  width: fit-content;
+}
+ngb-datepicker .ngb-dp-arrow button.ngb-dp-arrow-btn {
+  padding: 0;
+}
+ ngb-datepicker-navigation-select > .custom-select {
+  background-color: transparent;
+  background-image: none;
+  width: 57px;
+}
+.form-control[ngbdatepicker]:disabled,
+.form-control[ngbdatepicker][disabled],
+.form-control[ngbdatepicker][readonly] {
+  background-color: transparent;
+}
+form input[type].ng-valid.ng-touched,
+form input[type].ng-valid.ng-dirty,
+form textarea.ng-invalid.ng-touched,
+form textarea.ng-invalid.ng-dirty,
+form select.ng-valid.ng-touched,
+form select.ng-valid.ng-dirty,
+form ng-select.ng-valid.ng-touched > div.ng-select-container,
+form ng-select.ng-valid.ng-dirty > div.ng-select-container {
+  border-left: 5px solid #42a948;
+}
+form input[type].ng-invalid.ng-touched,
+form input[type].ng-invalid.ng-dirty,
+form textarea.ng-invalid.ng-touched,
+form textarea.ng-invalid.ng-dirty,
+form select.ng-invalid.ng-touched,
+form select.ng-invalid.ng-dirty,
+form ng-select.ng-invalid.ng-touched > div.ng-select-container,
+form ng-select.ng-invalid.ng-dirty > div.ng-select-container {
+  border-left: 5px solid #a94442;
+}
+form input[type].ng-touched ~ label,
+form input[type].ng-dirty ~ label,
+form textarea.ng-touched ~ label,
+form textarea.ng-dirty ~ label,
+form select.ng-touched ~ label,
+form select.ng-dirty ~ label {
+  padding-left: 7px;
+}
+form ng-select ~ label,
+form ng-select ~ label {
+  padding-left: 15px;
+}
+form .md-radio input[type].ng-touched ~ label,
+form .md-radio input[type].ng-dirty ~ label,
+form ng-select.ng-touched ~ label,
+form ng-select.ng-dirty ~ label {
+  padding-left: 22px;
+}
+.with-data {
+  color: #005ca9;
+}
+input[required]:not([type="radio"]) ~ label::after,
+select[required] ~ label::after,
+textarea[required] ~ label::after,
+ng-select[required] ~ label::after {
+  color: #bf3a31;
+  content: ' *';
+  font-size: 2rem;
+  font-weight: 900;
+  padding-left: 2px;
+}
+
+/*
+div[data-radio-required]::after {
+  color: #bf3a31;
+  content: ' *';
+  font-size: 2rem;
+  font-weight: 900;
+  padding-left: 2px;
+}
+*/

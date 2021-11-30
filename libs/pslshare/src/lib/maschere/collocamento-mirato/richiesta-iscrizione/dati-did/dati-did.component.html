@@ -1,0 +1,41 @@
+<h4 class="border-n mt-5">La tua ultima DID</h4>
+<hr>
+<div *ngIf="loaded">
+  <div class="row" *ngIf="(isDIDPresente())">
+    <div class="col-sm-12 col-md-24 col-lg-12 col-xl-12 mb-3  ml-4">
+      <ng-template [ngIf]="did.flg_rifiuto !== 'S'" [ngIfElse]=statoRespinta>
+        <p class="paragrafo">Stato: <span> <strong
+              class={{textStatoDid}}>&nbsp;{{descrUltimoStato}}&nbsp;</strong>&nbsp;-&nbsp;<strong>{{msgStatoInvio}}</strong><br>
+          </span></p>
+      </ng-template>
+      <ng-template #statoRespinta>
+        Stato: <strong class="bg-danger text-white">&nbsp;RESPINTO&nbsp;</strong>
+      </ng-template>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 mb-3  ml-4">
+      <p class="paragrafo">
+        <ng-template [ngIf]="!isDIDPresente()" [ngIfElse]="didPresente">
+          <br> <strong>Non è presente la DID in Piemonte</strong>
+        </ng-template>
+        <ng-template #didPresente>DID n. <strong>{{did.id_did}}&nbsp;</strong>del&nbsp;<strong>{{dataDid}}&nbsp;
+            {{terminata}}</strong><br>
+          <ng-template [ngIf]="did.flg_rifiuto !== 'S'" [ngIfElse]=statoRespinta>
+            Ultima variazione Stato del&nbsp;<strong>{{dataStatoDid}}</strong>&nbsp;<br><br>
+          </ng-template>
+          <ng-template #statoRespinta>
+            Non accettata dal CPI il <strong>{{dataStatoDid}}</strong>&nbsp;per il seguente motivo:&nbsp;<strong>{{msgStatoDid}}</strong><br><br>
+          </ng-template>
+          <ul>
+            <ng-template [ngIf]="did?.ente_titolarita">
+              <li>Titolarità della DID:
+                <strong>{{enteTitolaritaDescrizione}}&nbsp;</strong></li>
+            </ng-template>
+          </ul>
+        </ng-template>
+      </p>
+    </div>
+  </div>
+</div>
+<hr>

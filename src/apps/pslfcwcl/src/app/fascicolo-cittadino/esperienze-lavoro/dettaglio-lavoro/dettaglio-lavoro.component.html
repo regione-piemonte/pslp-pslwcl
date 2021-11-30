@@ -1,0 +1,491 @@
+<form #dettaglioLavoroForm="ngForm" *ngIf="esperienzaSelezionata">
+  <!-- TAB DATI GENERALI -->
+  <div class="grey1 mb-5">
+    <h5>DATI GENERALI</h5>
+    <em data-scroll-marker="esperienze"></em>
+    <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+    <div class="form-row form-inline">
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-6">
+        <fieldset disabled><!-- //NOSONAR -->
+          <div class="col-12 mr-3 pt-4" #esperienzaDichiarataLabel>Provenienza Esperienza</div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-4"
+            [pslwcllibRadioLabelHandler]="esperienzaDichiarataLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-4">
+              <input type="radio" id="tipoEspDichiarata" name="rdb_tipo_esperienza" [value]="true"
+                [ngModel]="esperienzaSelezionata.esperienza_dichiarata" />
+              <label for="tipoEspDichiarata">&nbsp;&nbsp;Dichiarata</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-4">
+              <input type="radio" id="tipoEspDichiarataCOB" name="rdb_tipo_esperienza" [value]="false"
+                [ngModel]="esperienzaSelezionata.esperienza_dichiarata" />
+              <label for="tipoEspDichiarataCOB">&nbsp;&nbsp;Comunicazione obbligatoria</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <!-- data inizio rapporto -->
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input class="form-control" placeholder="gg/mm/aaaa" name="data_inizio_rapporto" id="data_inizio_rapporto"
+            [(ngModel)]="esperienzaSelezionata.data_inizio_rapporto" required [disabled]="!isInsertState" ngbDatepicker
+            #dataInizioRapportoDatepicker="ngbDatepicker" pslwcllibDateValueValidator #dataAssunzione="ngModel"
+            maxlength="10" (change)="cancellaTipoContrattoERicarica()">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataInizioRapportoDatepicker.toggle()"
+              [disabled]="!isEditingState" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Data assunzione&nbsp;</label>
+          <pslshare-error-handler [model]="dataAssunzione"
+            [errors]="{required: 'Obbligatorio', length: '', age: '', format: ''}"></pslshare-error-handler>
+        </div>
+      </div>
+      <!-- data fine rapporto -->
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input class="form-control" placeholder="gg/mm/aaaa" name="dp" id="data_fine_rapporto"
+            [(ngModel)]="esperienzaSelezionata.data_fine_rapporto" [disabled]="!isEditingState || isDataInserita"
+            [required]="isDataFineRapportoObbligatoria" ngbDatepicker #dataFineRapportoDatepicker="ngbDatepicker"
+            pslwcllibDateValueValidator #dataCessazione="ngModel" maxlength="10">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataFineRapportoDatepicker.toggle()"
+              [disabled]="!isEditingState || isDataInserita" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Data cessazione&nbsp;</label>
+          <pslshare-error-handler [model]="dataCessazione"
+            [errors]="{required: 'Obbligatorio', length: '', age: '', format: ''}"></pslshare-error-handler>
+        </div>
+      </div>
+
+      <!-- cmbTipoContratto -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <select id="cmbTipoContratto" name="cmbTipoContratto" class="col-12" [(ngModel)]="tipoContrattoSelezionato"
+            (change)="onChangeTipoContrattoAzzeraFlag()" required [disabled]="!isInsertState || isDataInserita"
+            #tipoContratto="ngModel" [compareWith]="compareByCodiceMinisteriale">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let op of listaTipoContrattoValidiADataInizioRapporto" [ngValue]="op">
+              {{op.codice_ministeriale}} {{op.descrizione }}</option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cmbTipoContratto">Tipo contratto&nbsp;</label>
+          <pslshare-error-handler [model]="tipoContratto" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+        </div>
+      </div>
+      <div class="text-info" *ngIf="isMsgAvviso" [innerHTML]="ilMsgDiAvviso | escapeHtml"></div>
+      <!-- rdbForma rapporto -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <fieldset disabled *ngIf="(!tipoContrattoSelezionato?.ammissibile_forma_TD || !tipoContrattoSelezionato?.ammissibile_forma_TI)"><!-- //NOSONAR -->
+          <div class="input-group group with-data">Forma Contratto</div>
+          <div class="md-radio md-radio-inline mt-2 mb-4">
+            <input type="radio" id="flgforma_td" name="rdb_forma_td" [value]="true"
+              [ngModel]="tipoContrattoSelezionato?.ammissibile_forma_TD" />
+            <label for="flgforma_td">&nbsp;&nbsp;Tempo Determinato</label>
+          </div>
+          <div class="md-radio md-radio-inline mt-2 mb-4">
+            <input type="radio" id="flgforma_ti" name="rdb_forma_ti" [value]="true"
+              [ngModel]="tipoContrattoSelezionato?.ammissibile_forma_TI" />
+            <label for="flgforma_ti">&nbsp;&nbsp;Tempo Indeterminato</label>
+          </div>
+        </fieldset>
+      </div>
+      <hr>
+      <!-- cmbcategoria -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+        <div class="input-group group">
+          <select id="cmbcategoria" name="cmbcategoria" class="col-12"
+            [(ngModel)]="esperienzaSelezionata.categoria_inquadramento"
+            [required]="!categoriaIsProtect"
+            [compareWith]="compareByCodiceMinisteriale"
+            [disabled]="!isEditingState || categoriaIsProtect || isDataInserita" #categoria="ngModel">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let op of elenchiDecodifiche.categorie_inquadramento" [ngValue]="op">{{ op.descrizione }}
+            </option>
+          </select>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cmbcategoria">Categoria inquadramento&nbsp;</label>
+          <pslshare-error-handler [model]="categoria" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler>
+        </div>
+      </div>
+
+      <!-- data fine periodo formativo -->
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="input-group group">
+          <input [placeholder]="isApprendistatoEditable ? 'gg/mm/aaaa' : ''" class="form-control"
+            name="data_fine_periodo_formativo" id="data_fine_periodo_formativo"
+            [(ngModel)]="esperienzaSelezionata.data_fine_periodo_formativo"
+            [disabled]="!isApprendistatoEditable  || isDataInserita" [required]="isApprendistatoEditable" ngbDatepicker
+            #dataFinePeriodoFormativoDatepicker="ngbDatepicker" pslwcllibDateValueValidator
+            #dataFinePeriodoForm="ngModel" maxlength="10">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dataFinePeriodoFormativoDatepicker.toggle()"
+              [disabled]="!isApprendistatoEditable" type="button"></button>
+          </div>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="data2">Data fine periodo formativo&nbsp;</label>
+          <pslshare-error-handler [model]="dataFinePeriodoForm"
+            [errors]="{required: 'Obbligatorio', length: '', age: '', format: ''}"></pslshare-error-handler>
+        </div>
+      </div>
+      <hr>
+      <!-- rdb_assunzione_l68 -->
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-6">
+        <fieldset [disabled]="!isFlgLegge68Editable || isDataInserita"><!-- //NOSONAR -->
+          <div class="col-12 mr-3 pt-4" #assuzioneL68Label>
+            Assunzione effettuata ai sensi della L. 68/99<span class="ob" *ngIf="isFlgLegge68Editable">*</span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0"
+            [pslwcllibRadioLabelHandler]="assuzioneL68Label">
+            <div class="md-radio md-radio-inline mt-4 mb-4">
+              <input type="radio" id="flgl68_si" name="rdb_assunzione_l68" [value]="true"
+                [(ngModel)]="esperienzaSelezionata.assunzione_l68"
+                />
+              <label for="flgl68_si" [disableTooltip]="isFlgLegge68Editable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-4 mb-4">
+              <input type="radio" id="flgl68_no" name="rdb_assunzione_l68" [value]="false"
+                [(ngModel)]="esperienzaSelezionata.assunzione_l68" />
+              <label for="flgl68_no" [disableTooltip]="isFlgLegge68Editable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <!-- rdb_mobilita -->
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-6">
+        <fieldset [disabled]="!isFlgMobilitaEditable || isDataInserita"><!-- //NOSONAR -->
+          <div class="col-12 mr-3 pt-4" #lavoratoreInMobilitaLabel>
+            Lavoratore in mobilit&agrave;<span class="ob" *ngIf="isFlgMobilitaEditable">*</span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0"
+            [pslwcllibRadioLabelHandler]="lavoratoreInMobilitaLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgmobilita_si" name="rdb_mobilita" [value]="true"
+                [(ngModel)]="esperienzaSelezionata.lavoratore_in_mobilita" />
+              <label for="flgmobilita_si" [disableTooltip]="isFlgMobilitaEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgmobilita_no" name="rdb_mobilita" [value]="false"
+                [(ngModel)]="esperienzaSelezionata.lavoratore_in_mobilita" />
+              <label for="flgmobilita_no" [disableTooltip]="isFlgMobilitaEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <!-- rdb_stagionale -->
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-6">
+        <fieldset [disabled]="!isFlgStagionaleEditable || isDataInserita"><!-- //NOSONAR -->
+          <div class="col-12 mr-3 pt-4" #lavoroStagionaleLabel>
+            Lavoro stagionale<span class="ob" *ngIf="isFlgStagionaleEditable">*</span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0"
+            [pslwcllibRadioLabelHandler]="lavoroStagionaleLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgstagionale_si" name="rdb_stagionale" [value]="true"
+                [(ngModel)]="esperienzaSelezionata.lavoro_stagionale" />
+              <label for="flgstagionale_si" [disableTooltip]="isFlgStagionaleEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgstagionale_no" name="rdb_stagionale" [value]="false"
+                [(ngModel)]="esperienzaSelezionata.lavoro_stagionale" />
+              <label for="flgstagionale_no" [disableTooltip]="isFlgStagionaleEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <hr>
+      <!-- rdb_agricoltura -->
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-6">
+        <fieldset [disabled]="!isFlgAgricolturaEditable || isDataInserita"><!-- //NOSONAR -->
+          <div class="col-12 mr-3 pt-4" #lavoroInAgricolturaLabel>
+            Lavoro in agricoltura<span class="ob" *ngIf="isFlgAgricolturaEditable">*</span>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0"
+            [pslwcllibRadioLabelHandler]="lavoroInAgricolturaLabel">
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgagricoltura_si" name="rdb_agricoltura" [value]="true"
+                [(ngModel)]="esperienzaSelezionata.lavoro_in_agricoltura" />
+              <label for="flgagricoltura_si" [disableTooltip]="isFlgAgricolturaEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;Si</label>
+            </div>
+            <div class="md-radio md-radio-inline mt-2 mb-0">
+              <input type="radio" id="flgagricoltura_no" name="rdb_agricoltura" [value]="false"
+                [(ngModel)]="esperienzaSelezionata.lavoro_in_agricoltura" />
+              <label for="flgagricoltura_no" [disableTooltip]="isFlgAgricolturaEditable" ngbTooltip="Non selezionabile">&nbsp;&nbsp;No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <hr>
+      <div class="mt-4 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group ">
+          <!-- cmbQualifica prova con typeahead-->
+          <input id="cmbQualificaTypeahead"
+          name="cmbQualificaTypeahead"
+          type="text"
+          #cmbQualificaTypeahead="ngModel"
+          [(ngModel)]="esperienzaSelezionata.qualifica"
+          [ngbTypeahead]="searchQualifica"
+          [inputFormatter]="formatMatchesQualifica"
+          [resultFormatter]="formatMatchesQualifica"
+          required
+          [disabled]="!isEditingState || isDataInserita" maxlength="100" pslwcllibCodMinistNotValidValidatorDirective>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cmbQualificaTypeahead">Qualifica professionale (digitare alcuni caratteri, per filtrare le
+            voci)&nbsp;</label>
+          <pslshare-error-handler [model]="cmbQualificaTypeahead" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+          <pslshare-error-handler [model]="cmbQualificaTypeahead"
+            [errors]="{codiceMinisterialeNotValid: {path: 'message'}}"></pslshare-error-handler>
+        </div>
+      </div>
+      <hr>
+      <!-- cmbmodalitalavoro -->
+      <div class="row mt-5 col-12">
+        <div class=" col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="input-group group">
+            <select id="cmbmodalitalavoro" name="cmbmodalitalavoro" class="col-12"
+              [(ngModel)]="esperienzaSelezionata.modalita_lavoro" required [compareWith]="compareByCodiceMinisteriale"
+              [disabled]="!isEditingState || isDataInserita" maxlength="100" #modalLavoro="ngModel">
+              <!-- solo in inserimento e' attivo -->
+              <option [ngValue]="null"></option>
+              <option *ngFor="let op of elenchiDecodifiche.modalita_lavoro" [ngValue]="op">{{ op.descrizione }}</option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cmbmodalitalavoro">Modalit&agrave; lavoro&nbsp;</label>
+            <pslshare-error-handler [model]="modalLavoro" [errors]="{required: 'Obbligatorio'}">
+            </pslshare-error-handler>
+          </div>
+        </div>
+      </div>
+      <!-- txtPrincipaliMansioni -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <div for="txtMansioni">Principali mansioni&nbsp;</div>
+          <textarea id="txtMansioni" name="txtMansioni" rows="2" [disabled]="!isEditingState || isDataInserita"
+            [(ngModel)]="esperienzaSelezionata.principali_mansioni"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            maxlength="250" style="resize: none;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- TAB DATORE LAVORO -->
+  <div class="grey1 mb-5">
+    <h5>DATORE DI LAVORO</h5>
+    <div class="form-row form-inline">
+      <!-- txtCodiceFiscaleDatore -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="txtCodiceFiscaleDatore" name="txtCodiceFiscaleDatore"
+            [(ngModel)]="esperienzaSelezionata.datore_lavoro.codice_fiscale" maxlength="16" required
+            [disabled]="!isInsertState || isDataInserita" #codFisc="ngModel" pslwcllibCodFiscOrPartIvaValidator
+            oninput="this.value = this.value.toUpperCase().trim()" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="txtCodiceFiscaleDatore">Codice fiscale/Partita Iva&nbsp;</label>
+          <div *ngIf="codFisc.invalid && (codFisc.dirty || codFisc.touched)">
+            <p *ngIf="codFisc.errors['required']" class="text-danger">Obbligatorio</p>
+            <p *ngIf="codFisc.errors['codiceFiscale']" class="text-danger">{{ codFisc.errors['codiceFiscale'] }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- txtDenominazioneDatore -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input type="text" id="txtDenominazioneDatore" name="txtDenominazioneDatore"
+            [(ngModel)]="esperienzaSelezionata.datore_lavoro.denominazione" required maxlength="100"
+            #denomDatLavoro="ngModel" [disabled]="!isEditingState || isDataInserita"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="txtDenominazioneDatore">Denominazione&nbsp;</label>
+          <pslshare-error-handler [model]="denomDatLavoro" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+        </div>
+      </div>
+      <!-- cmbSettoreDatore -->
+
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input id="cmbSettoreDatore" name="cmbSettoreDatore" type="text" #settoreDatLav="ngModel"
+            [(ngModel)]="esperienzaSelezionata.datore_lavoro.settore" [ngbTypeahead]="customSearchFn"
+            [inputFormatter]="formatMatchesSettoriAteco" [resultFormatter]="formatMatchesSettoriAteco" required
+            [disabled]="!isEditingState || isDataInserita" pslwcllibCodMinistNotValidValidatorDirective>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cmbSettoreDatore">Settore (Attivit&agrave;) (digitare alcuni caratteri, per filtrare le
+            voci)&nbsp;</label>
+          <pslshare-error-handler [model]="settoreDatLav" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+          <pslshare-error-handler [model]="settoreDatLav" [errors]="{codiceMinisterialeNotValid: {path: 'message'}}">
+          </pslshare-error-handler>
+
+          <!-- <pslshare-error-handler [model]="settoreDatLav" [errors]="{required: 'Obbligatorio'}"></pslshare-error-handler> -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Parte commentata per in base alle nuove disposizioni
+      su comune e indirizzo non provenienti correttamente da SAP
+    <pslshare-indirizzo
+      name="Indirizzo Datore Lavoro"
+      [indirizzo]="esperienzaSelezionata.datore_lavoro.indirizzo"
+      [indirizzoRequired]="false"
+      [mayUpdate]="!forceReadOnlyResidenza && !readOnly && isEditingState"
+      (indirizzoEditState)="datoreLavoroEditState($event)"
+      (indirizzoChanged)="datoreLavoroChanged($event)">
+    </pslshare-indirizzo>
+     -->
+  </div>
+
+  <!-- TAB LUOGO DI LAVORO -->
+  <pslshare-indirizzo
+    name="Luogo di lavoro"
+    [indirizzo]="esperienzaSelezionata.indirizzo_di_lavoro"
+    [mayUpdate]="!forceReadOnlyResidenza && !readOnly && isEditingState && !isDataInserita"
+    (indirizzoEditState)="indirizzoLavoroEditState($event)"
+    (indirizzoChanged)="indirizzoLavoroChanged($event)"
+    [capVisible]="false">
+  </pslshare-indirizzo>
+  <!-- <pslshare-showdata [oggettoDati]="esperienzaSelezionata.indirizzo_di_lavoro"></pslshare-showdata> -->
+
+  <!-- TAB AZIENDA UTILIZZATRICE -->
+  <div ngModelGroup="aziendaUtilizzatriceModel" [pslwcllibIfOneThenFullValidate]="ifOneThenFullInput"
+    #groupUtil="ngModelGroup" class="grey1 my-5">
+    <h5>AZIENDA UTILIZZATRICE</h5>
+    <div class="form-row form-inline">
+      <!-- txtCodiceFiscaleUtilizzatrice -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+        <div class="input-group group">
+          <input type="text" id="txtCodiceFiscaleUtilizzatrice" name="txtCodiceFiscaleUtilizzatrice" minlength="11"
+            maxlength="16" [(ngModel)]="esperienzaSelezionata.azienda_utilizzatrice.codice_fiscale"
+            [disabled]="!isSezioneAziendaUtilizzatriceEditable || isDataInserita" pslwcllibCodFiscOrPartIvaValidator
+            #codiceFiscaleUtil="ngModel" oninput="this.value = this.value.toUpperCase().trim()" />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="txtCodiceFiscaleUtilizzatrice">Codice fiscale&nbsp;/Partita Iva&nbsp;</label>
+          <div *ngIf="codiceFiscaleUtil.invalid && (codiceFiscaleUtil.dirty || codiceFiscaleUtil.touched)">
+            <p *ngIf="codiceFiscaleUtil.errors['required']" class="text-danger">Obbligatorio</p>
+            <p *ngIf="codiceFiscaleUtil.errors['codiceFiscale']" class="text-danger">
+              {{ codiceFiscaleUtil.errors['codiceFiscale'] }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- txtDenominazioneUtilizzatrice -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input type="text" id="txtDenominazioneUtilizzatrice" name="txtDenominazioneUtilizzatrice" maxlength="100"
+            [(ngModel)]="esperienzaSelezionata.azienda_utilizzatrice.denominazione" #denomAziendaUtil="ngModel"
+            [disabled]="!isSezioneAziendaUtilizzatriceEditable || isDataInserita"
+            onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+            />
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="txtDenominazioneUtilizzatrice">Denominazione&nbsp;</label>
+          <pslshare-error-handler [model]="denomAziendaUtil" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+        </div>
+      </div>
+      <!-- cmbSettoreUtilizzatrice -->
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input id="cmbSettoreUtilizzatrice" name="cmbSettoreUtilizzatrice" type="text" #settoreAziendaUtil="ngModel"
+            [(ngModel)]="esperienzaSelezionata.azienda_utilizzatrice.settore" [ngbTypeahead]="customSearchFn"
+            [inputFormatter]="formatMatchesSettoriAteco" [resultFormatter]="formatMatchesSettoriAteco"
+            [disabled]="!isSezioneAziendaUtilizzatriceEditable || isDataInserita"
+            pslwcllibCodMinistNotValidValidatorDirective>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="cmbSettoreUtilizzatrice">Settore (Attivit&agrave;) (digitare alcuni caratteri, per filtrare le
+            voci)&nbsp;</label>
+          <pslshare-error-handler [model]="settoreAziendaUtil" [errors]="{required: 'Obbligatorio'}">
+          </pslshare-error-handler>
+          <pslshare-error-handler [model]="settoreAziendaUtil"
+            [errors]="{codiceMinisterialeNotValid: {path: 'message'}}"></pslshare-error-handler>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="groupUtil.errors !== null && groupUtil.invalid && (groupUtil.dirty || groupUtil.touched)">
+      <p *ngIf="groupUtil.errors['tuttiONessuno']" class="text-danger">{{ groupUtil.errors['tuttiONessuno'] }}</p>
+    </div>
+
+    <!-- Parte commentata per in base alle nuove disposizioni
+      su comune e indirizzo non provenienti correttamente da SAP
+
+    <pslshare-indirizzo
+      name="Indirizzo azienda"
+      [indirizzo]="esperienzaSelezionata.azienda_utilizzatrice.indirizzo"
+      [indirizzoRequired]="false"
+      [mayUpdate]="!forceReadOnlyResidenza && !readOnly && isEditingState && isSezioneAziendaUtilizzatriceEditable && isAllInOne"
+      (indirizzoEditState)="aziendaUtilizzatriceEditState($event)"
+      (indirizzoChanged)="aziendaUtilizzatriceChanged($event)">
+    </pslshare-indirizzo>
+  -->
+    <!-- <pslshare-showdata [oggettoDati]="esperienzaSelezionata.azienda_utilizzatrice.indirizzo"></pslshare-showdata> -->
+
+  </div>
+  <pslshare-showdata [oggettoDati]="tipoContrattoSelezionato"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="esperienzaSelezionata"></pslshare-showdata>
+  <pslshare-showdata [oggettoDati]="isApprendistatoEditable"></pslshare-showdata>
+
+  <!-- TASTI ANNULLA/SALVA IN EDITING -->
+  <div class="row mt-5" *ngIf="!readOnly && isEditingState; else elseBlock">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">
+        ANNULLA
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-primary"
+        [disabled]="readOnly || !dettaglioLavoroForm.valid || flagIndirizzoLavoroChanging"
+        (click)="onSalva()">
+        CONFERMA
+      </button>
+    </div>
+  </div>
+  <!-- TASTI ELIMINA/MODIFICA IN VISUALIZZAZIONE -->
+  <ng-template #elseBlock>
+    <div class="row mt-5">
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+        <button type="button" class="btn btn-outline-primary" *ngIf="esperienzaSelezionata"
+          (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+        <button type="button" class="btn btn-outline-danger" (click)="onElimina()"
+          [disabled]="!isEsperienzaDichiarata || readOnly">
+          ELIMINA&nbsp;<span class="fas fa-info-circle" *ngIf="!isEsperienzaDichiarata"
+            ngbTooltip="{{msgComunicazioneObbligatoria}}"></span>
+        </button>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+        <button type="button" class="btn btn-outline-primary" [disabled]="!isEsperienzaDichiarata || readOnly"
+          (click)="onModifica()">
+          MODIFICA&nbsp;<span class="fas fa-info-circle" *ngIf="!isEsperienzaDichiarata"
+            ngbTooltip="{{msgComunicazioneObbligatoria}}"></span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</form>

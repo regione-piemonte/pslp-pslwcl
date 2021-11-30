@@ -1,0 +1,423 @@
+<pslshare-wizard-cm [validLink]="isValidData()" (exitPage)="onExitPage($event)"></pslshare-wizard-cm>
+
+<h4 class="border-n">{{ titolo }}</h4>
+<div class="alert alert-info" role="alert" *ngIf="messaggioUtente" [innerHTML]="messaggioUtente | escapeHtml"></div>
+<div class="container mt-3">
+
+
+  <div *ngIf="loaded">
+    <div class="row vertical-center">
+      <div class="cont-accordion w-100">
+        <ngb-accordion id="parent" [closeOthers]="false"
+          activeIds="panel_cittadino, panel_richiesta, panel_disabile, panel_graduatoria, panel_allegati"
+          [destroyOnHide]="false" #accordionHelp>
+          <!--  INIZIO SEZIONE LAVORATORE      -->
+          <ngb-panel id="panel_cittadino">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Cittadino</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="container">
+                <div class="grey1">
+                  <div class="col-12">
+                    <ul class="dett">
+                      <li>Nominativo<br>
+                        <strong>{{sap.cognome + ' ' + sap.nome}}</strong>
+                      </li>
+                      <li>Codice Fiscale<br>
+                        <strong>{{sap.codice_fiscale}}</strong>
+                      </li>
+                      <li>Residenza<br>
+                        <strong>{{sap.residenza.indirizzo_esteso + ' - ' + sap.residenza.comune.descrizione +
+                          ' (' + sap.residenza.comune.provincia.targa + ')'}}</strong>
+                      </li>
+                      <li>Domicilio<br>
+                        <strong>{{sap.domicilio.indirizzo_esteso + ' - ' + sap.domicilio.comune.descrizione +
+                          ' (' + sap.domicilio.comune.provincia.targa + ')'}}</strong>
+                      </li>
+                      <li>Telefono fisso<br>
+                        <strong>{{sap.recapito.telefono}}</strong>
+                      </li>
+                      <li>Cellulare<br>
+                        <strong>{{sap.recapito.cellulare}}</strong>
+                      </li>
+                      <li>Email<br>
+                        <strong>{{sap.recapito.email}}</strong>
+                      </li>
+                    </ul>
+                    <br>
+                    <ul class="dett" *ngIf="isVisualizzaDid">
+                      <li>
+                        DID n. <strong>{{did.id_did}}&nbsp;</strong>del&nbsp;<strong>{{did.data_did | date:
+                          'dd/MM/yyyy'}}&nbsp;{{didTerminata}}</strong></li>
+                      <li>
+                        Ultima variazione di Stato del <strong>{{did.data_stato | date: 'dd/MM/yyyy'}}</strong></li>
+                      <li>
+                        Stato: <strong>{{descrUltimoStatoDid}}</strong></li>
+                      <li>
+                        Titolarit&agrave; della DID: <strong>{{did.ente_titolarita}}</strong></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+          <!--  FINE SEZIONE LAVORATORE      -->
+
+          <!--  INIZIO SEZIONE RICHIESTA      -->
+          <ngb-panel id="panel_richiesta" *ngIf="richiesta">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Richiesta</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="container">
+                <div class="grey1">
+                  <div class="col-12">
+                    <ul class="dett">
+                      <u><strong>SITUAZIONE RICHIESTA: </strong></u>
+                      <li><strong>&nbsp;</strong></li>
+                      <li>Num. Richiesta: <strong>{{richiesta.richiesta_iscrizione_header?.id_richiesta}}</strong></li>
+                      <li>Data Caricamento Richiesta: <strong>{{richiesta.data_inserimento | date:
+                          'dd/MM/yyyy'}}</strong></li>
+                      <li>Stato Richiesta: <strong>{{statoRichiesta}}</strong></li>
+                      <li>Data Stato Richiesta:
+                        <strong>{{richiesta.richiesta_iscrizione_header?.data_stato | date: 'dd/MM/yyyy'}}</strong>
+                      </li>
+                      <div *ngIf="isInviata">
+                        <li>Data Invio Richiesta: <strong>{{richiesta.data_invio | date:
+                            'dd/MM/yyyy'}}</strong></li>
+                        <li><strong>&nbsp;</strong></li>
+                      </div>
+                      <div *ngIf="richiesta.richiesta_iscrizione_header?.cod_stato_richiesta === 'R'">
+                        <li>Motivo Rifiuto:
+                          <strong>{{richiesta.note_rifiuto}}</strong>
+                        </li>
+                        <li><strong>&nbsp;</strong></li>
+                      </div>
+                      <li>CpI Richiesta: <strong>{{cpiRichiesta}}</strong></li>
+                      <li><strong>&nbsp;</strong></li>
+                    </ul>
+                  </div>
+                  <div class="col-12">
+                    <ul class="dett">
+                      <u><strong>DATI RICHIESTA: </strong></u>
+                      <li><strong>&nbsp;</strong></li>
+
+                      <li>Motivo Iscrizione: <strong>{{motivoIscrizione}}</strong></li>
+                      <li>Tipo Comunicazione: <strong>{{tipoComunicazione}}</strong></li>
+
+                      <li>Tipo Iscrizione: <strong>{{tipoIscrizione}}</strong></li>
+                      <li>Categoria Appartenenza: <strong>{{categoriaAppartenenza}}</strong></li>
+
+                      <li>Note cittadino: <strong>{{richiesta.note}}</strong></li>
+                      <li><strong>&nbsp;</strong></li>
+                    </ul>
+                  </div>
+                  <div class="col-12">
+                    <ul class="dett">
+                      <u><strong>ULTIMA ISCRIZIONE: </strong></u>
+                      <li><strong>&nbsp;</strong></li>
+
+                      <li *ngIf="cpiUltimaIscrizione">CpI Ultima Iscrizione: <strong>{{cpiUltimaIscrizione}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.data_ultima_iscrizione">Data Ultima Iscrizione:
+                        <strong>{{richiesta.data_ultima_iscrizione | date: 'dd/MM/yyyy'}}</strong>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-12" *ngIf="richiesta.domicilio_trasferimento?.comune">
+                    <u><strong>DOMICILIO TRASFERIMENTO: </strong></u>
+                    <ul class="dett">
+                      <li>Indirizzo: <strong>{{richiesta.domicilio_trasferimento?.indirizzo_esteso}}</strong></li>
+                      <li>Comune: <strong>{{richiesta.domicilio_trasferimento.comune.descrizione + ' (' +
+                          richiesta.domicilio_trasferimento.comune.provincia?.targa + ')' + ' - ' +
+                          richiesta.domicilio_trasferimento.comune.cap}}</strong>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-12" *ngIf="richiesta.richiesta_iscrizione_header?.cod_stato_richiesta === 'A'">
+                    <u><strong>ISCRIZIONE GENERATA DA RICHIESTA ACCOLTA: </strong></u>
+                    <ul class="dett">
+                      <li>Data Iscrizione: <strong>{{dataIscrizione | date: 'dd/MM/yyyy'}}</strong></li>
+                      <li>Stato Iscrizione: <strong>{{statoIscrizione}}</strong></li>
+                      <li *ngIf="esitoRichiesta">Data Esito Validazione:
+                        <strong>{{richiesta.richiesta_iscrizione_header?.data_stato | date: 'dd/MM/yyyy'}}</strong>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+
+          <!--  FINE SEZIONE RICHIESTA      -->
+
+          <!--  INIZIO SEZIONE DISABILE      -->
+
+          <ngb-panel id="panel_disabile" *ngIf="richiesta && richiesta.cod_tipo_iscrizione === 'D'">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Disabile</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="container">
+                <div class="grey1">
+                  <div class="col-12">
+                    <ul class="dett">
+                      <li *ngIf="visualizzaGradoInvalidita">
+                        Grado invalidit&agrave;: <strong>{{richiesta.grado_invalidita}}</strong>
+                      </li>
+                      <li *ngIf="visualizzaCategoriaInvalidita">
+                        Categoria invalidit&agrave;: <strong>{{categoriaInvalidita}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+                      <li>Licenziato nell'ultimo rapporto: <strong>{{richiesta.flg_licenziato_in_ultimo_rapporto |
+                          siNo}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+                      <table *ngIf="richiesta.elenco_qualifica_non_vedenti?.length > 0; else noQualifiche"
+                        class="table table-bordered table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">Qualifiche non vedenti</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let el of richiesta.elenco_qualifica_non_vedenti">
+                            <td>{{ el.descrizione }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <ng-template #noQualifiche>
+                        <li *ngIf="richiesta.cod_categoria_appartenenza == 4"><strong>Non sono state selezionate le
+                            qualifiche di non vedenti</strong></li>
+                      </ng-template>
+                    </ul>
+                  </div>
+                  <div class="col-12">
+                    <u><strong>VERBALE INVALIDATA' CIVILE: </strong></u>
+                    <ul class="dett">
+                      <li>Data emissione Verbale:
+                        <strong>{{richiesta.verbale_invalidita_civile?.data_emissione | date: 'dd/MM/yyyy'}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+
+                      <li>Verbale soggetto a revisione:
+                        <strong>{{richiesta.verbale_invalidita_civile?.flg_soggetto_a_revisione | siNo}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+
+                      <li *ngIf="richiesta.verbale_invalidita_civile?.flg_soggetto_a_revisione === 'S'">Mese/Anno
+                        revisione:
+                        <strong>{{richiesta.verbale_invalidita_civile?.data_prossima_revisione | date:
+                          'MM/yyyy'}}</strong>
+                      </li>
+                      <li *ngIf="isVisibileSituazioneRevisione">Situazione
+                        revisione:
+                        <strong>{{descrizioneSituazioneRevisione}}</strong>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-12">
+                    <u><strong>VERBALE COLLOCAMENTO MIRATO: </strong></u>
+                    <ul class="dett">
+                      <li>Dichiaro di avere effettuato la visita specifica:
+                        <strong>{{richiesta.flg_dichiarazione_visita_revisione_collocamento_mirato | siNo}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+                      <div
+                        *ngIf="richiesta.flg_dichiarazione_visita_revisione_collocamento_mirato === 'S'; else noFlgDich">
+                        <li>Data emissione verbale:
+                          <strong>{{richiesta.verbale_collocamento_mirato?.data_emissione | date:
+                            'dd/MM/yyyy'}}</strong>
+                        </li>
+                        <li><strong>&nbsp;</strong></li>
+                        <li>Verbale soggetto a revisione:
+                          <strong>{{richiesta.verbale_collocamento_mirato?.flg_soggetto_a_revisione | siNo}}</strong>
+                        </li>
+                        <li><strong>&nbsp;</strong></li>
+                        <li *ngIf="richiesta.verbale_collocamento_mirato?.flg_soggetto_a_revisione === 'S'">Mese/Anno
+                          revisione:
+                          <strong>{{richiesta.verbale_collocamento_mirato?.data_prossima_revisione | date:
+                            'MM/yyyy'}}</strong>
+                        </li>
+                        <li><strong>&nbsp;</strong></li>
+                      </div>
+                      <ng-template #noFlgDich>
+                        <li>Autorizzo il CpI a richiedere la prenotazione della visita:
+                          <strong>{{richiesta.flg_autorizzazione_cpi_prenotazione_visita_collocamento_mirato |
+                            siNo}}</strong>
+                        </li>
+                        <li><strong>&nbsp;</strong></li>
+                      </ng-template>
+                    </ul>
+                  </div>
+
+                  <div class="col-12">
+                    <u><strong>REFERENTE SERVIZI TERRITORIALI (SOCIO SANITARI): </strong></u>
+                    <ul class="dett">
+                      <li>E' seguito dai Servizi Territoriali (sociali e sanitari):
+                        <strong>{{richiesta.flg_seguito_da_servizi_territoriali | siNo}}</strong>
+                      </li>
+                      <li><strong>&nbsp;</strong></li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.cognome_referente != null">
+                        Cognome:<strong>{{richiesta.referente_servizi_territoriali?.cognome_referente}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.nome_referente != null">
+                        Nome: <strong>{{richiesta.referente_servizi_territoriali?.nome_referente}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.ente_referente != null">
+                        Ente: <strong>{{richiesta.referente_servizi_territoriali?.ente_referente}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.email_referente != null">
+                        Email: <strong>{{richiesta.referente_servizi_territoriali?.email_referente}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.telefono_referente != null">
+                        Telefono fisso:
+                        <strong>{{richiesta.referente_servizi_territoriali?.telefono_referente}}</strong>
+                      </li>
+                      <li *ngIf="richiesta.referente_servizi_territoriali.cellulare_referente != null">
+                        Cellulare:
+                        <strong>{{richiesta.referente_servizi_territoriali?.cellulare_referente}}</strong>
+                      </li>
+                    </ul>
+                  </div>
+
+
+
+
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+          <!--  FINE SEZIONE DISABILE      -->
+          <!--  INIZIO SEZIONE GRADUATORIA      -->
+          <ngb-panel id="panel_graduatoria" *ngIf="richiesta">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Reddito e familiari a carico per graduatoria</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="container">
+                <div class="grey1">
+                  <div class="col-12">
+                    <ul class="dett">
+                      <li>Reddito graduatoria: <strong>{{importoRedditoRichiesta}}</strong></li>
+                      <li>Anno: <strong>{{richiesta.anno_reddito}}</strong></li>
+                      <li>Num. Familiari a Carico: <strong>{{richiesta.numero_familiari_a_carico}}</strong></li>
+                      <li>Anno: <strong>{{richiesta.anno_riferimento_familiari_a_carico}}</strong></li>
+                    </ul>
+                    <div *ngIf="richiesta.elenco_familiari_a_carico?.length > 0">
+                      <h6>Elenco Familiari a Carico:</h6>
+                      <br>
+                      <table class="table table-bordered table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">Cognome Nome</th>
+                            <th scope="col">Codice Fiscale</th>
+                            <th scope="col">Sesso</th>
+                            <th scope="col">Motivo a carico</th>
+                            <th scope="col">Data nascita</th>
+                            <th scope="col">Luogo nascita</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="richiesta.elenco_familiari_a_carico?.length > 0; else noFamiliari">
+                          <tr *ngFor="let familiare of richiesta.elenco_familiari_a_carico">
+                            <td>{{familiare.cognome_familiare + ' ' + familiare.nome_familiare}}</td>
+                            <td>{{familiare.codice_fiscale_familiare}}</td>
+                            <td>{{familiare.sesso}}</td>
+                            <td>{{getDescMotivo(familiare.motivo_carico.codice_ministeriale)}}</td>
+                            <td>{{familiare.data_nascita_familiare | date: 'dd/MM/yyyy'}}</td>
+                            <td *ngIf="familiare.luogo_di_nascita?.comune?.descrizione != null; else noComune">
+                              {{familiare.luogo_di_nascita?.comune?.descrizione + ' (' +
+                              familiare.luogo_di_nascita?.comune?.provincia?.targa + ')'}}</td>
+                            <ng-template #noComune>
+                              <td>{{familiare.luogo_di_nascita?.stato?.descrizione}}</td>
+                            </ng-template>
+                          </tr>
+                        </tbody>
+                        <ng-template #noFamiliari>
+                          <tbody>
+                            <tr>
+                              <td colspan="7">Nessun familiare a carico</td>
+                            </tr>
+                          </tbody>
+                        </ng-template>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+          <!--  FINE SEZIONE GRADUATORIA      -->
+          <!--  INIZIO SEZIONE ALLEGATI      -->
+          <ngb-panel id="panel_allegati">
+            <ng-template ngbPanelTitle>
+              <h5 class="font-weight-bold">Allegati</h5>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="container">
+                <div class="grey1">
+                  <div class="col-12">
+                    <h6>Elenco Allegati</h6>
+                    <br>
+                    <table *ngIf="elencoAllegati?.length > 0; else noAllegati" class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">Documento</th>
+                          <th scope="col">Tipo</th>
+                          <th scope="col">Stato</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let documento of elencoAllegati">
+                          <td><a (click)="openDocumento(documento)" class="btn btn-outline-primary">{{ documento.nome
+                              }}</a></td>
+                          <td>{{ getTipoDocumentoDescrizione(documento.codice_tipo_documento) }}</td>
+                          <td>{{ getStatoDescrizione(documento.stato) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <ng-template #noAllegati>
+                      <tbody>
+                        <tr>
+                          <td colspan="3">Non ci sono allegati.</td>
+                        </tr>
+                      </tbody>
+                    </ng-template>
+
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+          <!--  FINE SEZIONE ALLEGATI      -->
+        </ngb-accordion>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+</div>
+
+<div class="row mt-3 pl-4" *ngIf="isInviata">
+  <span [innerHTML]="MI056 | escapeHtml"></span>
+</div>
+
+<div class="row mt-3">
+  <div class="col-lg-4 mt-3 mb-3">
+    <button class="btn btn-outline-primary btn-lg" (click)="onPrev()">{{prevButtonName}}</button>
+  </div>
+  <div class="col text-center mt-3 mb-3" *ngIf="isRiepilogo">
+    <button class="btn btn-primary btn-lg" (click)="onRitorna()">RITORNA A ELENCO RICHIESTE</button>
+  </div>
+  <div class="col text-right mt-3 mb-3" *ngIf="isRiepilogo">
+    <button class="btn btn-primary btn-lg" (click)="onInvia()">INVIO PER VALIDAZIONE</button>
+  </div>
+  <div class="col text-center mt-3 mb-3" *ngIf="isVisualizza && isBozza">
+    <button class="btn btn-primary btn-lg" (click)="onElimina()">ELIMINA</button>
+  </div>
+  <div class="col text-right mt-3 mb-3" *ngIf="isVisualizza && isBozza">
+    <button class="btn btn-primary btn-lg" (click)="onModifica()">MODIFICA</button>
+  </div>
+</div>
+<pslshare-showdata [oggettoDati]="richiesta"></pslshare-showdata>

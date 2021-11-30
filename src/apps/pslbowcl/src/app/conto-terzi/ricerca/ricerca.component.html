@@ -1,0 +1,362 @@
+<h4 class="border-n">Ricerca</h4>
+
+<div>
+  <p>Inserisci un codice fiscale</p>
+
+  <div class="row mb-3 align-items-end">
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-1">
+      <div class="input-group group">
+        <input id="cf" name="cf"
+            type="text"
+            required
+            maxlength="16"
+            pslwcllibCodiceFiscaleValidator
+            [(ngModel)]="codiceFiscale"
+            #cf="ngModel">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cf">Codice fiscale</label>
+      </div>
+      <div *ngIf="cf.invalid && (cf.dirty || cf.touched)">
+        <p *ngIf="cf.errors['required']" class="text-danger">Obbligatorio</p>
+        <p *ngIf="cf.errors['codiceFiscale']" class="text-danger">{{ cf.errors['codiceFiscale'] }}</p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+      <button type="button" class="btn btn-primary" (click)="onCerca()" [disabled]="!cf.valid">CERCA</button>
+    </div>
+  </div>
+
+  <div class="accordion" id="accordionData" [hidden]="!showData">
+    <div class="card no-border">
+
+      <div class="card-header" id="heading1">
+        <h4 class="mb-0">
+          <button class="btn btn-link" [class.collapsed]="!showCollapse1" type="button" data-toggle="collapse" data-target="#collapse1"
+            aria-expanded="false" aria-controls="collapse1">
+            Dati anagrafici
+          </button>
+        </h4>
+      </div>
+
+      <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionData" [class.show]="showCollapse1" >
+        <div class="grey1" *ngIf="sap">
+          <ul class="dett">
+              <li>Cognome<br>
+                  <strong>{{sap.cognome}}&nbsp;</strong></li>
+              <li>Nome<br>
+                  <strong>{{sap.nome}}&nbsp;</strong></li>
+              <li>Codice fiscale<br>
+                  <strong>{{sap.codice_fiscale}}&nbsp;</strong></li>
+              <li>Sesso<br>
+                  <strong>{{sap.sesso}}&nbsp;</strong></li>
+              <li>Data di nascita<br>
+                  <strong>{{sap.dataDiNascita | date:'dd/MM/yyyy'}}&nbsp;</strong></li>
+              <li>Comune di nascita<br>
+                  <strong>{{sap.luogoDiNascita?.comune?.descrizione}}&nbsp;</strong></li>
+              <li>Stato di nascita<br>
+                  <strong>{{sap.luogoDiNascita?.stato?.descrizione}}&nbsp;</strong></li>
+              <li>Cittadinanza<br>
+                  <strong>{{sap.cittadinanza}}&nbsp;</strong></li>
+              <li>Comune Residenza<br>
+                    <strong>{{sap.residenza?.comune?.descrizione}}&nbsp;
+                        <span *ngIf="sap.residenza?.comune?.provincia?.targa">({{sap.residenza?.comune?.provincia?.targa}})</span></strong>
+                        &nbsp;
+                  </li>
+              <li>Comune Domicilio<br>
+                    <strong>{{sap.domicilio?.comune?.descrizione}}&nbsp;
+                      <span *ngIf="sap.domicilio?.comune?.provincia?.targa">({{sap.domicilio?.comune?.provincia?.targa}})</span></strong>
+                      &nbsp;</li>
+          </ul>
+          <div class="row justify-content-end" >
+            <div>
+              <button class="btn btn-outline-primary" (click)="onDatiAnagrafici()">VISUALIZZA / MODIFICA</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card no-border" *ngIf="nonIdoneoGG || !(adesioneGG && adesioneGG?.id_sil_lav_adesione)">
+        <div class="alert alert-primary" role="alert" [innerHTML]="msgWarningGG | escapeHtml">
+        </div>
+    </div>
+    <div class="card no-border">
+
+      <div class="card-header" id="heading2" *ngIf="adesioneGG && adesioneGG?.id_sil_lav_adesione">
+
+        <h4 class="mb-0">
+          <button class="btn btn-link" [class.collapsed]="showCollapse1" type="button" data-toggle="collapse" data-target="#collapse2"
+            aria-expanded="false" aria-controls="collapse2">
+            Adesione Garanzia Giovani
+          </button>
+        </h4>
+      </div>
+
+      <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionData" [class.show]="!showCollapse1"
+                             *ngIf="adesioneGG && adesioneGG?.id_sil_lav_adesione">
+        <div class="grey1">
+          <p>Stato<br>
+            <strong><span [ngClass]="{ 'bg-success': adesioneIn('A'),
+                                  'bg-danger': adesioneIn('C','R','X','U'),
+                                  'bg-warning': adesioneIn('P'),
+                                  'bg-info': adesioneIn('F','T','N','D')}">
+              {{adesioneGG?.descrizione }}&nbsp;
+            </span></strong></p>
+
+          <ul class="dett">
+
+
+
+              <li>Numero<br>
+                  <strong>{{adesioneGG?.id_sil_lav_adesione}}&nbsp;</strong></li>
+              <li>Data adesione<br>
+                  <strong>{{ adesioneGG?.data_adesione | date : 'd/MM/yyyy' }}&nbsp;</strong></li>
+          </ul>
+          <div class="row justify-content-end" >
+            <div *ngIf="adesioneGG?.id_sil_lav_adesione">
+              <button class="btn btn-outline-primary" (click)="onPrintAdesione()">STAMPA ADESIONE</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card no-border" *ngIf="adesioneGG && adesioneGG?.id_sil_lav_adesione">
+
+      <div class="card-header" id="heading3">
+        <h4 class="mb-0">
+          <button class="btn btn-link" [class.collapsed]="showCollapse1" type="button" data-toggle="collapse" data-target="#collapse3"
+            aria-expanded="false" aria-controls="collapse3">
+            Appuntamento Garanzia Giovani
+          </button>
+        </h4>
+      </div>
+
+      <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordionData" [class.show]="!showCollapse1" >
+        <div *ngIf="appuntamentoGG; else noAppGG">
+         <div class="grey1">
+          <ul class="dett">
+            <li>Comune Domicilio<br>
+              <strong>{{sap.domicilio?.comune?.descrizione}}&nbsp;
+                <span *ngIf="sap.domicilio?.comune?.provincia?.targa">({{sap.domicilio?.comune?.provincia?.targa}})</span></strong>
+                &nbsp;</li>
+            <li></li>
+            <li>Stato<br>
+                  <strong><span  [ngClass]="{'bg-success': isAppuntamentoIn(appuntamentoGG,'ER'),
+                                        'bg-danger': isAppuntamentoIn(appuntamentoGG,'DI','NP'),
+                                        'bg-warning': isAppuntamentoIn(appuntamentoGG,'DE'),
+                                        'bg-info': isAppuntamentoIn(appuntamentoGG,'DC','SP')}">
+                    {{statoAppuntamentoDescr(appuntamentoGG.codice_anpal_stato_incontro) }}&nbsp;
+                  </span></strong></li>
+            <li></li>
+            <li>Sportello<br>
+                <strong>{{appuntamentoGG.sportello?.descrizione}}&nbsp;</strong></li>
+            <li>Indirizzo<br>
+                <strong>{{ appuntamentoGG.sportello?.descrizione_indirizzo }}&nbsp;</strong></li>
+            <li>Giorno<br>
+              <strong>{{appuntamentoGG.slot?.giorno}}&nbsp;</strong></li>
+            <li>Ora<br>
+              <strong>{{appuntamentoGG.slot?.da_ora}}&nbsp;</strong></li>
+          </ul>
+          <div class="row justify-content-end" *ngIf="enableEnteGG">
+            <div class="ml-4" *ngIf="viewNuovoGG">
+              <button class="btn btn-outline-primary" (click)="onNuovoAppuntamento('GG')">NUOVO</button>
+            </div>
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoGG, 'DE')">
+              <button class="btn btn-outline-primary" (click)="onModificaAppuntamento('GG')" [disabled]="!allowSpostaGG">SPOSTA</button>
+            </div>
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoGG, 'DE')">
+              <button class="btn btn-outline-danger" (click)="onCancellaAppuntamento('GG')">ANNULLA</button>
+            </div>
+          </div>
+          <div class="row justify-content-end" *ngIf="!enableEnteGG && isAPLREG">
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoGG, 'DE')">
+              <button class="btn btn-outline-danger" (click)="onCancellaAppuntamento('GG')">ANNULLA</button>
+            </div>
+          </div>
+         </div>
+        </div>
+        <ng-template #noAppGG>
+          <div class="grey1">
+            <p>{{ msgME079 }}</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <div class="card no-border" *ngIf="nonIdoneoRDC || !(domandaRDC && domandaRDC.codice)">
+      <div class="alert alert-primary" role="alert" [innerHTML]="msgWarningRDC | escapeHtml">
+      </div>
+    </div>
+    <div class="card no-border" *ngIf="rdcEnabled">
+
+      <div class="card-header" id="heading4" *ngIf="domandaRDC && domandaRDC.codice">
+
+        <h4 class="mb-0">
+          <button class="btn btn-link" [class.collapsed]="showCollapse1" type="button" data-toggle="collapse" data-target="#collapse4"
+            aria-expanded="false" aria-controls="collapse4">
+            Reddito di cittadinanza
+          </button>
+        </h4>
+      </div>
+
+      <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#accordionData" [class.show]="!showCollapse1"
+                               *ngIf="domandaRDC && domandaRDC.codice">
+        <div class="grey1">
+          <ul class="dett">
+              <li>Stato<br>
+                <strong>{{domandaRDC?.stato_domanda }}&nbsp;</strong></li>
+              <li></li>
+              <li>Stato Politica Attiva<br>
+                <strong>{{ msgPoliticaAttiva }}&nbsp;</strong></li>
+              <li></li>
+              <li>Numero<br>
+                <strong>{{domandaRDC?.codice }}&nbsp;</strong></li>
+              <li></li>
+              <li>Data Domanda<br>
+                <strong>{{domandaRDC?.data_domanda | date:'dd/MM/yyyy' }}&nbsp;</strong>
+              </li>
+              <li>Data Notifica<br>
+                <strong>{{domandaRDC?.data_notifica_silp | date:'dd/MM/yyyy' }}&nbsp;</strong>
+              </li>
+          </ul>
+          <div class="row justify-content-end" >
+            <div *ngIf="domandaRDC?.id_sil_lav_domanda_rdc">
+              <button class="btn btn-outline-primary" (click)="onPrintDomanda()">STAMPA DOMANDA</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card no-border" *ngIf="rdcEnabled && domandaRDC && domandaRDC.codice">
+
+      <div class="card-header" id="heading5">
+        <h4 class="mb-0">
+          <button class="btn btn-link" [class.collapsed]="showCollapse1" type="button" data-toggle="collapse" data-target="#collapse5"
+            aria-expanded="false" aria-controls="collapse5">
+            Appuntamento Reddito di cittadinanza
+          </button>
+        </h4>
+      </div>
+
+      <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordionData" [class.show]="!showCollapse1">
+        <div *ngIf="appuntamentoRDC; else noAppRDC">
+         <div class="grey1">
+          <ul class="dett">
+            <li>Comune Residenza<br>
+              <strong>{{sap.residenza?.comune?.descrizione}}&nbsp;
+                  <span *ngIf="sap.residenza?.comune?.provincia?.targa">({{sap.residenza?.comune?.provincia?.targa}})</span></strong>
+                  &nbsp;
+            </li>
+            <li></li>
+
+            <li>Stato<br>
+              <strong><span  [ngClass]="{'bg-success': isAppuntamentoIn(appuntamentoRDC,'ER'),
+                                    'bg-danger': isAppuntamentoIn(appuntamentoRDC,'DI','NP'),
+                                    'bg-warning': isAppuntamentoIn(appuntamentoRDC,'DE'),
+                                    'bg-info': isAppuntamentoIn(appuntamentoRDC,'DC','SP')}">
+                {{statoAppuntamentoDescr(appuntamentoRDC.codice_anpal_stato_incontro) }}&nbsp;
+              </span></strong></li>
+            <li></li>
+            <li>Sportello<br>
+                <strong>{{appuntamentoRDC.sportello?.descrizione}}&nbsp;</strong></li>
+            <li>Indirizzo<br>
+                <strong>{{ appuntamentoRDC.sportello?.descrizione_indirizzo }}&nbsp;</strong></li>
+            <li>Giorno<br>
+              <strong>{{appuntamentoRDC.slot?.giorno}}&nbsp;</strong></li>
+            <li>Ora<br>
+              <strong>{{appuntamentoRDC.slot?.da_ora}}&nbsp;</strong></li>
+          </ul>
+          <div class="row justify-content-end" *ngIf="enableEnteRDC">
+            <div class="ml-4" *ngIf="viewNuovoRDC">
+              <button class="btn btn-outline-primary" (click)="onNuovoAppuntamento('RDC')">NUOVO</button>
+            </div>
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoRDC, 'DE')">
+              <button class="btn btn-outline-primary" (click)="onModificaAppuntamento('RDC')" [disabled]="!allowSpostaRDC">SPOSTA</button>
+            </div>
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoRDC, 'DE')">
+              <button class="btn btn-outline-danger" (click)="onCancellaAppuntamento('RDC')">ANNULLA</button>
+            </div>
+          </div>
+          <div class="row justify-content-end" *ngIf="!enableEnteRDC && isAPLREG">
+            <div class="ml-4" *ngIf="isAppuntamentoIn(appuntamentoRDC, 'DE')">
+              <button class="btn btn-outline-danger" (click)="onCancellaAppuntamento('RDC')">ANNULLA</button>
+            </div>
+          </div>
+         </div>
+        </div>
+        <ng-template #noAppRDC>
+          <div class="grey1">
+            <p>{{ msgME079 }}</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <div>
+        <button type="button" class="btn btn-outline-primary btn-lg" (click)="onIndietro()">INDIETRO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal annulla GG-->
+<ng-template [ngIf]="adesioneGG?.id_sil_lav_adesione && isAppuntamentoIn(appuntamentoGG,'DE')">
+  <div class="modal fade" id="annulla_appuntamento_GG" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conferma annullamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <strong>Si desidera annullare l'appuntamento?</strong><br/>
+        <span [innerHTML]= "msgAnnullaGG | escapeHtml"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary btn-lg float-left" data-dismiss="modal">ANNULLA</button>
+          <button type="button" class="btn btn-primary btn-l float-right" (click)="doAnnullaAppuntamento('GG')" data-dismiss="modal">CONFERMA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!--/ Modal annulla GG-->
+
+<!-- Modal annulla RDC-->
+<ng-template [ngIf]="rdcEnabled && domandaRDC?.codice && isAppuntamentoIn(appuntamentoRDC, 'DE')">
+  <div *ngIf="isAppuntamentoIn(appuntamentoRDC,'DE')" class="modal fade" id="annulla_appuntamento_RDC" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conferma annullamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <strong>Si desidera annullare l'appuntamento?</strong><br/>
+           <span [innerHTML]= "msgAnnullaRDC | escapeHtml"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary btn-lg" data-dismiss="modal">ANNULLA</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="doAnnullaAppuntamento('RDC')" data-dismiss="modal">CONFERMA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!--/ Modal annulla RDC-->
+

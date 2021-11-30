@@ -1,0 +1,91 @@
+<!-- Modal applica-->
+<!-- 
+    -------------------------
+    applica   eccezioni
+    ad altri calendari
+    -------------------------
+-->
+<div class="modal fade" id="modal_applica" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Applica ad altri calendari</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="campoDaApplicare">
+        <div class=" p-2   d-block  bg-info text-white" [innerHTML]="campoDaApplicare.nomeCampo | escapeHtml "></div>
+
+        <div class=" p-2 mb-2 d-block  bg-secondary text-white">&nbsp;{{ campoDaApplicare.valoreDescr }}</div>
+
+        <div id="descTab" class="d-none d-print-block"> idCalendario : {{ campoDaApplicare.idCalendario }} </div>
+        <div *ngIf="calendari">
+          <table  aria-describedby="descTab" class="table table-bordered table-striped table-hover" id="infoTable">
+            <thead>
+              <tr style="vertical-align:middle">
+                <th style="vertical-align:middle;width:10%" scope="col"><input id="tuttiCalendari" type="checkbox"
+                    name="tuttiCalendari" [checked]="allSelectedCalendari" (change)="onSelezioneAllCalendari()">
+                  <label for="tuttiCalendari">Tutti</label></th>
+                <th style="vertical-align:middle;width:20%" scope="col">Cpi &amp; Sportelli</th>
+                <th scope="col" style="vertical-align:middle">Nome Calendario</th>
+                <th scope="col" {{larghezzaCampo}}>Valore</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="calendari.length > 0; else noData">
+              <tr *ngFor="let c of calendari; let i = index">
+                <td>
+                  <input id="calendario_{{c.id_calendario}}" type="checkbox" name="idCalendario"
+                    (change)="onChangeCheckCalendari(i)" [checked]="isCheckedCalendari(i)"></td>
+                <td class="text-wrap">{{ c.descrizione_ente }}</td>
+                <td class="text-wrap">{{ c.nome }}</td>
+                <td class="text-wrap">{{ getValore(i) }}</td>
+              </tr>
+            </tbody>
+            <ng-template #noData>
+              <tbody>
+                <tr>
+                  <td colspan="4">Non ci sono calendari<span *ngIf="campoDaApplicare.idEccezione"> su cui applicare
+                      l'eccezione</span>.</td>
+
+                </tr>
+              </tbody>
+            </ng-template>
+          </table>
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal">Annulla</button>
+        <button type="button" class="btn btn-primary float-right" (click)="chiediApplica()" [disabled]="noOneChecked()"
+          data-toggle="modal">APPLICA</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal applica-->
+
+<!-- Modal conferma-->
+<div class="modal fade" id="modal_conferma" tabindex="-2" role="dialog" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma applicazione</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">
+          <strong>Sei sicuro di voler procedere?</strong><br>
+          <p>La modifica sarà effettuata su {{ calendariScelti.length }} calendari.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary float-left" data-dismiss="modal"
+          (click)="showAgain()">No</button>
+        <button type="button" class="btn btn-primary float-right" (click)="doApplica()" data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal conferma-->

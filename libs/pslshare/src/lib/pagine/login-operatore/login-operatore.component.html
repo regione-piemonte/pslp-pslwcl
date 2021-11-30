@@ -1,0 +1,54 @@
+<!-- pagina login virtuale operatore
+    per simulazione accesso  
+    in ambiente di sviluppo/test
+--><div class="col-12">
+<h4 class="border-n">Dati anagrafici operatore</h4>
+
+<form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="row mb-4 ml-2 mr-2">
+    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+      <div class="input-group group">
+        <input type="text" id="cf" name="cf" ngModel required maxlength="16" pslwcllibCodiceFiscaleValidator>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cf">Codice Fiscale <span class="ob">*</span></label>
+      </div>
+      <div *ngIf="loginForm.controls['cf'] && loginForm.controls['cf'].invalid">
+        <div class="text-danger" *ngIf="loginForm.controls['cf'].errors.required">Obbligatorio</div>
+        <div class="text-danger" *ngIf="loginForm.controls['cf'].errors.codiceFiscale">{{ loginForm.controls['cf'].errors.codiceFiscale }}</div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+      <div class="input-group group">
+        <input type="text" id="nome" name="nome" ngModel required>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nome">Nome <span class="ob">*</span></label>
+      </div>
+      <div *ngIf="loginForm.controls['nome'] && loginForm.controls['nome'].invalid">
+        <div class="text-danger" *ngIf="loginForm.controls['nome'].errors.required">Obbligatorio</div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+      <div class="input-group group">
+        <input type="text" id="cognome" name="cognome" ngModel required>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="cognome">Cognome <span class="ob">*</span></label>
+      </div>
+      <div *ngIf="loginForm.controls['cognome'] && loginForm.controls['cognome'].invalid">
+        <div class="text-danger" *ngIf="loginForm.controls['cognome'].errors.required">Obbligatorio</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+      <p><button type="submit" class="btn btn-outline-primary" [disabled]="loginForm.invalid">OK</button>
+      </p>
+    </div>
+  </div>
+
+</form>
+</div>

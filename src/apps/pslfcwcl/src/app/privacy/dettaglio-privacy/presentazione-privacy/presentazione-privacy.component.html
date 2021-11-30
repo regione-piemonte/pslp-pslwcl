@@ -1,0 +1,27 @@
+<div class="alert alert-info" role="alert" [innerHTML]="testoBenvenuto | escapeHtml"></div>
+
+<pslfcwcl-privacy-template
+  (loaded)="checkDataLoaded(1)"
+  [isReady]="false"
+  (privacyDefinita)="checkInformativaPrivacy=$event">
+</pslfcwcl-privacy-template>
+
+<div class="row mt-8">
+  <ng-template [ngIf]="completeNavigation" [ngIfElse]="partialNavigation">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-primary btn-lg" (click)="indietro()">INDIETRO</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" class="btn btn-primary btn-lg" [disabled]="!checkInformativaPrivacy" (click)="comincia()">CONFERMA</button>
+    </div>
+  </ng-template>
+  <ng-template #partialNavigation>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3 mb-3 text-center">
+      <button type="button" class="btn btn-primary btn-lg" [disabled]="!checkInformativaPrivacy" (click)="comincia()">CONFERMA</button>
+    </div>
+  </ng-template>
+</div>
+
+
+
+

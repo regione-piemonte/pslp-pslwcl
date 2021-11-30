@@ -1,0 +1,149 @@
+<h4 class="mt-40 mb-5">{{ titoloPagina }}</h4>
+<!--
+mappa dati graduatoria presenti per collocamanto mirato del lavoratore
+e dei sui familiari
+adeguata a sonar 7/4/2021
+-->
+<div *ngIf="riepilogoCOMI else noRiepilogo">
+  <ngb-accordion [closeOthers]="false" [destroyOnHide]="false" *ngIf="riepilogoCOMI">
+    <ngb-panel id="panel-reddito" [disabled]="!isValidData() && panelReddito()">
+      <ng-template ngbPanelTitle>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <h4  [innerHTML]="msgMI029 | escapeHtml"></h4>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="grey1">
+          <pslshare-no-paginated-table [columnNumber]="6" [pagedResponse]="riepilogoCOMI.redditi">
+            <ng-template pslbasepageNoPaginationHead>
+              <tr>
+                <th id="anno">Anno</th>
+                <th id="dataD">Data Dichiarazione</th>
+                <th id="valoreE">Valore Economico</th>
+                <th id="infoI">Informazione intermediata</th>
+                <th id="cpi">Centro per l'Impiego</th>
+                <th id="pulsante"></th>
+              </tr>
+            </ng-template>
+            <ng-template pslbasepageNoPaginationBody let-el>
+              <tr>
+                <td>{{ el.anno }} </td>
+                <td>{{ el.dataInserimento | date:'dd/MM/yyyy' }}</td>
+                <td class="text-right">{{ getValore(el) }}</td>
+                <td>{{ getIntermediata(el) }}</td>
+                <td>{{ getIntermediario(el) }}</td>
+                <td class="text-nowrap">
+                  <button title="Visualizza Reddito" class="btn btn-link btn-sm" [disabled]="!isValidData()  || redditoSelezionato"
+                    (click)="onVisualizzaReddito(el)">
+                    <span class="fas fa-2x fa-eye"></span>
+                  </button>&nbsp;&nbsp;
+                  <button title="Annulla Reddito" *ngIf="!readOnly" class="btn btn-link btn-sm" [disabled]="!isValidData() || redditoSelezionato || !redditoAnnullabile(el)"
+                    (click)="onAnnullamentoReddito(el)">
+                    <span class="fas fa-2x fa-trash"></span>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+          </pslshare-no-paginated-table>
+          <p class="mt-5 text-right">
+            <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !redditoSelezionato"
+              (click)="onNuovoReddito()">AGGIUNGI REDDITO</button>
+          </p>
+
+          <pslshare-dettaglio-reddito
+            *ngIf="redditoSelezionato && loaded"
+            [isRichiestaIscrizione]="richiestaIscrizione"
+            [riepilogo]="riepilogoCOMI"
+            [redditoSelezionato]="redditoSelezionato"
+            [statoMaschera]="statoMaschera"
+            [indiceSelezionato]="indiceSelezionato"
+            [readOnly]="readOnly"
+            (flagChanging)="onFlagChanging($event)"
+            (formChanged)="onFormRedditoChanged($event)"
+            (annullaDettaglio)="onAnnullaDettaglio($event)">
+          </pslshare-dettaglio-reddito>
+
+        </div>
+      </ng-template>
+    </ngb-panel>
+    <ngb-panel id="panel-familiari"  [disabled]="!isValidData() && panelFamiliari()" >
+      <ng-template ngbPanelTitle>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+          <h4><span style="font-size: large;"><strong>Familiari a carico&nbsp;</strong></span></h4>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="grey1">
+          <pslshare-no-paginated-table [columnNumber]="6" [pagedResponse]="riepilogoCOMI.dettaglioCompletoDichiarazioneFamiliariACarico">
+            <ng-template pslbasepageNoPaginationHead>
+              <tr>
+                <th scope="col">Anno</th>
+                <th scope="col">Data Dichiarazione</th>
+                <th scope="col">N° familiari a carico</th>
+                <th scope="col">Informazione intermediata</th>
+                <th scope="col">Centro per l'Impiego</th>
+                <th scope="col"></th>
+              </tr>
+            </ng-template>
+            <ng-template pslbasepageNoPaginationBody let-el>
+              <tr>
+                <td>{{el.anno_validita}}&nbsp;<button class="btn btn-link btn-sm" title='Ultima Dichiarazione Inserita' *ngIf="el.flag_ultima_dichiarazione_inserita" >
+                  <span class="fa-stack">
+                    <span class="fas fa-circle fa-stack-2x"></span>
+                    <span class="fas fa-info fa-stack-1x fa-inverse"></span>
+                  </span>
+                </button></td>
+                <td>{{ el.data_dichiarazione | date:'dd/MM/yyyy' }}</td>
+                <td>{{ el.numero_familiari }}</td>
+                <td>{{ getIntermediata(el) }}</td>
+                <td>{{ getIntermediario(el) }}</td>
+                <td class="text-nowrap">
+                  <button title="Visualizza Familiari" class="btn btn-link btn-sm" [disabled]="!isValidData() || dichiarazioneSelezionata"
+                    (click)="onVisualizzaDichiarazione(el)">
+                    <span class="fas fa-2x fa-eye"></span>
+                  </button>&nbsp;&nbsp;
+                  <button title="Duplica con i dati presenti" *ngIf="!readOnly" class="btn btn-link btn-sm" [disabled]="!isValidData() || dichiarazioneSelezionata"
+                    (click)="onDuplicaDichiarazione(el)">
+                    <span class="fas fa-2x fa-copy"></span>
+                  </button>
+                </td>
+
+              </tr>
+            </ng-template>
+          </pslshare-no-paginated-table>
+          <p class="mt-5 text-right">
+            <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !dichiarazioneSelezionata"
+              (click)="onNuovaDichiarazione()">AGGIUNGI DICHIARAZIONE</button>
+          </p>
+          <pslshare-famigliari-a-carico
+            *ngIf="dichiarazioneSelezionata"
+            [isRichiestaIscrizione]="isRichiestaIscrizione"
+            [riepilogo]="riepilogoCOMI"
+            [dichiarazioneFamiliariCOMI]="dichiarazioneSelezionata"
+            [erroreDettaglioFamiliari]="erroreDettaglioFamiliariPadre"
+            [statoMaschera]="statoMaschera"
+            [isDuplicazione]="isDuplicazioneDic"
+            [indiceSelezionato]="indiceSelezionato"
+            [readOnly]="readOnly"
+            (flagChanging)="onFlagChanging($event)"
+            (annullaDettaglio)="onAnnullaDettaglio($event)">
+          </pslshare-famigliari-a-carico>
+        </div>
+      </ng-template>
+    </ngb-panel>
+
+
+  </ngb-accordion>
+</div>
+<ng-template #noRiepilogo>
+  <div class="alert alert-info mt-5 mb-5" role="alert">
+    <h4>Reddito Collocamento Mirato</h4>
+    <p> Non ci sono dati </p>
+
+  </div>
+</ng-template>
+<pslshare-navigation-button-cm [nextButtonHide]="true" [prevButtonHide]="false" [nextButtonDisabled]="true"
+  [prevButtonName]="prevButtonName" [forcePrevButtonName]="true" (exitPage)="onExitPage($event)">
+</pslshare-navigation-button-cm>
+
+<pslshare-showdata [oggettoDati]="riepilogoCOMI"></pslshare-showdata>

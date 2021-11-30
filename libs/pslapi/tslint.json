@@ -1,0 +1,10 @@
+{
+  "rulesDirectory": [
+    "../../node_modules/codelyzer",
+    "../../node_modules/@nrwl/workspace/src/tslint"
+  ],
+  "rules": {
+    "directive-selector": [true, "attribute", "pslwcl", "camelCase"],
+    "component-selector": [true, "element", "pslwcl", "kebab-case"]
+  }
+}

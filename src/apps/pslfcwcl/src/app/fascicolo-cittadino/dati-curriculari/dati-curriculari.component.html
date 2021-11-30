@@ -1,0 +1,122 @@
+<pslfcwcl-wizard
+[validLink]="isValidData()"
+(exitPage)="onExitPage($event)"></pslfcwcl-wizard>
+
+<h4 class="mtb-40">Dati curriculari</h4>
+<em data-scroll-marker="tornaSu"></em>
+
+<ngb-accordion [closeOthers]="false" [destroyOnHide]="false" *ngIf="sap">
+  <ngb-panel id="panel-istruzione" [disabled]="!isValidData() && panelIstruzione()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Istruzione" [datiComponenteCurriculare]="datiCurriculari.ISTRUZIONE"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-istruzione
+          [sap]="sap"
+          [readOnly]="readOnly"
+          (sapChange)="onSapChange($event, 'ISTRUZIONE')"
+          (istruzioneEditState)="istruzioneEditState($event)"
+          (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'ISTRUZIONE')"></pslfcwcl-istruzione>
+      </div>
+    </ng-template>
+  </ngb-panel>
+
+  <ngb-panel id="panel-formazione professionale" [disabled]="!isValidData() && panelCorsi()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Corsi di Formazione" [datiComponenteCurriculare]="datiCurriculari.FORMAZIONE_PROFESSIONALE"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-formazione-professionale
+          [sap]="sap"
+          [readOnly]="readOnly"
+          [listaCertificazioniAttestazioni]="elenchiDecodifiche.certificazioni_attestazioni"
+          [listaRegioni]="elenchiDecodifiche.regioni"
+          (formazioneProfessEditState)="formazioneProfessEditState($event)"
+          (sapChange)="onSapChange($event, 'FORMAZIONE_PROFESSIONALE')"
+          (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'FORMAZIONE_PROFESSIONALE')"></pslfcwcl-formazione-professionale>
+      </div>
+    </ng-template>
+  </ngb-panel>
+
+  <ngb-panel id="panel-lingue"  [disabled]="!isValidData() && panelLingue()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Lingue straniere" [datiComponenteCurriculare]="datiCurriculari.LINGUE_STRANIERE"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-lingue-straniere
+        [sap]="sap"
+        [readOnly]="readOnly"
+        [listaConoscenzaLingua]="elenchiDecodifiche.lingue"
+        [listaGradoConoscenzaLingua]="elenchiDecodifiche.gradi_conoscenza_lingue"
+        (lingueEditState)="lingueEditState($event)"
+        (sapChange)="onSapChange($event, 'LINGUE_STRANIERE')"
+        (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'LINGUE_STRANIERE')"></pslfcwcl-lingue-straniere>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel id="panel-conoscenze-informatiche" [disabled]="!isValidData() && panelConoscenze()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Conoscenze informatiche" [datiComponenteCurriculare]="datiCurriculari.CONOSCENZE_INFORMATICHE"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-conoscenze-informatiche
+        [sap]="sap"
+        [readOnly]="readOnly"
+        [listaConoscenzeInformatiche]="elenchiDecodifiche.conoscenze_informatiche"
+        [listaGradiConoscenzaInformatica]="elenchiDecodifiche.gradi_conoscenza_informatica"
+        [listaCategorieConoscenzeInformatiche]="elenchiDecodifiche.categorie_conoscenza_informatiche"
+        (conoscenzeEditState)="conoscenzeEditState($event)"
+        (sapChange)="onSapChange($event, 'CONOSCENZE_INFORMATICHE')"
+        (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'CONOSCENZE_INFORMATICHE')"></pslfcwcl-conoscenze-informatiche>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel id="panel-abilitazioni" [disabled]="!isValidData() && panelAlbi()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Albi e Ordini Professionali" [datiComponenteCurriculare]="datiCurriculari.ABILITAZIONI"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-abilitazioni
+        [sap]="sap"
+        [readOnly]="readOnly"
+        [listaAlbi]="elenchiDecodifiche.albi"
+        (abilitazioniEditState)="abilitazioniEditState($event)"
+        (sapChange)="onSapChange($event, 'ABILITAZIONI_E_PATENTI')"
+        (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'ABILITAZIONI')"></pslfcwcl-abilitazioni>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel id="panel-patenti" [disabled]="!isValidData() && panelPatentini()">
+    <ng-template ngbPanelTitle>
+      <pslfcwcl-panel-title title="Patenti & Patentini" [datiComponenteCurriculare]="datiCurriculari.PATENTI"></pslfcwcl-panel-title>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="grey1">
+        <pslfcwcl-patenti
+          [sap]="sap"
+          [readOnly]="readOnly"
+          [listaPatenti]="elenchiDecodifiche.patenti"
+          [listaPatentini]="elenchiDecodifiche.patentini"
+          (patentiEditState)="patentiEditState($event)"
+          (sapChange)="onSapChange($event, 'ABILITAZIONI_E_PATENTI')"
+          (datiComponenteCurriculareChange)="onDatiComponenteCurriculareChange($event, 'PATENTI')"></pslfcwcl-patenti>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+<pslfcwcl-navigation-button-fc
+    [nextButtonHide]="readOnly && !readOnlyDomicilio"
+    [nextButtonDisabled]="!isValidData()"
+    [prevButtonDisabled]="!isValidData()"
+    [nextButtonName]="nextButtonName"
+    [forceNextButtonName]="true"
+    [prevButtonName]="prevButtonName"
+    [forcePrevButtonName]="true"
+    (exitPage)="onExitPage($event)">
+</pslfcwcl-navigation-button-fc>

@@ -1,0 +1,14 @@
+<div class="mt-5" [innerHTML]="generale | escapeHtml"></div>
+
+<div class="card m-0 mt-5">
+  <div [innerHTML]="responsabilitaTestata | escapeHtml"></div>
+</div>
+
+<div class="md-checkbox md-radio-inline mt-5">
+  <input type="checkbox" id="informativa" [checked]="checkResponsabilitaPrivacy" (click)="onCheckResponsabilitaPrivacy()">
+  <label for="informativa">
+    Dichiaro di avere effettuato le scelte nell'osservanza delle norme del codice civile sopra richiamate in materia di responsabilit&agrave; genitoriale
+  </label>
+</div>
+
+<app-navigation-button [nextButtonDisabled]="!checkResponsabilitaPrivacy" (exitPage)="onExitPage($event)"></app-navigation-button>

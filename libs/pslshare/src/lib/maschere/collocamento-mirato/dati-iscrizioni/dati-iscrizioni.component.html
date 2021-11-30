@@ -1,0 +1,23 @@
+<ng-template [ngIf]="isIscritto" [ngIfElse]="elseBlock">
+  <div *ngIf="iscrizioneDisabiliStatoFinale">
+    {{ISCRIZIONE_DISABILI + " del " }} <strong>{{ dataIscrizioneDisabili +": "+ iscrizioneDisabiliStatoFinale.toUpperCase()+ " " }}
+      <br>{{ categoriaIscrizioneDisabili.toUpperCase() }}</strong><br />
+      {{"CPI: " }} <strong>{{ cpiIscrizioneDisabili + " - PROVINCIA " + provinciaIscrizioneDisabili}}</strong><br/>
+  </div>
+  <br>
+  <div *ngIf="iscrizioneAltreCategorieStatoFinale">
+    {{ISCRIZIONE_ALTRE_CATEGORIE + " del " }} <strong>{{ dataIscrizioneCategorieProtette +": "+ iscrizioneAltreCategorieStatoFinale.toUpperCase()+ " " }}
+      <br>
+      {{ categoriaIscrizioneAltre.toUpperCase() }}</strong><br />
+      {{"CPI: " }}<strong> {{ cpiIscrizioneCategorieProtette+ " - PROVINCIA " + provinciaIscrizioneCategorieProtette}}</strong><br/>
+  </div>
+  <br>
+  REDDITO: <strong>{{ redditoDescrizione }}</strong><br />
+  FAMILIARI A CARICO: <strong>{{ familiariDescrizione }}</strong>
+  <br>
+</ng-template>
+<ng-template #elseBlock>
+  <strong><span [innerHTML]="msgNessunaIscrizione | escapeHtml"></span></strong>
+  <br>
+
+</ng-template>

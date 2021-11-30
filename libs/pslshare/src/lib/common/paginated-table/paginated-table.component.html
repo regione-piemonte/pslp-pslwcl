@@ -1,0 +1,48 @@
+<nav aria-label="Navigazione">
+  <div class="col-12 row">
+    <div class="col-sm-12 col-md-1 col-lg-1 col-xl-1 mb-1">
+      <select [(ngModel)]="limit" class="page-select" style="width:4em">
+        <option *ngFor="let ps of pageSizes" [value]="ps" [selected]="limit === ps">{{ps}}</option>
+      </select>
+    </div>
+    <div class="col-sm-12 col-md-11 col-lg-11 col-xl-11">
+      <ngb-pagination class="d-flex justify-content-end" [collectionSize]="pagedResponse.length" [(page)]="page" [pageSize]="limit" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true" (pageChange)="goToPage($event)">
+        <ng-template ngbPaginationFirst>&laquo;</ng-template>
+        <ng-template ngbPaginationLast>&raquo;</ng-template>
+        <ng-template ngbPaginationPrevious>&lsaquo;</ng-template>
+        <ng-template ngbPaginationNext>&rsaquo;</ng-template>
+      </ngb-pagination>
+    </div>
+  </div>
+</nav>
+<div class="scrollbar-table scrollbar-primary">
+
+  <!-- //NOSONAR --><table class="table table-bordered table-striped table-hover table-sortable" id="infoTable">
+    <thead>
+      <ng-template [ngTemplateOutlet]="tplHead?.templateRef"></ng-template>
+    </thead>
+    <tbody *ngIf="pagedResponse.length > 0; else noData">
+      <ng-template *ngFor="let el of pageSlice" [ngTemplateOutlet]="tplBody?.templateRef" [ngTemplateOutletContext]="{$implicit: el, el: el}"></ng-template>
+    </tbody>
+    <ng-template #noData>
+      <tbody>
+        <tr *ngIf="columnNumber > 0">
+          <td [colSpan]="columnNumber">Non ci sono dati.</td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</div>
+<nav aria-label="Navigazione">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row">
+    <div class="col-sm-4 col-md-6 col-lg-6 col-xl-6">{{ paginationFooter }}</div>
+    <div class="col-sm-8 col-md-6 col-lg-6 col-xl-6">
+      <ngb-pagination class="d-flex justify-content-end" [collectionSize]="pagedResponse.length" [(page)]="page" [pageSize]="limit" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true" (pageChange)="goToPage($event)">
+        <ng-template ngbPaginationFirst>&laquo;</ng-template>
+        <ng-template ngbPaginationLast>&raquo;</ng-template>
+        <ng-template ngbPaginationPrevious>&lsaquo;</ng-template>
+        <ng-template ngbPaginationNext>&rsaquo;</ng-template>
+      </ngb-pagination>
+    </div>
+  </div>
+</nav>

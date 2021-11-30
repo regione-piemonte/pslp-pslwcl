@@ -1,0 +1,86 @@
+<h4 class="border-n">Informazioni aggiuntive
+  <div class="popup" onclick="myFunction()">
+    <span class="fas fa-question-circle"><span class="sr-only">Informazioni</span></span>
+    <div class="popuptext" [class.down]="popdown" id="myPopup" [innerHTML]="informazioniAggiuntiveHelp | escapeHtml"></div>
+  </div>
+</h4>
+
+
+<div *ngIf="flag.infoConfObb">
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+</div>
+
+<div >
+  <div *ngIf="infoConfObbMancanti.length && !readOnly">
+    <h5>Attenzione: le sottostanti voci sono da compilare obbligatoriamente</h5>
+    <pslshare-aggiungi-info
+      *ngFor="let infoconf of infoConfObbMancanti"
+      [codice]="infoconf.codice"
+      [descrizione]="infoconf.descrizione"
+      [obbligatorio]="'true'">
+    </pslshare-aggiungi-info>
+  </div>
+
+  <h6 id="descTab" class="mt-5">Le tue informazioni</h6>
+
+  <div class="scrollbar-table scrollbar-primary">
+    <table  aria-describedby="descTab" class="table table-bordered table-striped table-hover" id="infoTable">
+      <thead>
+        <tr>
+          <th scope="col">Dichiarazione</th>
+          <th scope="col">Risposta</th>
+          <th scope="col">Data</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody *ngIf="flag.infoUtente; else noData">
+        <tr *ngFor="let info of infoUtente">
+          <td [class.text-success]="info.new">{{ info.descrizione }}</td>
+          <td [class.text-success]="info.new">{{ info.informazioneAggiuntiva.valore | siNo }}</td>
+          <td [class.text-success]="info.new">{{ info.informazioneAggiuntiva.data | date : 'dd/MM/yyyy' }}</td>
+          <td class="text-center" [class.text-danger]="info.new">
+            <span class="fas fa-2x fa-trash-alt" *ngIf="info.new && !readOnly" (click)="eliminaInformazioneAggiuntiva(info)"></span>
+          </td>
+        </tr>
+      </tbody>
+      <ng-template #noData>
+          <tbody><tr><td colspan="4">Non ci sono dati.</td></tr></tbody>
+      </ng-template>
+    </table>
+  </div>
+
+  <ng-template [ngIf]="!readOnly">
+    <ng-template [ngIf]="flag.infoConfAll" [ngIfElse]="elseTemplate">
+      <div class="row mb-5" *ngIf="!readOnly">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button class="btn btn-outline-primary" type="button" (click)="onAggiungiInformazione()">AGGIUNGI UN'ALTRA INFORMAZIONE</button>
+        </div>
+      </div>
+      <div class="collapse" [class.show]="showAggiungiInformazione">
+        <div class="grey1">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-7">
+              <div class="input-group group">
+                <select id="tipoinfo" name="tipoinfo" [(ngModel)]="tipoinfo">
+                  <option *ngFor="let infoConf of infoConfAll" [ngValue]="infoConf">{{ infoConf.descrizione }}</option>
+                </select>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="tipoinfo">Tipo di informazione</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pslshare-aggiungi-info *ngIf="tipoinfo"
+          [codice]="tipoinfo.codice"
+          [descrizione]="tipoinfo.descrizione"
+          (annulla)="annullaInformazioneAggiuntiva()"
+          (success)="successInformazioneAggiuntiva()"
+          [obbligatorio]="isObbligatorio(tipoinfo)">
+        </pslshare-aggiungi-info>
+      </div>
+    </ng-template>
+    <ng-template #elseTemplate>{{ userMessage }}</ng-template>
+  </ng-template>
+
+</div>

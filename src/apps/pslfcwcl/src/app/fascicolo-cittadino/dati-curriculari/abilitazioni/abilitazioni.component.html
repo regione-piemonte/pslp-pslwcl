@@ -1,0 +1,69 @@
+<pslshare-paginated-table [columnNumber]="2" [pagedResponse]="sap.albi" [limit]="10">
+  <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Albi e ordini professionali</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizza" (click)="onVisualizza(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !albo" (click)="onNuovo()">AGGIUNGI ALBO</button>
+</p>
+
+<form #alboForm="ngForm" *ngIf="albo">
+  <em data-scroll-marker="abilitazioni"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <fieldset class="form-row form-inline" [disabled]="readOnly || isVisualizza"><!-- //NOSONAR -->
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="albi" name="albi" class="col-12"
+          [(ngModel)]="albo.codice_ministeriale" required
+          [pslwcllibValueNotPresentValidator]="{list: sap.albi, path: 'codice_ministeriale', idx: updateIndex}"
+          #alboSele="ngModel" >
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaAlbi" [value]="op.codice_ministeriale">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="albi">Albi e ordini professionali</label>
+        <pslshare-error-handler [model]="alboSele" [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Albo o ordine professionale già presente'}"></pslshare-error-handler>
+      </div>
+    </div>
+  </fieldset>
+
+  <pslshare-showdata [oggettoDati]="albo"></pslshare-showdata>
+  <ng-container *ngIf="!readOnly">
+  <div class="row mt-5" *ngIf="!isVisualizza; else elseBlock">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">ANNULLA</button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+      <button type="button" (click)="onSubmit()" class="btn btn-outline-primary" [disabled]="!alboForm.valid">CONFERMA</button>
+    </div>
+  </div>
+  <ng-template #elseBlock>
+    <div class="row mt-5">
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+      <button type="button" class="btn btn-outline-primary" *ngIf="albo" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-center">
+        <button type="button" class="btn btn-outline-danger" (click)="onElimina()">ELIMINA</button>
+      </div>
+      <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-right">
+        <button type="button" (click)="onSubmit()" class="btn btn-outline-primary">MODIFICA</button>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
+</form>

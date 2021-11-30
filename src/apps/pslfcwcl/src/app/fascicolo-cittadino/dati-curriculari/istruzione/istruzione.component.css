@@ -1,0 +1,49 @@
+form .md-radio input[type].ng-touched ~ label,
+form .md-radio input[type].ng-dirty ~ label {
+  padding-left: 22px;
+}
+.md-radio label {
+  display: flex;
+}
+.md-radio label:before {
+  top: 0;
+}
+.md-radio label:after {
+  top: 0;
+}
+
+input[required]:not([type="radio"]) ~ label:after,
+select[required] ~ label:after,
+textarea[required] ~ label:after {
+  color: #bf3a31;
+  content: ' *';
+  font-size: 2rem;
+  font-weight: 900;
+  padding-left: 2px;
+}
+.ng-valid[required],
+.ng-valid.required {
+  border-left: 5px solid #42a948;
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442;
+}
+
+label {
+  padding-left: 7px;
+}
+
+.md-radio label {
+  display: inline-block;
+  height: 12px;
+  position: relative;
+  padding: 0 22px;
+  margin-bottom: 0;
+  cursor: pointer;
+  vertical-align: bottom;
+  font-weight: normal;
+  padding-left: 22px;
+}
+
+

@@ -1,0 +1,19 @@
+<app-wizard></app-wizard>
+
+<pslshare-informazioni-aggiuntive
+  (dataChanged)="setDataChanged()"
+  (loaded)="checkDataLoaded(1)"
+  (valid)="setValidityInformazioneAggiuntiva($event)">
+</pslshare-informazioni-aggiuntive>
+
+<pslshare-allegati-cittadino
+  (dataChanged)="setDataChanged()"
+  (loaded)="checkDataLoaded(2)">
+</pslshare-allegati-cittadino>
+<br/>
+<app-navigation-button
+  [nextButtonDisabled]="disableNextButton()"
+  [nextButtonName]="nextButtonName"
+  [forceNextButtonName]="true"
+  (exitPage)="onExitPage($event)">
+</app-navigation-button>

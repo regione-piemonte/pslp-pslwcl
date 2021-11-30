@@ -1,0 +1,34 @@
+<div class="grey1">
+  <form #informazioneForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="row align-middle mb-1">
+      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-7">
+        <label class="mb-0">{{ descrizione }} <span class="ob" *ngIf="obbligatorio">*</span></label>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-4 col-xl-5">
+          <div class="md-radio md-radio-inline mt-0 mb-0" *ngFor="let risposta of risposte">
+            <input type="radio" [id]="risposta.id" name="risposta" [value]="risposta.value" ngModel required>
+            <label [for]="risposta.id">{{ risposta.value | titlecase }}</label>
+          </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="osservazioni">Osservazioni</label>
+      <textarea
+        id="osservazioni"
+        name="osservazioni"
+        rows="3"
+        maxlength="2000"
+        ngModel>
+      </textarea>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="reset" class="btn btn-outline-primary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="submit" class="btn btn-primary" [disabled]="informazioneForm.invalid">AGGIUNGI</button>
+      </div>
+    </div>
+  </form>
+</div>

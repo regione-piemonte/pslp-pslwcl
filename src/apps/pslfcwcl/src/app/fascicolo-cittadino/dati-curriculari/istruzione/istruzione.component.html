@@ -1,0 +1,279 @@
+<pslshare-paginated-table [columnNumber]="3" [pagedResponse]="sap.titoli_di_studio" [limit]="10">
+    <ng-template pslbasepagePaginationHead>
+    <tr>
+      <th scope="col">Grado corso di studio</th>
+      <th scope="col">Corso di studio</th>
+      <th scope="col"></th>
+    </tr>
+  </ng-template>
+  <ng-template pslbasepagePaginationBody let-el>
+    <tr>
+      <td>{{ el.livello_scolarizzazione?.descrizione }}</td>
+      <td>{{ el.corso_di_studio?.descrizione }}</td>
+      <td class="text-nowrap">
+        <button title="Visualizza" class="btn btn-link btn-sm" [disabled]="!isVisualizza" (click)="onVisualizza(el)">
+          <span class="fas fa-2x fa-eye"></span>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</pslshare-paginated-table>
+
+<p class="mt-5 text-right">
+  <button type="button" class="btn btn-outline-primary" *ngIf="!readOnly && !titoloDiStudio"
+    (click)="onNuovo()">AGGIUNGI TITOLO DI STUDIO</button>
+</p>
+
+<form #titoloDiStudioForm="ngForm" *ngIf="titoloDiStudio">
+  <em data-scroll-marker="istruzione"></em>
+  <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+  <div class="form-row form-inline">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="input-group group">
+        <select id="livello_scolarizzazione" name="livello_scolarizzazione" class="col-12"
+          [(ngModel)]="titoloDiStudio.livello_scolarizzazione.codice" required
+          [disabled]="readOnly || isAggiornamento || isVisualizza" #livelloScolarizzazione="ngModel"
+          (ngModelChange)="onChangeAzzeraTitoloStudio()"
+          >
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let op of listaGradoStudio" [value]="op.codice">{{op.descrizione}}</option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="livello_scolarizzazione">Livello titolo di studio</label>
+        <pslshare-error-handler [model]="livelloScolarizzazione" [errors]="{required: 'Obbligatorio'}">
+        </pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="input-group group">
+          <input id="corso_di_studio"
+            name="corso_di_studio"
+            type="text"
+            #titoloStudio="ngModel"
+            [ngModel]="titoloDiStudio.corso_di_studio"
+            (ngModelChange)="setCorsoDiStudio($event)"
+            [ngbTypeahead]="searchTitolo"
+            [inputFormatter]="formatMatchesTitoloStudio"
+            [resultFormatter]="formatMatchesTitoloStudio"
+            [pslwcllibValueNotPresentValidator]="{list: sap.titoli_di_studio, path: 'corso_di_studio.codice_ministeriale', idx: updateIndex, valuePath: 'codice_ministeriale'}"
+            [disabled]="readOnly || isAggiornamento || isVisualizza"
+            required
+            pslwcllibCodMinistNotValidValidatorDirective>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label for="corso_di_studio">Titolo di studio (digitare alcuni caratteri, per filtrare le voci)&nbsp;</label>
+          <pslshare-error-handler [model]="titoloStudio" [errors]="{required: 'Obbligatorio', valueAlreadyPresent: 'Titolo di studio già presente.', codiceMinisterialeNotValid: {path: 'message'}}"></pslshare-error-handler>
+        </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="tipo_scuola" name="tipo_scuola" disabled [value]="tipoScuola" disabled />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="tipo_scuola">Tipo scuola</label>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="descrizione" name="descrizione" [(ngModel)]="titoloDiStudio.descrizione"
+          [disabled]="readOnly || isVisualizza" maxlength="100"
+          onkeyup="
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);"
+          />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="descrizione">Descrizione</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">Frequentato in:</div>
+
+    <ng-container ngModelGroup="corsoFrequentatoInModel" [pslwcllibIfOneThenFullValidate]="ifOneThenFullInput"
+      #groupUtil="ngModelGroup">
+
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+          <div class="input-group group">
+            <select
+              id="provincia"
+              name="provincia"
+              [(ngModel)]="indirizzo.provincia"
+              (ngModelChange)="onChangeProvincia()"
+              [disabled]="readOnly || isVisualizza">
+              <option [ngValue]="null"></option>
+              <option *ngFor="let option of listaProvincia" [value]="option.codice_ministeriale">{{option.descrizione}}
+              </option>
+            </select>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="provincia">Prov.</label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+          <div class="input-group group">
+            <input id="comune"
+              name="comune"
+              type="text"
+              class="dropdown-input"
+              #comune="ngModel"
+              [(ngModel)]="indirizzo.comune"
+              [ngbTypeahead]="searchComune"
+              [inputFormatter]="formatMatches"
+              [resultFormatter]="formatMatches"
+              (ngModelChange)="cleanNazione()"
+              [disabled]="readOnly || isVisualizza || !abilitaComune"
+              maxlength="50"
+              #comuneCorso="ngModel"
+              pslwcllibCodMinistNotValidValidatorDirective
+              />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="comune">Comune</label>
+            <pslshare-error-handler [model]="comuneCorso" [errors]="{codiceMinisterialeNotValid: {path: 'message'}}"></pslshare-error-handler>
+          </div>
+          <div *ngIf="groupUtil.errors !== null && groupUtil.invalid && (groupUtil.dirty || groupUtil.touched)">
+            <p *ngIf="groupUtil.errors['tuttiONessuno']" class="text-danger">{{ groupUtil.errors['tuttiONessuno'] }}</p>
+          </div>
+        </div>
+
+    </ng-container>
+
+
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="group">
+        <select id="nazione" name="nazione" [(ngModel)]="indirizzo.nazione" (change)="onChangeNazione()"
+          [disabled]="readOnly || isVisualizza">
+          <option [ngValue]="null"> </option>
+          <option *ngFor="let option of listaNazione" [value]="option.codice_ministeriale">{{option.descrizione}}
+          </option>
+        </select>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="nazione">Nazione</label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2">
+      <!-- //NOSONAR --><fieldset [disabled]="readOnly || isVisualizza || !titoloDiStudio.corso_di_studio || !titoloDiStudio.corso_di_studio.codice_ministeriale">
+        <div class="col-12 mr-3 pt-4" #riconosciutoInItaliaLabel>Riconosciuto in Italia</div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0"
+          [pslwcllibRadioLabelHandler]="riconosciutoInItaliaLabel">
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="riconosciuto_si" name="riconosciuto_in_italia" [value]="true"
+              [(ngModel)]="titoloDiStudio.riconosciuto_in_italia">
+            <label for="riconosciuto_si">&nbsp;&nbsp;Si</label>
+          </div>
+          <div class="md-radio md-radio-inline mt-2 mb-0">
+            <input type="radio" id="riconosciuto_no" name="riconosciuto_in_italia" [value]="false"
+              [(ngModel)]="titoloDiStudio.riconosciuto_in_italia">
+            <label for="riconosciuto_no">&nbsp;&nbsp;No</label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2">
+      <div class="col-12 mr-3 pt-4">&nbsp;</div>
+      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mb-0">
+      <!-- //NOSONAR --><fieldset [disabled]="readOnly || isVisualizza">
+        <div class="md-radio md-radio-inline mt-2 mb-0">
+          <input type="radio" id="completato_C" name="statoCompletamento" value="C" [(ngModel)]="statoCompletamento"
+            (change)="onChangeConseguimento('C')">
+          <label for="completato_C">Completato</label>
+        </div>
+        <div class="md-radio md-radio-inline mt-2 mb-0">
+          <input type="radio" id="completato_I" name="statoCompletamento" value="I" [(ngModel)]="statoCompletamento"
+            (change)="onChangeConseguimento('I')">
+          <label for="completato_I">In corso</label>
+        </div>
+        <div class="md-radio md-radio-inline mt-2 mb-0">
+          <input type="radio" id="completato_N" name="statoCompletamento" value="N" [(ngModel)]="statoCompletamento"
+            (change)="onChangeConseguimento('N')">
+          <label for="completato_N">Non conseguito</label>
+        </div>
+      </fieldset>
+    </div>
+    </div>
+    <div class="mt-5 col-12 col-md-6">
+      <div class="input-group group">
+        <input type="text" id="anno_se_conseguito" name="anno" [(ngModel)]="titoloDiStudio.anno_se_conseguito"
+          [disabled]="readOnly || isVisualizza || statoCompletamento !== 'C'" [required]="statoCompletamento === 'C'"
+          pslwcllibAnnoNotValidValidator #anno_se_conseguito="ngModel" maxlength="4" />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="anno_se_conseguito">Se conseguito: Anno</label>
+        <pslshare-error-handler [model]="anno_se_conseguito"
+          [errors]="{required: 'Obbligatorio', annoNonValido: {path: 'message'}}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="mt-5 col-12 col-md-6">
+      <div class="input-group group">
+        <input type="text" id="votazione_conseguita" name="votazione_conseguita"
+          [(ngModel)]="titoloDiStudio.votazione_conseguita"
+          [disabled]="readOnly || isVisualizza || statoCompletamento !== 'C'" [required]="statoCompletamento === 'C'"
+          maxlength="3" />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="descrizione">Se conseguito: Votazione conseguita</label>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="anno_di_frequenza_se_in_corso" name="anno_di_frequenza_se_in_corso"
+          [(ngModel)]="titoloDiStudio.anno_di_frequenza_se_in_corso"
+          [disabled]="readOnly || isVisualizza || statoCompletamento !== 'I'" [required]="statoCompletamento === 'I'"
+          pslwcllibAnnoNotValidValidator #annoFrequenzaSeInCorso="ngModel" maxlength="4" />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="anno_di_frequenza_se_in_corso">Se in corso: Anno di frequenza</label>
+        <pslshare-error-handler [model]="annoFrequenzaSeInCorso"
+          [errors]="{required: 'Obbligatorio', annoNonValido: {path: 'message'}}"></pslshare-error-handler>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="input-group group">
+        <input type="text" id="ultimo_anno_frequentato_se_non_conseguito"
+          name="ultimo_anno_frequentato_se_non_conseguito"
+          [(ngModel)]="titoloDiStudio.ultimo_anno_frequentato_se_non_conseguito"
+          [disabled]="readOnly || isVisualizza || statoCompletamento !== 'N'" [required]="statoCompletamento === 'N'"
+          pslwcllibAnnoNotValidValidator #ultimoAnnoFrequentato="ngModel" maxlength="4" />
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label for="ultimo_anno_frequentato_se_non_conseguito">Se non conseguito: Ultimo anno frequentato</label>
+        <pslshare-error-handler [model]="ultimoAnnoFrequentato"
+          [errors]="{required: 'Obbligatorio', annoNonValido: {path: 'message'}}"></pslshare-error-handler>
+      </div>
+    </div>
+  </div>
+
+  <pslshare-showdata [oggettoDati]="titoloDiStudio"></pslshare-showdata>
+
+  <ng-container *ngIf="!readOnly">
+    <div class="row mt-5" *ngIf="!isVisualizza; else elseBlock">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="onAnnulla()">ANNULLA</button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+        <button type="button" class="btn btn-outline-primary" (click)="onSubmit()"
+          [disabled]="readOnly || !titoloDiStudioForm.valid">CONFERMA</button>
+      </div>
+    </div>
+    <ng-template #elseBlock>
+      <div class="row mt-5">
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2 text-left">
+          <button type="button" class="btn btn-outline-primary" *ngIf="titoloDiStudio"
+            (click)="onAnnulla()">ANNULLA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2  text-center">
+          <button type="button" class="btn btn-outline-danger" (click)="onElimina()"
+            [disabled]="readOnly">ELIMINA</button>
+        </div>
+        <div class="col-sm-8 col-md-4 col-lg-4 col-xl-4 mt-2 mb-2  text-right">
+          <button type="button"  (click)="onSubmit()" class="btn btn-outline-primary" [disabled]="readOnly" >MODIFICA</button>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</form>
